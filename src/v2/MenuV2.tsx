@@ -176,6 +176,38 @@ function getZonePriceFromName(name: string) {
 }
 
 export default function MenuV2() {
+const FORCE_CLOSED = false;
+
+function isStoreOpen() {
+  if (FORCE_CLOSED) return false;
+
+  const now = new Date();
+
+  const day = now.getDay();
+  const hour = now.getHours();
+
+  // Domingo a jueves
+  if (day >= 0 && day <= 4) {
+    return hour >= 18 && hour < 23;
+  }
+
+  // Viernes
+  if (day === 5) {
+    return hour >= 18;
+  }
+
+  // Sábado
+  if (day === 6) {
+    return hour >= 13;
+  }
+
+  // Madrugada hasta la 1 AM
+  if ((day === 6 || day === 0) && hour < 1) {
+    return true;
+  }
+
+  return false;
+}
   function getProductImage(product: any) {
   const name = product.name.toLowerCase();
 
@@ -562,6 +594,10 @@ setLocationMessage("Ubicación GPS confirmada.");
 );
 
   function sendOrderToWhatsApp() {
+    if (!isStoreOpen()) {
+    alert("Comercio cerrado. Nuestro horario de atención es de 17:00 a 23:00 hrs.");
+    return;
+}
     if (cart.length === 0) return;
 
     const lines: string[] = [];
