@@ -179,31 +179,41 @@ export default function MenuV2() {
 const FORCE_CLOSED = false;
 
 function isStoreOpen() {
-  if (FORCE_CLOSED) return false;
+
+  if (FORCE_CLOSED) {
+    return false;
+  }
 
   const now = new Date();
 
-  const day = now.getDay();
-  const hour = now.getHours();
+  const chileHour = new Intl.DateTimeFormat("es-CL", {
+    timeZone: "America/Santiago",
+    hour: "numeric",
+    hour12: false,
+  }).format(now);
+
+  const hour = Number(chileHour);
+
+  const day = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Santiago",
+    weekday: "long",
+  }).format(now).toLowerCase();
 
   // Domingo a jueves
-  if (day >= 0 && day <= 4) {
+  if (
+    ["sunday", "monday", "tuesday", "wednesday", "thursday"].includes(day)
+  ) {
     return hour >= 18 && hour < 23;
   }
 
   // Viernes
-  if (day === 5) {
-    return hour >= 18;
+  if (day === "friday") {
+    return hour >= 18 || hour < 24;
   }
 
   // Sábado
-  if (day === 6) {
-    return hour >= 13;
-  }
-
-  // Madrugada hasta la 1 AM
-  if ((day === 6 || day === 0) && hour < 1) {
-    return true;
+  if (day === "saturday") {
+    return hour >= 13 || hour < 24;
   }
 
   return false;
@@ -230,6 +240,7 @@ const autocompleteRef = useRef<any>(null);
 
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [closedModalOpen, setClosedModalOpen] = useState(false);
   const [cartNote, setCartNote] = useState("");
 
   const [deliveryType, setDeliveryType] =
@@ -594,11 +605,13 @@ setLocationMessage("Ubicación GPS confirmada.");
 );
 
   function sendOrderToWhatsApp() {
+    console.log("CLICK WHATSAPP");
+    console.log("isStoreOpen:", isStoreOpen)
     if (!isStoreOpen()) {
-    alert("Comercio cerrado. Nuestro horario de atención es de 17:00 a 23:00 hrs.");
-    return;
-}
-    if (cart.length === 0) return;
+    setClosedModalOpen(true);
+  return;
+} 
+   if (cart.length === 0) return;
 
     const lines: string[] = [];
     lines.push("Hola! Quiero hacer este pedido:");
@@ -796,7 +809,85 @@ await calculateDeliveryForCoords(coords);
 }, [cartOpen, deliveryType, locationMode]);
 
   return (
+    <>
+{closedModalOpen && (
+  <div className="menuv2-closed-backdrop">
+    <div className="menuv2-closed-modal">
+      <p>En este momento no estamos recibiendo pedidos.</p>
+
+      <div>
+        <strong>Horario de atención</strong>
+        <p>Domingo a jueves: 18:00 a 23:00 hrs</p>
+        <p>Viernes: 18:00 a 00:00 hrs</p>
+        <p>Sábado: 13:00 a 00:00 hrs</p>
+      </div>
+
+      <p>
+        Para delegaciones, comunícate con nosotros directamente al
+        <br />
+        <strong>+56 9 5615 4280</strong>
+      </p>
+
+      <button onClick={() => setClosedModalOpen(false)}>
+        Entendido
+      </button>
+    </div>
+  </div>
+)}
     <div className="menuv2-page">
+    {closedModalOpen && (
+  <div className="menuv2-closed-overlay">
+    <div className="menuv2-closed-modal">
+
+      <button
+        className="menuv2-closed-close"
+        onClick={() => setClosedModalOpen(false)}
+      >
+        ✕
+      </button>
+
+      <img
+        src="/productos/cerrado.png"
+        alt="Cerrado"
+        className="menuv2-closed-image"
+      />
+
+      <p className="menuv2-closed-text">
+        En este momento no estamos recibiendo pedidos.
+      </p>
+
+      <div className="menuv2-closed-box">
+        <div className="menuv2-closed-box-title">
+          Horario de atención
+        </div>
+
+        <div className="menuv2-closed-schedule">
+          <div>Domingo a Jueves: 18:00 a 23:00</div>
+          <div>Viernes: 18:00 a 00:00</div>
+          <div>Sábado: 13:00 a 00:00</div>
+        </div>
+      </div>
+
+      <div className="menuv2-closed-box">
+        <div className="menuv2-closed-contact">
+          Para delegaciones, comunícate directamente al:
+        </div>
+
+        <div className="menuv2-closed-phone">
+          +56 9 5615 4280
+        </div>
+      </div>
+
+      <button
+        className="menuv2-closed-button"
+        onClick={() => setClosedModalOpen(false)}
+      >
+        Entendido
+      </button>
+
+    </div>
+  </div>
+)}
       <div className="menuv2-container">
         <header className="menuv2-header">
           <div className="menuv2-brand">Di Mauro</div>
@@ -1740,5 +1831,6 @@ await calculateDeliveryForCoords(coords);
   </div>
 )}
     </div>
+    </>
   );
 }
