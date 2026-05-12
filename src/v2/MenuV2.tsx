@@ -238,6 +238,7 @@ const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
 const addressInputRef = useRef<HTMLInputElement | null>(null);
 const autocompleteRef = useRef<any>(null);
 
+
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [closedModalOpen, setClosedModalOpen] = useState(false);
@@ -255,6 +256,7 @@ const autocompleteRef = useRef<any>(null);
   
   const [deliveryFee, setDeliveryFee] = useState<number | null>(null);
   const [locationMode, setLocationMode] = useState<"gps" | "address">("gps");
+  const locationModeRef = useRef(locationMode);
   const activeCoords = locationMode === "address" ? addressCoords : gpsCoords;
   const [locationMessage, setLocationMessage] = useState("");
   const [activePages, setActivePages] = useState<Record<string, number>>({});
@@ -479,7 +481,15 @@ const autocompleteRef = useRef<any>(null);
     setCart((prev) => prev.filter((item) => item.id !== id));
   }
 
-async function calculateDeliveryForCoords(coords: { lat: number; lng: number }) {
+async function calculateDeliveryForCoords(
+  coords: { lat: number; lng: number },
+  source: "gps" | "address"
+) {
+
+  if (source === "gps" && locationModeRef.current === "address") {
+    return;
+  }
+
   try {
     const response = await fetch("/delivery-zones.geojson");
     const geojson = await response.json();
@@ -505,15 +515,23 @@ console.log(
   "MATCHING ZONES FINAL:",
   matchingZones.map((z: any)=> z.properties?.name)
 );
-const zoneMatch = matchingZones.find((feature: any) => {
-  const name =
-    feature.properties?.name ||
-    feature.properties?.Name ||
-    feature.properties?.title ||
-    "";
+const sortedZones = matchingZones
+  .map((feature: any) => {
+    const name =
+      feature.properties?.name ||
+      feature.properties?.Name ||
+      feature.properties?.title ||
+      "";
 
-  return getZonePriceFromName(name) !== null;
-});
+    return {
+      feature,
+      fee: getZonePriceFromName(name),
+    };
+  })
+  .filter((z: any) => z.fee !== null)
+  .sort((a: any, b: any) => b.fee - a.fee);
+
+const zoneMatch = sortedZones[0]?.feature;
 
 if (!zoneMatch) {
   setDeliveryFee(null);
@@ -557,7 +575,7 @@ async function detectUserLocation() {
       };
 
         setGpsCoords(coords);
-              await calculateDeliveryForCoords(coords);
+              await calculateDeliveryForCoords(coords, "gps");
     },
     (error) => {
   console.log("GPS error:", error);
@@ -584,9 +602,10 @@ navigator.geolocation.getCurrentPosition(
     };
 
    setGpsCoords(coords);
-setLocationMessage("Ubicación GPS confirmada.");
+   console.log("COORDS FINALES:", coords);
+setLocationMessage("Ubicación GPS estimada. Para mayor precisión, usa MI DIRECCIÓN.");
 
-    calculateDeliveryForCoords(coords);
+    calculateDeliveryForCoords(coords, "gps");
   },
   (error) => {
     console.log("GPS error:", error);
@@ -623,7 +642,13 @@ setLocationMessage("Ubicación GPS confirmada.");
 
     lines.push("");
     lines.push(`Tipo de pedido: ${deliveryType === "retiro" ? "Retiro en local" : "Delivery"}`);
-
+if (gpsCoords) {
+  lines.push("");
+  lines.push("📍 UBICACIÓN GPS:");
+  lines.push(
+    `https://www.google.com/maps?q=${gpsCoords.lat},${gpsCoords.lng}`
+  );
+}
     if (deliveryType === "delivery") {
       lines.push("");
       lines.push("Datos delivery:");
@@ -758,6 +783,10 @@ if (coordsToSend) {
 }, [modal, cartOpen]);
 
 useEffect(() => {
+  locationModeRef.current = locationMode;
+}, [locationMode]);
+
+useEffect(() => {
   if (!cartOpen) return;
   if (deliveryType !== "delivery") return;
   if (locationMode !== "address") return;
@@ -795,12 +824,12 @@ useEffect(() => {
   lat: Number(place.geometry.location.lat()),
   lng: Number(place.geometry.location.lng()),
 };
-
+console.log("COORDS AUTOCOMPLETE:", coords);
 setCustomerAddress(place.formatted_address || place.name || "");
 setAddressCoords(coords);
-setLocationMessage("Dirección confirmada.");
-
-await calculateDeliveryForCoords(coords);
+setGpsCoords(null);
+setLocationMessage("Dirección confirmada. Delivery calculado con esta ubicación.");
+await calculateDeliveryForCoords(coords, "address");
 });
     autocompleteRef.current = autocomplete;
   }, 300);
@@ -1701,12 +1730,14 @@ await calculateDeliveryForCoords(coords);
                     ? "menuv2-location-tab menuv2-location-tab--active"
                     : "menuv2-location-tab"
                 }
-               onClick={() => {
-                setLocationMode("gps");
-                setCustomerAddress("");
-                setDeliveryFee(null);
-                setLocationMessage("");
-              }}
+              onClick={() => {
+  setLocationMode("gps");
+  setAddressCoords(null);
+  setCustomerAddress("");
+  setDeliveryFee(null);
+  setLocationMessage("Usaremos tu GPS como estimación. Si el valor no coincide, escribe tu dirección.");
+  detectUserLocation();
+}}
               >
                 MI UBICACIÓN
               </button>
@@ -1719,6 +1750,7 @@ await calculateDeliveryForCoords(coords);
                 }
                 onClick={() => {
                   setLocationMode("address");
+                  setGpsCoords(null);
                   setAddressCoords(null);
                   setDeliveryFee(null);
                   setLocationMessage("");
