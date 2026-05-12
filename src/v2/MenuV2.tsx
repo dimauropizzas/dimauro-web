@@ -792,51 +792,59 @@ useEffect(() => {
   if (locationMode !== "address") return;
   if (!addressInputRef.current) return;
 
-  let tries = 0;
+  if (autocompleteRef.current) return;
 
-  const timer = window.setInterval(() => {
-    tries += 1;
-
+  const timer = window.setTimeout(() => {
     if (!(window as any).google?.maps?.places) {
-      if (tries > 20) window.clearInterval(timer);
+      console.log("Google Places no cargó");
       return;
     }
 
-    window.clearInterval(timer);
+    const autocomplete =
+      new window.google.maps.places.Autocomplete(
+        addressInputRef.current!,
+        {
+          componentRestrictions: { country: "cl" },
+        }
+      );
 
-    const autocomplete = new window.google.maps.places.Autocomplete(
-      addressInputRef.current!,
-      {
-        componentRestrictions: { country: "cl" },
-        fields: ["formatted_address", "geometry", "name"],
-      }
-    );
+    autocompleteRef.current = autocomplete;
 
     autocomplete.addListener("place_changed", async () => {
       const place = autocomplete.getPlace();
-      console.log("PLACE SELECTED:", place);
+
       if (!place.geometry?.location) {
-        setLocationMessage("Selecciona una dirección válida de la lista.");
+        console.log("No geometry");
         return;
       }
 
-     const coords = {
-  lat: Number(place.geometry.location.lat()),
-  lng: Number(place.geometry.location.lng()),
-};
-console.log("COORDS AUTOCOMPLETE:", coords);
-setCustomerAddress(place.formatted_address || place.name || "");
-setAddressCoords(coords);
-setGpsCoords(null);
-setLocationMessage("Dirección confirmada. Delivery calculado con esta ubicación.");
-await calculateDeliveryForCoords(coords, "address");
-});
-    autocompleteRef.current = autocomplete;
+      const coords = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+      };
+
+      console.log("DIRECCION SELECCIONADA:", coords);
+
+      setCustomerAddress(
+        place.formatted_address || place.name || ""
+      );
+
+      setAddressCoords(coords);
+      setGpsCoords(null);
+
+      setLocationMessage("Dirección confirmada.");
+
+      await calculateDeliveryForCoords(
+        coords,
+        "address"
+      );
+    });
   }, 300);
 
-  return () => window.clearInterval(timer);
+  return () => {
+    window.clearTimeout(timer);
+  };
 }, [cartOpen, deliveryType, locationMode]);
-
   return (
     <>
 {closedModalOpen && (
