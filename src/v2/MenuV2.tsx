@@ -176,12 +176,13 @@ function getZonePriceFromName(name: string) {
 }
 
 export default function MenuV2() {
-const FORCE_CLOSED = false;
+
+ const FORCE_STORE_OPEN = true;
 
 function isStoreOpen() {
 
-  if (FORCE_CLOSED) {
-    return false;
+  if (FORCE_STORE_OPEN) {
+    return true;
   }
 
   const now = new Date();
