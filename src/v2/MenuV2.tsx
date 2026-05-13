@@ -247,7 +247,7 @@ const autocompleteRef = useRef<any>(null);
 
   const [deliveryType, setDeliveryType] =
     useState<"retiro" | "delivery">("retiro");
-
+  const [isCalculatingDelivery, setIsCalculatingDelivery] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
@@ -490,7 +490,7 @@ async function calculateDeliveryForCoords(
   if (source === "gps" && locationModeRef.current === "address") {
     return;
   }
-
+setIsCalculatingDelivery(true);
   try {
     const response = await fetch("/delivery-zones.geojson");
     const geojson = await response.json();
@@ -539,6 +539,7 @@ if (!zoneMatch) {
   setLocationMessage(
     "Ubicación fuera de zona automática. Envíanos el pedido por WhatsApp y calculamos el despacho manualmente."
   );
+  setIsCalculatingDelivery(false);
   return;
 }
 const zoneName =
@@ -551,12 +552,15 @@ const fee = getZonePriceFromName(zoneName);
 
 if (fee === null) {
   setDeliveryFee(null);
+  setIsCalculatingDelivery(false);
   return;
 }
 
 setDeliveryFee(fee);
 setLocationMessage(`Delivery calculado: ${formatCLP(fee)}`);
+setIsCalculatingDelivery(false);
 } catch {
+  setIsCalculatingDelivery(false);
   console.log("No se pudo calcular delivery automáticamente");
   setDeliveryFee(null);
 }
@@ -1864,8 +1868,12 @@ useEffect(() => {
         <button
           className="menuv2-cart-checkout"
           onClick={sendOrderToWhatsApp}
+          disabled={isCalculatingDelivery}
         >
-          Enviar pedido por WhatsApp
+          {isCalculatingDelivery
+           ? "Calculando delivery..."
+          : "Enviar pedido por WhatsApp"}
+
         </button>
       </div>
     </div>
