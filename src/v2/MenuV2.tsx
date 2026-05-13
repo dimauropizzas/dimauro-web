@@ -177,7 +177,7 @@ function getZonePriceFromName(name: string) {
 
 export default function MenuV2() {
 
- const FORCE_STORE_OPEN = true;
+ const FORCE_STORE_OPEN = false;
 
 function isStoreOpen() {
 
