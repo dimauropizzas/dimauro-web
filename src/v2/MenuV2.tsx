@@ -200,18 +200,19 @@ function isStoreOpen() {
     weekday: "long",
   }).format(now).toLowerCase();
 
-  // Domingo a jueves
-  if (
-    ["sunday", "monday", "tuesday", "wednesday", "thursday"].includes(day)
-  ) {
-    return hour >= 18 && hour < 23;
-  }
-
-  // Viernes
-  if (day === "friday") {
-    return hour >= 18 || hour < 24;
-  }
-
+// Domingo a viernes
+if (
+  [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+  ].includes(day)
+) {
+  return hour >= 18 && hour < 24;
+}
   // Sábado
   if (day === "saturday") {
     return hour >= 13 || hour < 24;
@@ -904,8 +905,7 @@ useEffect(() => {
         </div>
 
         <div className="menuv2-closed-schedule">
-          <div>Domingo a Jueves: 18:00 a 23:00</div>
-          <div>Viernes: 18:00 a 00:00</div>
+          <div>Domingo a Viernes: 18:00 a 00:00</div>
           <div>Sábado: 13:00 a 00:00</div>
         </div>
       </div>
