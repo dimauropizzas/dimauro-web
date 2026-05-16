@@ -988,7 +988,8 @@ useEffect(() => {
                       product.type === "selector-custom-pizza" ||
                       product.type === "pizza_fixed" ||
                       product.type === "promo_pizzas" ||
-                      product.type === "promo_pizzas_drink";
+                      product.type === "promo_pizzas_drink" ||
+                      product.type === "simple";
 
                     const opens =
                       product.type === "selector-burger"
@@ -1043,7 +1044,11 @@ useEffect(() => {
                             : "menuv2-card"
                         }
                         onClick={() => {
-                          if (opens) opens();
+                          if (opens) {
+                            opens();
+                          } else if (product.type === "simple") {
+                            addToCart(product);
+                          }
                         }}
                       >
                           <div className="menuv2-image-wrap">
