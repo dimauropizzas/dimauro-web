@@ -1035,6 +1035,8 @@ useEffect(() => {
                           }
                         : null;
 
+                    let touchStartY = 0;
+
                     return (
                       <article
                         key={product.id}
@@ -1043,7 +1045,14 @@ useEffect(() => {
                             ? "menuv2-card menuv2-card--clickable"
                             : "menuv2-card"
                         }
-                        onClick={() => {
+                        onTouchStart={(e) => {
+                          touchStartY = e.touches[0].clientY;
+                        }}
+                        onTouchEnd={(e) => {
+                          const target = e.target as HTMLElement;
+                          if (target.closest("button")) return;
+                          const diff = Math.abs(e.changedTouches[0].clientY - touchStartY);
+                          if (diff > 10) return; // fue scroll, no toque
                           if (opens) {
                             opens();
                           } else if (product.type === "simple") {

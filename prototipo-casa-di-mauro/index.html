@@ -1,0 +1,1052 @@
+<title>Casa Di Mauro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600&display=swap">
+<style>
+/* Concepto: portada "¿Qué tienes en mente hoy?" con 8 cuadrados iguales; vistas cortas por hash; verde bosque, crema y dorado de la marca. Escritorio y celular. */
+:root{
+  --bg:#f6f0e1; --surface:#fffaf0; --ink:#12291f; --muted:#5a665d; --green:#0f2a1f; --green2:#1d4331; --gold:#b98f2f; --goldl:#d9b65a; --line:#d8ccae;
+  --serif:'Playfair Display',Georgia,'Times New Roman',serif; --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif; --script:'Dancing Script','Segoe Script',cursive;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;padding-block:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));margin:0}
+.wrap{max-width:1040px;margin:0 auto}
+h1,h2,h3{font-family:var(--serif);font-weight:700;line-height:1.15;margin:0;text-wrap:balance}
+h2{font-size:clamp(26px,5vw,38px)}
+h3{font-size:20px}
+p{margin:0}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--goldl);outline-offset:2px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand img{width:44px;height:44px;border-radius:50%}
+.brand b{font-family:var(--serif);font-size:18px;letter-spacing:.02em}
+.brand small{display:block;font-size:11px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.tr{display:flex;gap:8px;align-items:center}
+.back{background:none;border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:500}
+.wa{background:var(--green);color:#f6f0e1;text-decoration:none;border-radius:999px;padding:9px 14px;font-weight:600;font-size:14px;white-space:nowrap}
+[hidden]{display:none!important}
+.hero{position:relative;margin-top:16px;border-radius:14px;overflow:hidden;background:var(--green)}
+.hero img{display:block;width:100%;height:clamp(240px,46vw,460px);object-fit:cover}
+.hero .cap{position:absolute;left:0;right:0;bottom:0;padding:16px 18px;background:rgba(15,42,31,.84);color:#f6f0e1}
+.hero .k{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--goldl)}
+.hero .s{font-family:var(--script);font-size:28px;line-height:1.1;margin-top:2px}
+.count{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;align-items:center}
+.count div.u{background:#f6f0e1;color:var(--green);border-radius:8px;padding:6px 10px;text-align:center;min-width:56px}
+.count b{display:block;font-family:var(--serif);font-size:22px;line-height:1}
+.count span{font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.count a{background:var(--gold);color:#fff;text-decoration:none;border-radius:999px;padding:8px 14px;font-weight:600;font-size:14px}
+.ask{text-align:center;margin:30px 0 18px}
+.ask h1{font-size:clamp(28px,6vw,44px)}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(min-width:760px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}}
+.tile{display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--green);color:#f6f0e1;border:1px solid var(--gold);border-radius:14px;padding:16px;text-decoration:none;cursor:pointer;min-height:150px}
+.tile:hover{background:var(--green2)}
+.tile .i{width:36px;height:36px;color:var(--goldl);flex:none}
+.tile .lg{width:36px;height:36px;border-radius:9px;background:#000;object-fit:contain;flex:none}
+.tile b{font-family:var(--serif);font-size:19px;line-height:1.15;margin-top:auto}
+.tile span{font-size:13px;color:#d9ceb2}
+@media(min-width:760px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
+.tabs{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.tab{background:none;border:1px solid var(--green);color:var(--green);border-radius:999px;padding:9px 18px;font-weight:600;cursor:pointer}
+.tab.on{background:var(--green);color:#f6f0e1}
+.pt{display:none}.pt.on{display:block}
+.tile.ph{background-image:linear-gradient(rgba(15,42,31,.74),rgba(15,42,31,.74)),var(--img);background-size:cover;background-position:center}
+.tile.ph:hover{background-image:linear-gradient(rgba(29,67,49,.6),rgba(29,67,49,.6)),var(--img)}
+.tile{min-height:170px!important}
+.tile b{font-size:21px!important}
+.tile.ph,.tile{justify-content:flex-start!important;height:190px;min-height:190px!important}
+.tile b{margin-top:0!important;min-height:2.4em;display:block}
+.tile span{display:block}
+.tile.at{background-color:#000!important;background-image:none!important}
+.tile{align-items:center!important;text-align:center!important}
+.tile b{font-size:21px!important;min-height:0!important;line-height:1.2;display:flex;align-items:center;justify-content:center;gap:8px;height:28px;margin:0!important}
+.tile{justify-content:space-between!important}
+.tile span{font-size:13px!important;line-height:1.35;margin-top:auto}
+.tile b img{width:26px;height:26px;border-radius:6px;background:#000;object-fit:contain}
+.tile.at:hover{background-color:#0b1a12!important}
+.loc{margin:26px 0 8px;text-align:center;color:var(--muted);font-size:15px}
+.loc a{color:var(--green);font-weight:600}
+.view{display:none;padding:22px 0 90px}
+.view.on{display:block}
+.lead{color:var(--muted);margin-top:8px;max-width:62ch}
+.sec{margin-top:26px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.field input,.field select,.field textarea{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0;width:100%}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.rooms{display:grid;gap:14px;margin-top:16px}
+.room{display:grid;grid-template-columns:minmax(0,1fr);overflow:hidden;padding:0}
+@media(min-width:700px){.room{grid-template-columns:minmax(0,300px) minmax(0,1fr)}}
+.room img{width:100%;height:100%;min-height:170px;object-fit:cover;display:block}
+.room .b{padding:16px;display:flex;flex-direction:column;gap:8px;justify-content:center}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags span{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted);background:#fff}
+.price{font-family:var(--serif);font-size:28px;color:var(--green)}
+.price small{font-family:var(--sans);font-size:13px;color:var(--muted)}
+.btn{background:var(--green);color:#f6f0e1;border:0;border-radius:999px;padding:12px 18px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+.btn.gold{background:var(--gold);color:#fff}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--green)}
+.note{font-size:13px;color:var(--muted)}
+.warn{background:#fbe9d3;border:1px solid #e3b985;color:#5b3510;border-radius:10px;padding:10px 12px;font-size:14px}
+.good{background:#e1f0e3;border:1px solid #9cc7a4;color:#1f4a2c;border-radius:10px;padding:10px 12px;font-size:14px}
+.checks{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.checks label{display:flex;gap:10px;align-items:flex-start;font-size:15px;cursor:pointer}
+.checks input{margin-top:4px;width:18px;height:18px;flex:none}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.scroll{overflow-x:auto}
+.pk{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.pk .card{display:flex;flex-direction:column;gap:10px}
+#v-pizzeria .pk .card{align-items:center}
+.pk .card .btn{margin-top:auto;align-self:flex-start}
+.badge{display:inline-block;background:var(--gold);color:#fff;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;letter-spacing:.04em;align-self:flex-start}
+ul.inc{margin:0;padding-left:18px;font-size:14px;color:var(--ink)}
+ul.inc li{margin:2px 0}
+.panel{background:var(--green);color:#f6f0e1;border-radius:14px;padding:22px}
+.panel h3,.panel h2{color:#f6f0e1}
+.panel p{color:#d9ceb2}
+.two{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.two img{width:100%;height:230px;object-fit:cover;border-radius:12px;display:block}
+.fig{position:relative}
+.fig .tag{position:absolute;left:8px;bottom:8px;background:rgba(15,42,31,.85);color:#f6f0e1;font-size:12px;border-radius:6px;padding:3px 8px}
+.exps{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:12px}
+.exp{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;text-align:left;padding:0}
+.exp img{width:100%;height:120px;object-fit:cover;object-position:top;display:block}
+.exp div{padding:10px 12px}
+.exp b{font-family:var(--serif);font-size:16px;display:block}
+.exp span{color:var(--gold);font-weight:600}
+details.pol{margin-top:26px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+details.pol summary{cursor:pointer;font-weight:600}
+details.pol2{margin:10px 0;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--surface);text-align:left}
+details.pol2 summary{cursor:pointer;font-weight:600;font-size:14px}
+.bk{margin-top:34px;padding-top:16px;border-top:1px solid var(--line)}
+.wrap{padding-bottom:110px}
+footer a{font-weight:600;color:var(--goldl);text-decoration:none}
+footer a.dev{font-weight:400;color:#d9ceb2}
+footer a.dev b{color:#f6f0e1}
+.dev{display:block;text-decoration:none;color:#d9ceb2;font-size:13px;line-height:1.25}
+.dev img{border-radius:8px;background:#000}
+.dev b{color:#f6f0e1;font-size:14px}
+.chat-b{padding:5px 14px 5px 5px!important;gap:10px!important;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.28)!important}
+.chat-b img{width:40px!important;height:40px!important}
+.chat-b .dot{position:absolute;left:36px;top:34px;width:11px;height:11px;border-radius:50%;background:#43d17a;border:2px solid var(--green);animation:pul 2s infinite}
+@keyframes pul{0%{box-shadow:0 0 0 0 rgba(67,209,122,.6)}70%{box-shadow:0 0 0 8px rgba(67,209,122,0)}100%{box-shadow:0 0 0 0 rgba(67,209,122,0)}}
+@media(prefers-reduced-motion:reduce){.chat-b .dot{animation:none}}
+@media(max-width:560px){.chat-b small{display:none}.chat-b span.t{max-width:120px}}
+.proto{background:#fff3c4;color:#4d3d00;font-size:13px;text-align:center;padding:6px 12px;border-bottom:1px solid #e6cf75}
+.fw{margin-top:28px}.fw svg{display:block;width:100%;height:46px}
+footer{background:#0f2a1f;border-radius:0 0 14px 14px;padding:6px 20px 28px;color:#d9ceb2;font-size:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;text-align:left}
+footer a:nth-child(even){text-align:right}
+@media(max-width:560px){footer{font-size:12.5px;gap:10px 8px}}
+.chat-b{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;background:var(--green);color:#f6f0e1;border:1px solid var(--gold);border-radius:999px;padding:6px 18px 6px 6px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.3);cursor:pointer;z-index:20}
+.chat-b img{width:44px;height:44px;border-radius:50%;background:#000}
+.chat-b small{display:block;font-weight:400;font-size:11px;color:#d9ceb2;line-height:1.1}
+.chat{position:fixed;right:max(16px,env(safe-area-inset-right,0px));left:max(16px,env(safe-area-inset-left,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));max-width:380px;margin-left:auto;background:var(--surface);border:1px solid var(--green);border-radius:16px;overflow:hidden;z-index:21;box-shadow:0 8px 28px rgba(0,0,0,.25)}
+.chat .h{background:var(--green);color:#f6f0e1;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-weight:600;gap:10px}
+.chat .h img{width:34px;height:34px;border-radius:50%}
+.chat .m{padding:12px 14px;display:flex;flex-direction:column;gap:8px;max-height:260px;overflow:auto;font-size:14px}
+.chat .m div{padding:8px 11px;border-radius:12px;max-width:90%}
+.chat .bot{background:#ece3cc;align-self:flex-start}
+.chat .me{background:var(--green);color:#f6f0e1;align-self:flex-end}
+.chat .q{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 12px}
+.chat .q button{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-size:13px;cursor:pointer}
+.modal{position:fixed;inset:0;background:rgba(10,24,17,.7);display:flex;align-items:center;justify-content:center;padding:16px;z-index:40}
+.modal .box{background:#fff;color:#1c2b3a;border-radius:14px;max-width:460px;width:100%;padding:20px;display:flex;flex-direction:column;gap:12px;max-height:92vh;overflow:auto}
+.modal .box img.big{width:100%;border-radius:10px}
+.flowbar{background:#1d6fe0;color:#fff;border-radius:8px;padding:8px 12px;font-weight:600}
+.sum td:last-child,.sum th:last-child{text-align:right}
+.sum tr.t td{font-weight:700;border-bottom:0}
+footer{display:grid!important;grid-template-columns:1fr 1fr;gap:14px 12px;align-items:center;padding:8px 20px 24px!important;text-align:left!important}
+footer a{text-decoration:none}
+footer .ic{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--goldl);color:var(--goldl);display:inline-flex;align-items:center;justify-content:center;transition:background .15s,color .15s}
+footer .ic:hover{background:var(--goldl);color:var(--green)}
+footer .ic svg{width:24px;height:24px}
+footer .r1{display:flex;gap:10px;align-items:center}
+footer .r1.end{justify-content:flex-end}
+footer .pin{display:flex;align-items:center;gap:10px;background:var(--goldl);color:var(--green)!important;border-radius:12px;padding:9px 14px;font-weight:600;line-height:1.2;min-height:46px}
+footer .pin svg{width:22px;height:22px;flex:none}
+footer .pin small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;opacity:.8}
+footer .pin:hover{background:#f6f0e1}
+footer .cred{display:flex;align-items:center;justify-content:flex-end;gap:10px;color:#d9ceb2!important;font-size:12px;line-height:1.25;text-align:right;border:1px solid rgba(217,182,90,.45);border-radius:12px;padding:6px 10px 6px 12px;min-height:46px;font-weight:400}
+footer .cred b{display:block;color:#f6f0e1;font-size:14px;letter-spacing:.02em}
+footer .cred img{width:32px;height:32px;border-radius:8px;background:#000;object-fit:contain;flex:none}
+footer .cred:hover{border-color:var(--goldl)}
+@media(max-width:560px){footer .pin{padding:8px 10px;font-size:13px}footer .cred{font-size:11px;padding:6px 8px}footer .cred b{font-size:13px}}
+footer{display:grid!important;grid-template-columns:1fr 1fr;gap:18px 16px;align-items:center;padding:14px 20px 26px!important;text-align:left!important}
+footer .it{text-align:left!important;display:flex;align-items:center;gap:12px;color:#f6f0e1!important;text-decoration:none;min-width:0;font-weight:400;border:0;background:none;padding:0;min-height:0}
+footer .it{--c:var(--goldl)}
+footer .it.wa2{--c:#25D366}footer .it.ig{--c:#E1306C}footer .it.mp{--c:#EA4335}
+footer .it .ci{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--c);color:var(--c);display:flex;align-items:center;justify-content:center;flex:none;transition:background .15s,color .15s;overflow:hidden;background:none}
+footer .it .ci svg{width:23px;height:23px}
+footer .it .ci img{width:100%;height:100%;object-fit:cover;background:#000}
+footer .it.wa2 .ci,footer .it.ig .ci,footer .it.mp .ci{background:var(--c);color:#fff;border-color:transparent}
+footer .it.ig .ci{background:linear-gradient(45deg,#feda75 0%,#fa7e1e 25%,#d62976 55%,#962fbf 80%,#4f5bd5 100%)}
+footer .it:hover .ci,footer .it:focus-visible .ci{filter:brightness(1.12);transform:scale(1.06)}
+footer .it:hover .ci img{opacity:.9}
+footer .it .ci{transition:transform .15s,filter .15s}
+footer .it span{display:block;line-height:1.25;font-size:15px;font-weight:600;min-width:0;overflow-wrap:anywhere}
+footer .it small{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#d9ceb2;font-weight:500;margin-bottom:1px}
+@media(max-width:560px){footer{gap:16px 10px;padding:12px 14px 24px!important}footer .it{gap:8px}footer .it .ci{width:38px;height:38px}footer .it .ci svg{width:19px;height:19px}footer .it span{font-size:12.5px}footer .it small{font-size:9.5px;letter-spacing:.06em}}
+.top{position:sticky;justify-content:center!important;padding:10px 0 4px!important}
+.top .tr{position:absolute;left:0;top:14px}
+.brand{display:grid!important;grid-template-columns:1fr auto 1fr;align-items:center;column-gap:14px;row-gap:0}
+.brand img{width:83px!important;height:83px!important;grid-column:2;grid-row:1}
+.brand .bw{font-family:var(--serif);font-size:24px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);font-weight:600;line-height:1}
+.brand .bw.l{grid-column:1;justify-self:end;margin-right:-.18em}
+.brand .bw.r{grid-column:3;justify-self:start}
+.brand .arc{grid-column:1/-1;grid-row:2;justify-self:center;margin-top:8px;font-family:var(--sans);font-weight:600;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#8a6a1c;line-height:1}
+@media(max-width:560px){.top .tr{position:absolute!important;left:0!important;top:auto!important;bottom:2px}.back{font-size:0!important;width:36px;height:36px;padding:0!important;display:inline-flex;align-items:center;justify-content:center}.back::before{content:'←';font-size:18px;line-height:1}.brand{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;width:100%}.brand .bw.l{margin-right:-.12em}.brand .bw{font-size:17px;letter-spacing:.12em}.brand img{width:70px!important;height:70px!important}.brand{column-gap:10px}.back{padding:6px 10px;font-size:13px}}
+.tab{background:var(--green)!important;color:#f6f0e1!important;border-color:var(--green)!important;transition:transform .15s,box-shadow .15s}
+.tab:hover{transform:scale(1.07)}
+.tab.on{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--gold)}
+@media(prefers-reduced-motion:reduce){.tab{transition:none}.tab:hover{transform:none}}
+.tags{display:grid!important;grid-template-columns:1fr 1fr;gap:8px;max-width:440px}
+.tags span{display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px!important;line-height:1.2;min-height:40px;padding:6px 10px!important;border-radius:12px!important}
+.room{border-top:4px solid var(--gold)}
+.car{position:relative;min-height:220px;background:#000}
+.car .trk{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.car .trk::-webkit-scrollbar{display:none}
+.car .trk img{flex:none;width:100%;height:100%;min-height:220px;object-fit:cover;scroll-snap-align:center}
+.car .cb2{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;border:0;background:rgba(15,42,31,.78);color:#f6f0e1;font-size:22px;line-height:1;cursor:pointer;transition:transform .15s,background .15s}
+.car .cb2:hover{background:var(--gold);transform:translateY(-50%) scale(1.1)}
+.car .pv{left:10px}.car .nx{right:10px}
+.car .dts{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center;gap:6px}
+.car .dts i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.55);transition:all .2s}
+.car .dts i.on{background:var(--goldl);width:22px;border-radius:99px}
+.room .b h3{color:var(--green);font-size:22px}
+.tags span{background:#e3eee4;border-color:#9dbba3;color:#17402b}
+.room .price{font-family:var(--serif);font-size:30px;color:var(--green);line-height:1.1}
+.room .price small{font-family:var(--sans);font-size:14px;color:var(--gold);font-weight:600}
+.room .btn{background:var(--gold)!important;color:#fff!important;border-color:var(--gold)!important}
+.room .btn:hover{filter:brightness(1.08);transform:scale(1.04)}
+.car{min-height:260px!important;height:auto;overflow:hidden}
+.car .trk{position:absolute!important;inset:0;height:auto!important}
+.car .trk img{height:100%!important;min-height:0!important;max-height:none}
+.tabs{justify-content:center}
+
+.sug{border:1px solid #d9cfae;border-radius:14px;padding:14px;margin-bottom:14px;background:#fffdf6;text-align:center}
+.sug .st{font-family:var(--serif);font-size:18px;color:#17402b;margin-bottom:4px}
+.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-top:10px}
+.chip{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px;border:1.5px solid #9dbba3;background:#e3eee4;color:#17402b;border-radius:12px;cursor:pointer;font:inherit}
+.chip:hover{background:#d3e6d6}.chip b{font-size:17px}
+.stp{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:12px;padding:8px;border:1.5px solid #9dbba3;border-radius:12px;background:#f3f8f3}
+.stp.on{border-color:#b8923a;background:#fff6dc}
+.stp span{font-size:14px;color:#17402b}
+.stp button{width:38px;height:38px;border-radius:50%;border:0;background:#17402b;color:#f6f0e1;font-size:22px;line-height:1;cursor:pointer}
+.stp .q{min-width:24px;text-align:center;font-size:20px}
+.sbar{position:sticky;bottom:10px;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border:2px solid #b8923a;border-radius:14px;background:#fffdf6;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.sbar .sr{display:flex;align-items:center;gap:12px;margin-left:auto}
+.sbar .tt{font-family:var(--serif);font-size:24px;color:#17402b}
+.sbar:empty{display:none}
+.sbar .rj{color:#a33}
+.sbar .btn[disabled]{opacity:.45;cursor:not-allowed}
+
+.pk[hidden]{display:none!important}
+.et[data-k="ny"]{background-position:center 30%}
+.et[data-k="ny"] b{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.etiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(min-width:760px){.etiles{gap:16px}}
+.et{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;aspect-ratio:4/3;padding:14px;border:1px solid var(--gold);border-radius:14px;overflow:hidden;cursor:pointer;color:#f6f0e1;text-align:center;font:inherit;background:#0f2a1f var(--img) center/cover no-repeat;transition:transform .15s}
+.et::before{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(15,42,31,.92) 0%,rgba(15,42,31,.35) 55%,rgba(15,42,31,.05) 100%)}
+.et:hover{transform:scale(1.02)}
+.et[disabled]{cursor:default;pointer-events:none}
+.et[disabled]:hover{transform:none}
+.et .soon-t{background:#b8923a;color:#fff;border-radius:999px;padding:3px 14px;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.et b,.et span{position:relative}
+.et b{font-family:var(--serif);font-size:clamp(17px,3.4vw,24px);line-height:1.15}
+.et span{font-size:clamp(12px,2.4vw,14px);color:#e9dfc2}
+
+.rpanel[hidden],.apanel[hidden],.epanel[hidden],.etiles[hidden]{display:none!important}
+.eh{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.eh img{width:84px;height:84px;object-fit:cover;border-radius:12px;border:1px solid var(--gold);flex:none}
+.eh h3{margin:4px 0 0}
+
+.meals h3{margin:0 0 4px;font-family:var(--serif)}
+.meals .mrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:8px}
+.mstp{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px;border:1.5px solid #9dbba3;border-radius:12px;background:#f3f8f3}
+.mstp span{font-size:14px;color:#17402b}
+.mstp button{width:36px;height:36px;border-radius:50%;border:0;background:#17402b;color:#f6f0e1;font-size:22px;line-height:1;cursor:pointer}
+.mstp .q{min-width:22px;text-align:center;font-size:19px}
+.meals[hidden],.meals .cust[hidden]{display:none!important}
+body.hasbar .chat-b{bottom:calc(var(--barh,90px) + 26px + env(safe-area-inset-bottom,0px))!important}
+
+.sbar .sg{display:flex;flex-direction:column;gap:2px;font-size:13px;color:#17402b}
+.sbar .sg select{padding:8px;border:1.5px solid #b8923a;border-radius:10px;background:#fff;font:inherit;min-width:140px}
+
+.mealbox{border:1px solid #d9cfae;border-radius:12px;padding:12px;margin:12px 0;background:#fffdf6}
+.mealbox h4{margin:0 0 4px;font-family:var(--serif);font-size:18px}
+.mrow2{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
+.mrow2 b{font-size:15px}
+.mrow2 .mstp{flex:none;padding:6px 8px}
+
+.itin{display:flex;flex-direction:column;gap:12px;margin:8px 0}
+.itin .day{position:relative;padding:2px 0 2px 18px;border-left:3px solid #b8923a;display:flex;flex-direction:column;gap:3px}
+.itin .day b{font-family:var(--serif);font-size:18px;color:#17402b}
+.itin .day span{font-size:15px;color:#2b2b2b}
+.itin .day::before{content:"";position:absolute;left:-8px;top:6px;width:13px;height:13px;border-radius:50%;background:#b8923a;border:2px solid #fff}
+
+.cal{max-width:360px}
+.cal .ch{display:flex;align-items:center;justify-content:space-between;margin:6px 0}
+.cal .ch b{font-family:var(--serif);font-size:18px;text-transform:capitalize;color:#17402b}
+.cal .cn{width:36px;height:36px;border-radius:50%;border:0;background:#17402b;color:#f6f0e1;font-size:20px;cursor:pointer}
+.cal .cn:disabled{opacity:.3;cursor:not-allowed}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cg .dw{text-align:center;font-style:normal;font-size:12px;color:var(--muted)}
+.cg button{aspect-ratio:1;border:1px solid #9dbba3;border-radius:10px;background:#f3f8f3;font:inherit;color:#17402b;cursor:pointer;padding:0}
+.cg button:disabled{background:#efefef;color:#aaa;text-decoration:line-through;border-color:#e3e3e3;cursor:not-allowed}
+.cg button.rg{background:#dfeee1}
+.cg button.on{background:#17402b;color:#f6f0e1;border-color:#b8923a}
+
+.acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:104px;gap:8px;margin-top:10px}
+.acts .act{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;border:1.5px solid #9dbba3;border-radius:12px;background:#f3f8f3;padding:6px;font-size:14px;line-height:1.2;color:#17402b}
+.acts .act b{font-weight:600}
+.acts .act small{background:none;color:#6b6b6b;padding:0;font-size:11px;text-transform:none;letter-spacing:0}
+.acts .act .mstp{gap:8px}
+.soon .acts{opacity:.55}
+.soon-b{display:inline-block;vertical-align:middle;margin-left:8px;background:#b8923a;color:#fff;border-radius:999px;padding:2px 10px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-family:var(--sans,inherit)}
+.acts .act small.pr{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#8a6d1f}
+.acts .act .mstp button{width:30px;height:30px}
+
+.capst{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.capst div{background:#e3eee4;border:1px solid #9dbba3;border-radius:12px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.capst b{font-family:'Playfair Display',Georgia,serif;font-size:28px;color:#17402b;line-height:1}
+.capst span{font-size:12px;color:#17402b;line-height:1.25}
+.caph{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:12px}
+.capc{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.capc img{width:100%;height:130px;object-fit:cover;display:block}
+.capl{display:flex;gap:10px;align-items:center;background:#17402b;color:#fff;padding:10px 12px;min-height:76px}
+.capl i{font-style:normal;flex:none;width:34px;height:34px;border-radius:50%;background:#e8c35a;color:#17402b;font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center}
+.capl span{font-weight:600;font-size:14px;line-height:1.2}
+.capl small{display:block;font-weight:400;font-size:12px;opacity:.9;margin-top:2px}
+.capp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.capp div{border:1px solid #9dbba3;background:#f3f8f3;border-radius:12px;padding:10px 12px}
+.capp h4{margin:0 0 4px;font-size:15px;color:#17402b}
+.capp p{margin:0;font-size:14px;line-height:1.35}
+@media(max-width:560px){.capp{grid-template-columns:1fr}.capst b{font-size:24px}}
+
+.exps{grid-template-columns:1fr!important;gap:8px!important}
+.exp{display:flex!important;align-items:center;gap:12px;padding:8px!important}
+.exp img{flex:none;width:76px!important;height:76px!important;border-radius:10px;object-position:center!important}
+.exp div{flex:1;padding:0!important}
+.exp em{font-style:normal;font-size:26px;color:var(--gold);padding:0 6px}
+.capf{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;background:#f3f8f3}
+.capf span{font-size:13px;font-weight:600;color:#17402b;background:#e3eee4;border:1px solid #9dbba3;border-radius:999px;padding:3px 10px}
+.capst{grid-template-columns:1fr 1fr!important}
+
+.gq{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px}
+.gq>span{font-weight:600;color:#17402b}
+.gstep{display:flex;align-items:center;gap:12px;border:1.5px solid #b8923a;border-radius:12px;padding:4px 8px;background:#fffdf6}
+.gstep button{width:36px;height:36px;border-radius:50%;border:0;background:#17402b;color:#fff;font-size:20px;cursor:pointer}
+.gstep b{min-width:28px;text-align:center;font-size:20px;color:#17402b}
+.gplan{display:grid;gap:8px;margin-top:10px}
+.gpl{display:flex;align-items:center;gap:10px;border:1.5px solid #9dbba3;border-radius:12px;padding:10px 12px;background:#f3f8f3;cursor:pointer}
+.gpl:has(input:checked){border-color:#b8923a;background:#fffdf6;box-shadow:0 0 0 1px #b8923a}
+.gpl span{flex:1;line-height:1.25}.gpl small{display:block;color:var(--muted);font-size:12px}
+.gpl em{font-style:normal;font-weight:700;color:#17402b}
+.exp{cursor:default!important}
+.exp.sel{border-color:#b8923a;box-shadow:0 0 0 1px #b8923a}
+.exp .exo{flex:1;display:flex;align-items:center;gap:12px;background:none;border:0;padding:0;text-align:left;cursor:pointer;font:inherit;color:inherit;min-width:0}
+.exp .ext{display:block}.exp .ext b{display:block;font-family:var(--serif);font-size:16px}.exp .ext span{color:var(--gold);font-weight:600}
+.exp .exa{flex:none;border:1.5px solid #17402b;background:#17402b;color:#fff;border-radius:999px;padding:8px 14px;font-weight:600;cursor:pointer}
+.exp.sel .exa{background:#fff;color:#17402b}
+
+
+.pop{position:fixed;inset:0;z-index:60;background:rgba(10,24,17,.78);display:flex;align-items:center;justify-content:center;padding:14px;animation:pin .35s ease}
+.pbox{position:relative;background:#fffaf0;border-radius:16px;max-width:460px;width:100%;max-height:94vh;overflow:auto;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.5);border:2px solid #d9b65a}
+.pbox img{display:block;width:100%;height:auto;max-height:68vh;object-fit:contain;background:#12291f;border-radius:14px 14px 0 0}
+.pbox .pa{display:flex;flex-direction:column;gap:8px;padding:12px 14px 14px}
+.pbox .pa .btn{text-align:center;width:100%}
+.pbox .px{position:absolute;top:8px;right:8px;width:36px;height:36px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:24px;line-height:1;cursor:pointer;z-index:2}
+@keyframes pin{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.pop{animation:none}}
+
+.resv{margin-top:16px;background:var(--green);color:#f6f0e1;border-radius:14px;padding:18px;border:2px solid var(--gold)}
+.resv .rk{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--goldl)}
+.resv h2{margin:4px 0 4px;font-family:var(--serif);font-size:28px;line-height:1.1;color:#fff}
+.resv p{margin:0 0 12px;color:#e4dcc4;font-size:15px}
+.resv .rrow{display:grid;grid-template-columns:1fr 1fr 90px auto;gap:10px;align-items:end}
+.resv .field label{color:#d9cfae}
+.resv .field input,.resv .field select{color:#12291f;font:inherit;height:44px}
+.resv .btn{background:var(--gold);color:#fff;border-color:var(--gold);white-space:nowrap;height:44px}
+.resv .rl{display:inline-block;margin-top:12px;color:var(--goldl);text-decoration:none;font-weight:600;font-size:14px}
+@media(max-width:560px){.resv .rrow{grid-template-columns:1fr 1fr}.resv .rrow .field:nth-child(3){grid-column:1/2}.resv .rrow .btn{grid-column:2/3}}
+
+.tiles{grid-template-columns:1fr!important;gap:12px}
+.tile,.tile.ph{height:130px!important;min-height:130px!important;justify-content:center!important;gap:8px}
+.tile b{height:auto!important}
+.tile span{margin-top:0!important}
+@media(min-width:760px){.tile,.tile.ph{height:150px!important;min-height:150px!important}}
+
+.mealc{text-align:center;background:var(--green);color:#f6f0e1;border:2px solid var(--gold);padding:18px;width:100%}
+.mealc .mk{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--goldl)}
+.mealc h3{margin:4px 0;font-family:var(--serif);font-size:26px;color:#fff}
+.mealc .mp{font-family:var(--serif);font-size:24px;color:var(--goldl)}
+.mealc .mp small{font-size:13px;color:#e4dcc4;font-family:inherit}
+.mealc .note{color:#e4dcc4;margin:6px 0 12px}
+.mealc .btn{background:var(--gold);color:#fff;border-color:var(--gold);width:100%}
+
+.tags .tgm{grid-column:1/-1;display:flex;align-items:center;justify-content:center;text-align:center;font:inherit;font-size:13px;font-weight:700;line-height:1.2;min-height:40px;padding:6px 10px;border-radius:12px;background:#e3eee4;border:1px solid #9dbba3;color:#17402b;cursor:pointer;width:100%}
+.tags .tgm:hover{background:#d3e6d6}
+</style>
+
+<div class="proto">Prototipo para revisión: precios y disponibilidad de ejemplo. Nada se cobra ni se envía.</div>
+<div class="wrap">
+<header class="top">
+  <a class="brand" href="#inicio" aria-label="Casa Di Mauro, inicio">
+    <span class="bw l">Casa</span>
+    <img src="img/logo.webp" alt="" width="83" height="83">
+    <span class="bw r">Di Mauro</span>
+    <span class="arc">Hostal · Restaurant</span>
+  </a>
+  <div class="tr"><button class="back" id="back" type="button" aria-label="Volver al inicio" hidden>← Inicio</button></div>
+</header>
+
+<main>
+<section class="view on" id="v-inicio">
+  <div class="resv" id="resv">
+    <div class="rk">Hostal en Licán Ray</div>
+    <h2>Reserva tu alojamiento</h2>
+    <p>Habitaciones con baño privado y desayuno sureño incluido, a pasos del lago.</p>
+    <div class="rrow">
+      <div class="field"><label for="hci">Llegada</label><input id="hci" type="date" min="2026-12-02" max="2027-03-31" value="2026-12-10"></div>
+      <div class="field"><label for="hco">Salida</label><input id="hco" type="date" min="2026-12-03" max="2027-04-01" value="2026-12-11"></div>
+      <div class="field"><label for="hpp">Personas</label><select id="hpp"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
+      <button type="button" class="btn" id="hgo">Ver disponibilidad</button>
+    </div>
+    <a class="rl" href="#escapadas">Ver escapadas de Navidad y Año Nuevo ›</a>
+  </div>
+  <div class="hero">
+    <img src="img/exterior.jpg" alt="Fachada de Casa Di Mauro al atardecer, casona de madera con terraza" width="1448" height="1086">
+    <div class="cap"><div class="k" id="hk"></div><div class="s">Tu escapada al sur</div><div class="count" id="count"></div></div>
+  </div>
+
+  <div class="ask"><h1>¿Qué tienes en mente hoy?</h1></div>
+  <div class="tiles">
+    <a class="tile ph" href="#alojamiento" style="--img:url(img/hab-matrimonial.jpg)"><b>Alojamiento</b><span>Habitaciones y escapadas</span></a>
+    <a class="tile ph" href="#grupos" style="--img:url(img/fondo-fiesta.jpg)"><b>Grupos y delegaciones</b><span>Alternativas para grupos desde 15 personas</span></a>
+    <a class="tile ph" href="#pizzeria" style="--img:url(img/pizza.jpg)"><b>Restaurante</b><span>Pizzas, hamburguesas, waffles y coctelería</span></a>
+    <a class="tile ph at" href="https://atiende.tech" target="_blank" rel="noopener" style="--img:url(img/atiende.png)"><b><img src="img/atiende.png" alt="">Atiende</b><span>Soluciones tecnológicas con IA para el turismo</span></a>
+  </div>
+</section>
+
+<section class="view" id="v-alojamiento">
+  <div class="tabs" role="tablist"><button class="tab on" data-view="alojamiento" data-tab="noches" type="button">Habitaciones</button><button class="tab" data-view="alojamiento" data-tab="esc" type="button">Escapadas</button></div>
+  <div class="pt on" id="pt-alojamiento-noches">
+  <div class="card sec">
+    <div class="row">
+      <div class="field"><label for="ci">Llegada</label><input id="ci" type="date" min="2026-12-02" max="2027-03-31" value="2026-12-10"></div>
+      <div class="field"><label for="co">Salida</label><input id="co" type="date" min="2026-12-03" max="2027-04-01" value="2026-12-11"></div>
+      <div class="field"><label for="pp">Personas</label><select id="pp"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
+    </div>
+    <div id="alert" style="margin-top:10px"></div>
+  </div>
+  <div class="rooms" id="rooms"></div>
+  <details class="pol"><summary>Política de cancelación y devoluciones</summary>
+    <p class="note" style="margin:8px 0">Para reservar se abona el valor de la primera noche de alojamiento; el resto y las comidas se pagan al llegar. Devolución del abono según el aviso:</p>
+    <div class="scroll"><table><tr><th>Aviso antes de llegar</th><th>Se devuelve</th></tr>
+    <tr><td>Más de 72 horas</td><td>100 % del abono</td></tr>
+    <tr><td>Entre 72 y 48 horas</td><td>50 % del abono</td></tr>
+    <tr><td>Entre 48 y 24 horas</td><td>25 % del abono</td></tr>
+    <tr><td>Menos de 24 horas o no se presenta (no show)</td><td>Sin devolución</td></tr>
+    <tr><td>Llega, conoce la habitación y decide no quedarse</td><td>Sin devolución: la habitación quedó reservada para usted</td></tr>
+    <tr><td>Escapadas de Navidad y Año Nuevo</td><td>Sin devolución desde 7 días antes</td></tr></table></div>
+  </details>
+  </div>
+  <div class="pt" id="pt-alojamiento-esc">
+  <div class="epanel sec" id="epanel" hidden>
+    <div class="card sec">
+      <button class="btn ghost" id="eback0" type="button" style="margin-bottom:10px">← Volver a las escapadas</button>
+      <div class="eh"><img id="eimg" alt=""><div><span class="badge" id="ebadge"></span><h3 id="etit"></h3></div></div>
+      <ul class="inc" id="einc"></ul>
+      <input type="hidden" id="epp" value="2">
+      <input type="hidden" id="eci"><input type="hidden" id="eco">
+      <div id="ealert" style="margin-top:10px"></div>
+    </div>
+    <div class="rooms" id="erooms"></div>
+    <div class="bk"><button class="btn ghost" id="eback" type="button">← Volver a las escapadas</button></div>
+  </div>
+  <div class="epanel sec" id="rpanel" hidden>
+    <div class="card sec">
+      <button class="btn ghost" id="rback0" type="button" style="margin-bottom:10px">← Volver a las escapadas</button>
+      <div class="eh"><img src="img/hab-matrimonial.jpg" alt=""><div><h3>Escapada romántica</h3></div></div>
+      <div class="itin">
+        <div class="day"><b>Primera noche</b><span>Aperitivo de bienvenida</span><span>Cena de bienvenida</span><span>1.ª noche de alojamiento</span></div>
+        <div class="day"><b>Segunda noche</b><span>Brunch</span><span>Acceso a Termas Coñaripe (no incluye traslado)</span><span>Colación de la casa</span><span>Cena en la casa y 2.ª noche de alojamiento</span></div>
+        <div class="day"><b>Despedida (check-out)</b><span>Desayuno de despedida</span><span>Almuerzo de despedida</span></div>
+      </div>
+    </div>
+    <div class="card sec" id="rcalc"></div>
+    <div class="sbar" id="rbar"></div>
+    <div class="bk"><button class="btn ghost" id="rback" type="button">← Volver a las escapadas</button></div>
+  </div>
+  <div class="epanel sec" id="apanel" hidden>
+    <div class="card sec">
+      <button class="btn ghost" id="aback0" type="button" style="margin-bottom:10px">← Volver a las escapadas</button>
+      <h3>Escapada aventura</h3>
+      <p class="note">Arma tu propia experiencia: elige tus fechas, tus comidas y tus actividades, y te vamos sumando el total.</p>
+      <input type="hidden" id="app" value="2"><input type="hidden" id="aci"><input type="hidden" id="aco">
+    </div>
+    <div class="card sec"><h3>1. Elige tus fechas de alojamiento</h3><div class="note">Con desayuno sureño. Toca tu día de llegada y luego tu día de salida.</div><div id="asum" class="note" style="font-weight:600;margin-top:6px"></div><div id="acal"></div><div class="note">Los días tachados no están disponibles.</div></div>
+    <div id="aalert"></div>
+    <div class="card sec" id="ahd2" hidden><h3>2. Elige tus habitaciones</h3></div>
+    <div class="rooms" id="arooms"></div>
+    <div class="card sec" id="astep3" hidden><h3>3. Cuéntanos quiénes vienen y suma comidas</h3><div id="astep3body"></div></div>
+    <div class="card sec" id="astep4" hidden><h3>4. Actividades <span class="soon-b">Pronto</span></h3><div class="note">Las estamos coordinando con socios de Licán Ray. Muy pronto podrás sumarlas a tu experiencia.</div><div class="acts" id="alist"></div></div>
+    <div class="sbar" id="abar"></div>
+    <div class="bk"><button class="btn ghost" id="aback" type="button">← Volver a las escapadas</button></div>
+  </div>
+  <div class="etiles sec" id="etiles">
+    <button class="et" data-k="nav" type="button" style="--img:url(img/esc-navidad.webp)"><b>Escapada Navidad</b><span>4 noches · 23 al 27 de dic</span></button>
+    <button class="et" data-k="ny" type="button" style="--img:url(img/esc-anonuevo.webp)"><b>Escapada Año Nuevo</b><span>4 noches · 30 dic al 3 ene</span></button>
+    <button class="et" data-k="rom" type="button" style="--img:url(img/hab-matrimonial.jpg)"><b>Escapada romántica</b></button>
+    <button class="et" data-k="adv" type="button" disabled aria-disabled="true" style="--img:url(img/esc-aventura.webp)"><b>Escapada aventura</b><span class="soon-t">Pronto</span></button>
+  </div>
+  <div class="pk sec" id="pkdet" hidden>
+    <div class="card"><span class="badge">4 noches · 23 al 27 de dic</span><h3>Escapada Navidad</h3>
+      <ul class="inc"><li>4 noches con desayuno sureño</li><li>Sin cena de Nochebuena: la casa celebra en familia</li></ul>
+      <div class="scroll"><table id="t-nav"></table></div><button class="btn" data-pack="nav" type="button">Elegir habitaciones</button></div>
+    <div class="card"><span class="badge">4 noches · 30 dic al 3 ene</span><h3>Escapada Año Nuevo</h3>
+      <ul class="inc"><li>4 noches con desayuno sureño</li><li>Cena de Año Nuevo opcional ($50.000 por persona)</li></ul>
+      <div class="scroll"><table id="t-ny"></table></div><button class="btn gold" data-pack="ny" type="button">Elegir habitaciones</button></div>
+  </div>
+  </div>
+  <div class="bk"><button class="btn ghost" data-home type="button">← Volver al inicio</button></div>
+</section>
+
+
+<section class="view" id="v-grupos">
+  <h2>Grupos y delegaciones</h2>
+  <p class="lead">Contamos con alternativas de alojamiento, alimentación y actividades adecuadas a tu grupo. Para grupos desde 15 personas.</p>
+  <div class="card sec cap"><h3>Capacidad del hostal</h3>
+    <div class="capst"><div><b>10</b><span>habitaciones con baño privado</span></div><div><b>24</b><span>personas, capacidad máxima</span></div></div>
+    <div class="caph">
+      <div class="capc"><img src="img/hab-matrimonial.jpg" alt="Habitación matrimonial" loading="lazy"><div class="capl"><i>5</i><span>Habitaciones matrimoniales<small>Máximo 2 personas · 1 cama de 2 plazas</small></span></div><div class="capf"><span>3 en el primer piso</span><span>2 en el segundo piso</span></div></div>
+      <div class="capc"><img src="img/hab-twin.jpg" alt="Habitación doble twin" loading="lazy"><div class="capl"><i>1</i><span>Habitación doble twin<small>Máximo 2 personas · 2 camas de plaza y media</small></span></div><div class="capf"><span>En el segundo piso</span></div></div>
+      <div class="capc"><img src="img/hab-triple.jpg" alt="Habitación triple" loading="lazy"><div class="capl"><i>4</i><span>Habitaciones triples<small>Máximo 3 personas · 1 cama de 2 plazas + 1 de plaza y media</small></span></div><div class="capf"><span>En el segundo piso</span></div></div>
+    </div>
+    <p class="note" style="margin-top:10px">Por cada 10 personas que pagan, 1 queda liberada (la tripulación).</p></div>
+  <div class="card sec"><h3>1. Tu grupo</h3>
+    <div class="gq"><span>Personas del grupo</span><div class="gstep"><button type="button" id="gpm" aria-label="Menos personas">−</button><b id="gpv">15</b><button type="button" id="gpp" aria-label="Más personas">+</button></div></div>
+    <div id="gfree" class="good" style="margin-top:10px"></div><p class="note">Entre 15 y 24 personas en total. Por cada 10 personas del grupo, 1 va liberada (la tripulación) y ya está descontada del total.</p></div>
+  <div class="card sec"><h3>2. Alojamiento y comidas</h3>
+    <div id="gsm" class="note" style="margin-top:8px"></div><div id="gcal"></div>
+    <div class="gplan" id="gplan"></div>
+    <p class="note">Por pasajero y por noche, en habitación compartida con baño privado. Quedan libres solo las fechas donde caben tus personas sin chocar con reservas individuales. Para las fiestas (23 al 26 de diciembre y 30 de diciembre al 2 de enero), pregúntale a Rayén. Si no eliges fechas, el paquete es solo de experiencias.</p></div>
+  <div class="sec"><h3>3. Suma experiencias</h3><div class="exps" id="exps"></div><p class="note">Eventos de 3 horas, por persona. Toca una para ver el detalle.</p></div>
+  <div class="card sec" style="text-align:center"><h3>Solicita tu cotización personalizada</h3><p class="note">¿Tu grupo necesita algo distinto? Pregúntale a Rayén, nuestra asistente. Si no logra resolverlo, te contactamos por WhatsApp.</p><button class="btn" id="qgo" type="button" style="margin-top:10px">Pregúntale a Rayén</button></div>
+  <div class="sbar" id="gbar"></div>
+  <div class="bk"><button class="btn ghost" data-home type="button">← Volver al inicio</button></div>
+</section>
+
+
+<section class="view" id="v-pizzeria" style="text-align:center">
+  <div class="card sec" style="max-width:640px;margin-left:auto;margin-right:auto">
+    <h3 style="font-size:24px;margin-bottom:10px">El sabor artesanal de siempre, ahora en un nuevo hogar.</h3>
+    <p class="note" style="font-size:16px;line-height:1.6;color:#2b2b2b;text-align:left;margin:0 0 12px">En Di Mauro Pizzas, nos apasiona reunir a las familias y amigos alrededor de la buena mesa. Somos reconocidos por nuestras pizzas de masa artesanal, hamburguesas, waffles y coctelería, una propuesta gastronómica que nos ha valido excelentes calificaciones y el cariño de quienes nos visitan en Licán Ray.</p>
+    <p class="note" style="font-size:16px;line-height:1.6;color:#2b2b2b;text-align:left;margin:0 0 12px">Hoy damos un gran paso y nos renovamos para recibirte próximamente en Casa Di Mauro, un espacio pensado para seguir disfrutando de nuestro clásico ambiente familiar con una experiencia aún más acogedora.</p>
+    <p class="note" style="font-size:16px;line-height:1.6;color:#2b2b2b;text-align:left;margin:0 0 12px">¡Seguimos contigo! Mientras preparamos nuestra gran apertura, continuamos atendiendo en modo delivery para llevar tus favoritos directo a tu mesa.</p>
+    <a class="btn" href="https://www.dimauropizzas.cl" target="_blank" rel="noopener" style="margin-top:12px">Revisa nuestra carta</a>
+  </div>
+  <div class="hero sec" style="max-width:640px;margin-left:auto;margin-right:auto;text-align:left">
+    <img src="img/pizza-mojito.jpg" alt="Pizza y mojito" loading="lazy">
+    <div class="cap"><div class="k">Apertura al público · miércoles 2 de diciembre, 19:00 h</div><div class="s">Pronto abrimos nuestras puertas</div><div class="count" id="pcount"></div></div>
+  </div>
+  <div class="bk"><button class="btn ghost" data-home type="button">← Volver al inicio</button></div>
+</section>
+
+
+</main>
+
+<div class="fw"><svg viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 60V28C150 -4 300 -4 450 24S750 60 900 30s200-34 300-6V60z" fill="#0f2a1f"/></svg>
+<footer>
+  <a class="it wa2" href="https://wa.me/56956154280" target="_blank" rel="noopener"><i class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z"/><path d="M9 8.2c.2-.4.5-.4.7-.4h.4c.2 0 .3.1.4.3l.6 1.4c.1.2 0 .3-.1.5l-.4.5c-.1.1-.1.3 0 .4.4.7 1 1.3 1.8 1.7.2.1.3.1.4 0l.5-.6c.1-.2.3-.2.5-.1l1.4.7c.2.1.3.2.2.4-.1.7-.6 1.2-1.3 1.3-.7.2-1.9-.1-3.2-1-1.4-1-2.2-2.4-2.4-3.3-.1-.6.1-1.1.5-1.6z" fill="currentColor" stroke="none"/></svg></i><span><small>WhatsApp</small>+56 9 5615 4280</span></a>
+  <a class="it ig" href="https://www.instagram.com/casadimaurolicanray" target="_blank" rel="noopener"><i class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg></i><span><small>Instagram</small>@casadimaurolicanray</span></a>
+  <a class="it mp" href="https://www.google.com/maps/search/?api=1&query=Camino+a+Co%C3%B1aripe+100+Lic%C3%A1n+Ray" target="_blank" rel="noopener"><i class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.2A7 7 0 0 1 19 9.8C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/></svg></i><span><small>Cómo llegar</small>Camino a Coñaripe #100</span></a>
+  <a class="it" href="https://atiende.tech" target="_blank" rel="noopener"><i class="ci"><img src="img/atiende.png" alt=""></i><span><small>Página web desarrollada por</small>atiende.tech</span></a>
+</footer></div>
+</div>
+
+<button class="chat-b" id="cb" type="button" aria-label="Pregúntale a Rayén, asistente de Casa Di Mauro"><img src="img/logo.webp" alt=""><i class="dot" aria-hidden="true"></i><span class="t">Pregúntale a Rayén</span></button>
+<div class="chat" id="chat" hidden><div class="h"><img src="img/logo.webp" alt=""><span style="flex:1">Rayén · asistente</span><a href="https://wa.me/56956154280" target="_blank" rel="noopener" aria-label="Seguir por WhatsApp" title="Seguir por WhatsApp" style="color:#f6f0e1;display:flex"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.200zm4.500-6.100c-.2-.1-1.500-.7-1.700-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.200-.3.200-.5.100-1.500-.7-2.400-1.300-3.400-2.900-.2-.3.200-.3.700-1.100.1-.2 0-.4 0-.5l-.8-1.800c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.100-.7.300-.7.700-1 1.500-1 2.400s.6 2.200 1.400 3.100c1.500 1.800 3.400 2.800 5.300 3.300.8.200 1.500.2 2 .1.600-.1 1.500-.6 1.700-1.200.2-.6.200-1.100.1-1.200-.1-.1-.2-.2-.5-.3z"/></svg></a><button id="cx" type="button" style="background:none;border:0;color:#f6f0e1;font-size:22px;cursor:pointer" aria-label="Cerrar">×</button></div><div class="m" id="cm"><div class="bot">Hola, soy Rayén, la asistente de Casa Di Mauro. Elige una pregunta. En el sitio final respondo preguntas libres, en varios idiomas.</div></div><div class="q" id="cq"></div></div>
+
+<div class="pop" id="pop" hidden role="dialog" aria-modal="true" aria-label="Reinauguración: pizza libre y bebida ilimitada"><div class="pbox"><button type="button" class="px" id="pox" aria-label="Cerrar">×</button><img src="img/reinauguracion-pizzalibre.jpg" alt="¡Reinauguramos! Pizza libre más bebida ilimitada, sábado 5 de diciembre de 19:00 a 00:00 h. Preventa hasta el 30 de noviembre: adultos $13.000, niños hasta 10 años $10.000. Desde el 1 de diciembre: $15.000 y $12.000."><div class="pa"><a class="btn" id="pob" href="#" target="_blank" rel="noopener">Compra tu preventa por WhatsApp</a></div></div></div>
+<div class="modal" id="modal" hidden><div class="box" id="mbox"></div></div>
+
+<script>
+function $(i){return document.getElementById(i)}
+var WA='56956154280';
+var wa=function(t){return 'https://wa.me/'+WA+'?text='+encodeURIComponent(t)};
+var FEC=function(s){var p=s.split('-');return new Date(Date.UTC(+p[0],+p[1]-1,+p[2]))};
+var ISO=function(d){return d.toISOString().slice(0,10)};
+var CLP=function(n){return '$'+Math.round(n).toLocaleString('es-CL')};
+var ROOMS=[
+ {id:'m',nombre:'Habitación matrimonial',cap:2,cama:'Cama de 2 plazas',baja:48000,alta:72000,ny:95000,img:'img/hab-matrimonial.jpg',imgs:['img/hab-matrimonial.jpg','img/habitacion.jpg','img/desayuno.jpg']},
+ {id:'t',nombre:'Habitación doble twin',cap:2,cama:'2 camas de plaza y media',baja:48000,alta:72000,ny:95000,img:'img/hab-twin.jpg',imgs:['img/hab-twin.jpg','img/habitacion.jpg','img/desayuno.jpg']},
+ {id:'r',nombre:'Habitación triple',cap:3,cama:'1 cama de 2 plazas + 1 cama de plaza y media',baja:70000,alta:105000,ny:140000,img:'img/hab-triple.jpg',imgs:['img/hab-triple.jpg','img/habitacion.jpg','img/desayuno.jpg']}
+];
+var PACKS={nav:{nombre:'Escapada Navidad',desde:'2026-12-23',hasta:'2026-12-27',cena:false},ny:{nombre:'Escapada Año Nuevo',desde:'2026-12-30',hasta:'2027-01-03',cena:true}};
+var CENA=50000, MP=15000, PC=28000;
+var LIB={nav:{m:false,t:true,r:true},ny:{m:false,t:false,r:false}};
+var BLOQ={'2026-12-12':['t'],'2026-12-13':['t']};
+function tipoNoche(iso){
+  if(iso>='2026-12-02'&&iso<='2026-12-22')return 'baja';
+  if(iso>='2026-12-23'&&iso<='2026-12-26')return 'nav';
+  if(iso>='2026-12-27'&&iso<='2026-12-29')return 'alta';
+  if(iso>='2026-12-30'&&iso<='2027-01-02')return 'ny';
+  if(iso>='2027-01-03'&&iso<='2027-03-31')return 'alta';
+  return 'fuera';
+}
+function noches(ci,co){var a=[],d=FEC(ci),e=FEC(co);while(d<e){a.push(ISO(d));d=new Date(d.getTime()+864e5)}return a}
+function precioNoche(r,t){return (t==='baja')?r.baja:(t==='ny'?r.ny:r.alta)}
+function RM(id){return ROOMS.filter(function(x){return x.id===id})[0]}
+var MAXH=4;
+function fmt(iso){var m=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];var p=iso.split('-');return +p[2]+' '+m[+p[1]-1]}
+var S={pack:null,sel:{m:0,t:0,r:0}};
+
+var ALM=15000,CEN15=15000;
+function mealCost(m,pp,nn){if(m.plan==='mp')return MP*pp*nn;if(m.plan==='pc')return PC*pp*nn;if(m.plan==='custom')return (m.alm*ALM+m.cen*CEN15)*pp;return 0}
+function syncBar(){var b=[].filter.call(document.querySelectorAll('.sbar'),function(x){return x.innerHTML&&x.offsetParent!==null})[0];document.body.classList.toggle('hasbar',!!b);if(b)document.body.style.setProperty('--barh',b.offsetHeight+'px')}
+function corto(r){return r.nombre.replace('Habitación ','')}
+function descr(sel){return ROOMS.filter(function(r){return sel[r.id]>0}).map(function(r){return sel[r.id]+' × '+corto(r)}).join(' + ')}
+function estadia(r,tipos){var t=0;tipos.forEach(function(x){t+=precioNoche(r,x)});return t}
+var MAINC={ci:'ci',co:'co',pp:'pp',alert:'alert',rooms:'rooms'},ESCC={ci:'eci',co:'eco',pp:'epp',alert:'ealert',rooms:'erooms',esc:true},ADVC={ci:'aci',co:'aco',pp:'app',alert:'aalert',rooms:'arooms',esc:true,adv:true};
+var ACT=[{id:'a0',n:'Ascenso al volcán',p:null},{id:'a1',n:'Stand-up paddle',p:null},{id:'a2',n:'Navegación',p:null},{id:'a3',n:'Buceo',p:null},{id:'a4',n:'Parapente',p:null},{id:'a5',n:'Trekking',p:null}];
+function renderRooms(C){
+  C=(C&&C.rooms)?C:MAINC;S.ctx=C;
+  var ci=$(C.ci).value,co=$(C.co).value,pp=+$(C.pp).value,al=$(C.alert),box=$(C.rooms);
+  al.innerHTML='';box.innerHTML='';
+  if(!ci||!co||co<=ci){al.innerHTML='<div class="warn">Elige una llegada y una salida posterior.</div>';return}
+  var ns=noches(ci,co),tipos=ns.map(tipoNoche);
+  if(tipos.indexOf('fuera')>-1){al.innerHTML='<div class="warn">Esas fechas aún no tienen tarifa. Abrimos el 2 de diciembre de 2026 y la tarifa llega al 31 de marzo de 2027.</div>';return}
+  var hasNav=tipos.indexOf('nav')>-1,hasNy=tipos.indexOf('ny')>-1,pk=null,rest=[];
+  if(hasNav)rest.push('nav');if(hasNy)rest.push('ny');
+  if(rest.length===1&&ci===PACKS[rest[0]].desde&&co===PACKS[rest[0]].hasta)pk=rest[0];
+  S.pack=pk;S.sel={m:0,t:0,r:0};S.meal={plan:'des',alm:0,cen:0};S.guests=0;S.gT=false;
+  if(pk&&!C.esc)al.innerHTML='<div class="good"><b>'+PACKS[pk].nombre+'</b>: 4 noches con desayuno'+(PACKS[pk].cena?'. Puedes sumar la cena de Año Nuevo.':'.')+'</div>';
+  var av={},algunaLibre=false;
+  ROOMS.forEach(function(r){
+    var libLib=pk||rest.every(function(k){return (LIB[k]||{})[r.id]});
+    av[r.id]={ok:!!(libLib&&ns.every(function(d){return (BLOQ[d]||[]).indexOf(r.id)<0})),lib:!!libLib};
+    if(av[r.id].ok)algunaLibre=true;
+  });
+  var ids=ROOMS.filter(function(r){return av[r.id].ok}).map(function(r){return r.id});
+  ROOMS.forEach(function(r){
+    var libre=av[r.id].ok,libLib=av[r.id].lib;
+    var tot=estadia(r,tipos);
+    var d=document.createElement('article');d.className='card room';
+    var uniq=tipos.filter(function(t,i){return tipos.indexOf(t)===i}).length===1,pn=tot/ns.length;
+    d.innerHTML='<div class="car"><div class="trk">'+r.imgs.map(function(u,i){return '<img src="'+u+'" alt="'+r.nombre+' · foto '+(i+1)+'" loading="lazy">'}).join('')+'</div><button class="cb2 pv" type="button" aria-label="Foto anterior">‹</button><button class="cb2 nx" type="button" aria-label="Foto siguiente">›</button><div class="dts">'+r.imgs.map(function(u,i){return '<i'+(i?'':' class="on"')+'></i>'}).join('')+'</div></div><div class="b"><h3>'+r.nombre+'</h3><div class="tags"><span>'+r.cama+'</span><span>Hasta '+r.cap+' personas</span><span>Baño privado</span><span>Desayuno incluido</span><button type="button" class="tgm">Opciones de alimentación desde '+CLP(MP)+'</button></div>'+
+     (libre?(C.esc&&!C.adv?'<div class="price">'+CLP(tot)+' <small>por las '+ns.length+' noches</small></div><div class="note">Paquete por habitación, con desayuno</div>':'<div class="price">'+CLP(pn)+' <small>'+(uniq?'por noche':'promedio por noche')+'</small></div>'+(ns.length>1?'<div class="note">Tu estadía: '+ns.length+' noches · '+CLP(tot)+' por habitación</div>':''))+'<div class="stp" data-r="'+r.id+'"><span>Cantidad</span><button type="button" class="mn" aria-label="Quitar una">−</button><b class="q">0</b><button type="button" class="mas" aria-label="Agregar una">+</button></div>':'<div class="warn">'+(libLib?'No disponible para esas fechas.':'Esas noches están reservadas para la '+rest.map(function(k){return PACKS[k].nombre}).join(' y la ')+'. Se liberan solo si esta habitación no se vende en la escapada.')+'</div>')+'</div>';
+    box.appendChild(d);
+  });
+  if(rest.length&&!pk&&!algunaLibre){var P0=PACKS[rest[0]];al.innerHTML+='<div class="warn" style="margin-top:8px">Esas fechas son de la '+P0.nombre+' (4 noches, del '+fmt(P0.desde)+' al '+fmt(P0.hasta)+'). <button class="btn ghost" style="padding:6px 12px;margin-left:6px" id="setp" type="button">Ver esa escapada</button></div>';$('setp').onclick=function(){$('ci').value=P0.desde;$('co').value=P0.hasta;renderRooms()}}
+  box.querySelectorAll('.car').forEach(function(c){var t=c.querySelector('.trk'),ds=c.querySelectorAll('.dts i');function go(n){t.scrollTo({left:n*t.clientWidth,behavior:'smooth'})}c.querySelector('.pv').onclick=function(){var i=Math.round(t.scrollLeft/t.clientWidth);go(i<=0?ds.length-1:i-1)};c.querySelector('.nx').onclick=function(){var i=Math.round(t.scrollLeft/t.clientWidth);go(i>=ds.length-1?0:i+1)};t.addEventListener('scroll',function(){var i=Math.round(t.scrollLeft/t.clientWidth);ds.forEach(function(d,k){d.classList.toggle('on',k===i)})},{passive:true})});
+  function upd(){
+    var cap=0,n=0,tot=0;
+    ROOMS.forEach(function(r){var k=S.sel[r.id]||0;cap+=k*r.cap;n+=k;if(av[r.id].ok)tot+=k*estadia(r,tipos);var e=box.querySelector('.stp[data-r="'+r.id+'"]');if(e){e.querySelector('.q').textContent=k;e.classList.toggle('on',k>0)}});
+    S.cap=cap;S.nr=n;
+    if(C.adv){advRefresh();return}
+    var bar=box.querySelector('.sbar');if(!bar)return;
+    if(!n){bar.innerHTML='';syncBar();return}
+    var ok=C.esc?true:cap>=pp;
+    bar.innerHTML='<div class="sl"><b>Tu combinación:</b> '+descr(S.sel)+'<br><span class="note">Capacidad '+cap+' personas · '+ns.length+' noche'+(ns.length>1?'s':'')+(ok?'':' · <span class="rj">faltan '+(pp-cap)+' lugares</span>')+'</span></div><div class="sr"><div class="tt">'+CLP(tot)+'</div><button class="btn" id="rsv" type="button"'+(ok?'':' disabled')+'>Reservar</button></div>';
+    var rb=bar.querySelector('.btn');if(rb&&ok)rb.onclick=function(){S.ctx=C;S.pack=pk;openCheckout()};
+    syncBar();
+  }
+  if(algunaLibre){
+    box.querySelectorAll('.tgm').forEach(function(m){m.onclick=function(){
+      S.ctx=C;S.pack=pk;
+      if(S.nr){openCheckout();return}
+      var mb=$('mbox');openModal();
+      mb.innerHTML='<h3 style="font-family:var(--serif)">Opciones de alimentación</h3><div class="note">Desayuno sureño incluido en todas las habitaciones.</div><table class="sum"><tr><td>Media pensión (almuerzo o cena)</td><td>+'+CLP(MP)+' por persona y noche</td></tr><tr><td>Pensión completa (almuerzo y cena)</td><td>+'+CLP(PC)+' por persona y noche</td></tr>'+(pk==='ny'?'<tr><td>Cena de Año Nuevo</td><td>+'+CLP(CENA)+' por persona</td></tr>':'')+'</table><div class="warn" style="margin-top:10px">Primero elige tu habitación: ahí indicas cuántas personas son y sumas las comidas a tu total.</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px"><button class="btn" id="mgo" type="button">Elegir habitación</button><button class="btn ghost" id="mcl" type="button">Cerrar</button></div>';
+      $('mcl').onclick=closeModal;
+      $('mgo').onclick=function(){closeModal();var f=box.querySelector('.room');if(f)f.scrollIntoView({behavior:'smooth',block:'start'})}}});
+    var bar=document.createElement('div');bar.className='sbar';box.appendChild(bar);
+    box.querySelectorAll('.stp').forEach(function(e){var id=e.getAttribute('data-r');
+      e.querySelector('.mas').onclick=function(){var n=0;for(var k in S.sel)n+=S.sel[k];if(n<MAXH){S.sel[id]++;upd()}};
+      e.querySelector('.mn').onclick=function(){if(S.sel[id]>0){S.sel[id]--;upd()}}});
+    upd();
+  }
+}
+function calc(sel,ns,tipos,opt){
+  var items=[],tot=0,nn=ns.length;
+  ROOMS.forEach(function(r){var k=sel[r.id]||0;if(!k)return;var a=estadia(r,tipos)*k;items.push([(k>1?k+' × ':'')+r.nombre+' ('+nn+' noche'+(nn>1?'s':'')+', desayuno incluido)',a]);tot+=a});
+  var habs=tot;
+  if(opt.mp){var v=MP*opt.mp*nn;items.push(['Media pensión ('+opt.mp+' pers. × '+nn+' noche'+(nn>1?'s':'')+')',v]);tot+=v}
+  if(opt.pc){var v2=PC*opt.pc*nn;items.push(['Pensión completa ('+opt.pc+' pers. × '+nn+' noche'+(nn>1?'s':'')+')',v2]);tot+=v2}
+  if(opt.nye){var v4=CENA*opt.nye;items.push(['Cena de Año Nuevo ('+opt.nye+' pers.)',v4]);tot+=v4}
+  var pend=0;ACT.forEach(function(a){var k=opt[a.id]||0;if(!k)return;if(a.p){var va=a.p*k;items.push([a.n+' ('+k+' pers.)',va]);tot+=va}else{items.push([a.n+' ('+k+' pers.)','Valor por confirmar']);pend++}});
+  var prim=0;ROOMS.forEach(function(r){prim+=(sel[r.id]||0)*precioNoche(r,tipos[0])});
+  return {items:items,pend:pend,total:tot,habs:habs,anticipo:Math.min(prim,habs)};
+}
+function openModal(){$('modal').hidden=false}
+function closeModal(){$('modal').hidden=true}
+$('modal').addEventListener('click',function(e){if(e.target===$('modal'))closeModal()});
+function POLDEV(pack){return '<details class="pol2"><summary>Política de devolución</summary><div class="note">'+(pack?'Escapadas de fiestas: sin devolución desde 7 días antes de la llegada. ':'')+'Devolución del abono por aviso: 100 % con más de 72 h; 50 % entre 72 y 48 h; 25 % entre 48 y 24 h; sin devolución con menos de 24 h. Sin devolución si no se presenta o decide irse después de llegar.</div></details>'}
+function openCheckout(){
+  var K=S.ctx||MAINC,sel=JSON.parse(JSON.stringify(S.sel)),ci=$(K.ci).value,co=$(K.co).value,pp0=K.esc?0:+$(K.pp).value;
+  var ns=noches(ci,co),tipos=ns.map(tipoNoche),pack=S.pack,mb=$('mbox'),nr=0,cap=0;
+  ROOMS.forEach(function(r){var k=sel[r.id]||0;nr+=k;cap+=k*r.cap});
+  var opt={g:(pp0>=nr&&pp0<=cap)?pp0:(K.esc?0:Math.min(Math.max(pp0,nr),cap)),mp:0,pc:0,nye:0,a0:0,a1:0,a2:0,a3:0,a4:0,a5:0,f:{}};
+  openModal();
+  function stp(k,t,sub,mx){return '<div class="mrow2"><div><b>'+t+'</b><div class="note">'+sub+'</div></div><div class="mstp" data-k="'+k+'" data-max="'+mx+'"><button type="button" class="mn" aria-label="Quitar">−</button><b class="q">'+opt[k]+'</b><button type="button" class="mas" aria-label="Agregar">+</button></div></div>'}
+  function keep(){['gn','gm','gw'].forEach(function(i){if($(i))opt.f[i]=$(i).value})}
+  function draw(){
+    var c=calc(sel,ns,tipos,opt),g=opt.g,nn=ns.length;
+    var gh='<div class="field"><label for="gq">Cuéntanos, ¿cuántas personas son?</label><select id="gq"><option value="">Elige cuántas…</option>';for(var i=nr;i<=cap;i++)gh+='<option value="'+i+'"'+(i===g?' selected':'')+'>'+i+' persona'+(i>1?'s':'')+'</option>';gh+='</select></div>';
+    var meals='';
+    if(g){
+      meals='<div class="mealbox"><h4>Almuerzos y cenas de la casa</h4><div class="note">'+(pack==='nav'?'La cena del 24 de diciembre no se sirve. ':'')+'¿Quieres algo distinto? <a href="'+wa('Hola, quiero consultar por almuerzos y cenas distintos para mi reserva.')+'" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>.</div>'+
+        stp('mp','Media pensión','Almuerzo o cena · +$15.000 por persona y noche',g-opt.pc)+
+        stp('pc','Pensión completa','Almuerzo y cena · +$28.000 por persona y noche',g-opt.mp)+
+        (pack==='ny'?stp('nye','Cena de Año Nuevo','+$50.000 por persona',g):'')+'</div>'+(K.adv?'<div class="mealbox"><h4>Actividades</h4><div class="note">Elige para cuántas personas. Cada actividad se cobra por persona. Los valores se están coordinando: te confirmamos el total de las actividades antes de cobrar el saldo.</div>'+ACT.map(function(a){return stp(a.id,a.n,a.p?'$'+a.p.toLocaleString('es-CL')+' por persona':'Valor por confirmar',g)}).join('')+'</div>':'');
+    }
+    mb.innerHTML='<h3 style="font-family:var(--serif)">'+descr(sel)+'</h3><div class="note">'+fmt(ci)+' al '+fmt(co)+'</div>'+gh+meals+
+    (g?'<div class="scroll"><table class="sum">'+c.items.map(function(i){return '<tr><td>'+i[0]+'</td><td>'+(typeof i[1]==='number'?CLP(i[1]):i[1])+'</td></tr>'}).join('')+'<tr class="t"><td>Total</td><td>'+CLP(c.total)+'</td></tr></table></div>'+
+    '<div class="good"><div>Valor total: <b>'+CLP(c.total)+'</b></div><div>Abono hoy (primera noche de alojamiento): <b>'+CLP(c.anticipo)+'</b></div><div>Saldo al llegar'+(c.total>c.habs||c.pend?(K.adv?', con las comidas y actividades':', con las comidas'):'')+': <b>'+CLP(c.total-c.anticipo)+'</b></div></div>'+
+    '<div class="field"><label for="gn">Nombre</label><input id="gn"></div><div class="field"><label for="gm">Correo</label><input id="gm" type="email"></div><div class="field"><label for="gw">WhatsApp</label><input id="gw"></div>':'<div class="warn">Cuéntanos cuántas personas son para mostrarte el total.</div>')+
+    POLDEV(pack)+
+    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="go" type="button"'+(g?'':' disabled')+'>Pagar abono con Flow</button><button class="btn ghost" id="cl" type="button">Cerrar</button></div>';
+    ['gn','gm','gw'].forEach(function(i){if($(i)&&opt.f[i])$(i).value=opt.f[i]});
+    $('gq').onchange=function(){keep();opt.g=+$('gq').value||0;if(opt.mp+opt.pc>opt.g){opt.mp=0;opt.pc=0}if(opt.nye>opt.g)opt.nye=0;ACT.forEach(function(a){if(opt[a.id]>opt.g)opt[a.id]=0});draw()};
+    mb.querySelectorAll('.mstp').forEach(function(e){var k=e.getAttribute('data-k'),mx=+e.getAttribute('data-max');
+      e.querySelector('.mas').onclick=function(){if(opt[k]<mx){keep();opt[k]++;draw()}};
+      e.querySelector('.mn').onclick=function(){if(opt[k]>0){keep();opt[k]--;draw()}}});
+    $('cl').onclick=closeModal;
+    $('go').onclick=function(){
+      if(!g)return;
+      var cod='CDM-'+Math.random().toString(36).slice(2,7).toUpperCase();
+      mb.innerHTML='<div class="flowbar">Flow · modo de prueba</div><p><b>Pago de '+CLP(c.anticipo)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Flow y la reserva se confirma solo cuando Flow lo avisa.</p><button class="btn" id="ok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="cl2" type="button">Volver</button>';
+      $('cl2').onclick=draw;
+      $('ok').onclick=function(){mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva confirmada (demo)</h3><div class="good">Código '+cod+'. Valor total '+CLP(c.total)+'. Abono '+CLP(c.anticipo)+' (primera noche de alojamiento). Saldo al llegar: '+CLP(c.total-c.anticipo)+'.</div><p class="note">Recibirías la confirmación por correo y WhatsApp. No se cobró ni se envió nada.</p><button class="btn" id="cl3" type="button">Cerrar</button>';$('cl3').onclick=closeModal};
+    };
+  }
+  draw();
+}
+
+var R={f:'',n:1,m:'2026-12'},ROMFIN=205000,ROMSEM=195000,DIAS=['dom','lun','mar','mié','jue','vie','sáb'];
+function romInfo(iso){
+  if(!iso)return null;
+  var d=FEC(iso),j=ISO(new Date(d.getTime()+864e5)),k=ISO(new Date(d.getTime()+2*864e5)),t1=tipoNoche(iso),t2=tipoNoche(j),w=d.getUTCDay();
+  if(!((t1==='baja'||t1==='alta')&&(t2==='baja'||t2==='alta')))return {err:'Esas fechas son de las escapadas de Navidad y Año Nuevo, o aún no tienen tarifa. Abrimos el 2 de diciembre de 2026 y la tarifa llega al 31 de marzo de 2027.'};
+  if((BLOQ[iso]||[]).indexOf('m')>-1||(BLOQ[j]||[]).indexOf('m')>-1)return {err:'No hay habitación matrimonial disponible esas noches.'};
+  return {i:iso,j:j,k:k,t:[t1,t2],fin:(w===5||w===6),dia:DIAS[w]};
+}
+function romCalc(){
+  var F=romInfo(R.f);if(!F||F.err)return null;
+  var m=ROOMS[0],n=R.n,al=F.t.filter(function(x){return x==='alta'}).length,pr=(F.fin?ROMFIN:ROMSEM)+al*24000;
+  return {F:F,n:n,pr:pr,alta:al>0,total:pr*n,abono:precioNoche(m,F.t[0])*n};
+}
+function openRom(){
+  $('etiles').hidden=true;$('epanel').hidden=true;$('rpanel').hidden=false;R.f='';R.n=1;R.m='2026-12';rdraw();window.scrollTo(0,0)}
+function romCal(){
+  var MN=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],ym=R.m,y=+ym.slice(0,4),mo=+ym.slice(5)-1;
+  var off=(new Date(Date.UTC(y,mo,1)).getUTCDay()+6)%7,nd=new Date(Date.UTC(y,mo+1,0)).getUTCDate();
+  var h='<div class="cal"><div class="ch"><button type="button" class="cn" id="cprev" aria-label="Mes anterior"'+(ym<='2026-12'?' disabled':'')+'>‹</button><b>'+MN[mo]+' '+y+'</b><button type="button" class="cn" id="cnext" aria-label="Mes siguiente"'+(ym>='2027-03'?' disabled':'')+'>›</button></div><div class="cg">';
+  ['L','M','M','J','V','S','D'].forEach(function(d){h+='<i class="dw">'+d+'</i>'});
+  for(var i=0;i<off;i++)h+='<i></i>';
+  for(var d=1;d<=nd;d++){var iso=y+'-'+('0'+(mo+1)).slice(-2)+'-'+('0'+d).slice(-2),I=romInfo(iso),ok=I&&!I.err;
+    h+=ok?'<button type="button" data-d="'+iso+'" class="'+(iso===R.f?'on':'')+'">'+d+'</button>':'<button type="button" disabled>'+d+'</button>'}
+  return h+'</div></div>'}
+function rdraw(){
+  var I=romInfo(R.f),c=romCalc(),pl=function(n){return n>1?'es':''};
+  var h='<h3>Reserva tu escapada</h3><div class="field"><label>Elige tu día de llegada</label>'+romCal()+'<div class="note">Los días tachados no están disponibles. Temporada baja: viernes y sábado $180.000 por habitación; de domingo a jueves $170.000. En temporada alta (desde el 3 de enero) suma $18.000 por habitación.</div></div>'+
+  '<div class="stp" id="rst" style="justify-content:space-between;padding:10px 14px"><span>Habitaciones matrimoniales<br><small>2 personas por habitación</small></span><div style="display:flex;align-items:center;gap:14px"><button type="button" class="mn" aria-label="Quitar una">−</button><b class="q">'+R.n+'</b><button type="button" class="mas" aria-label="Agregar una">+</button></div></div>';
+  if(I&&I.err)h+='<div class="warn" style="margin-top:10px">'+I.err+'</div>';
+  if(c){h+='<div class="scroll"><table class="sum"><tr><td>Escapada romántica: llegada '+c.F.dia+' '+fmt(c.F.i)+', salida '+fmt(c.F.k)+' ('+(c.F.fin?'fin de semana':'entre semana')+(c.alta?', temporada alta':'')+') · '+c.n+' habitaci'+(c.n>1?'ones':'ón')+' × '+CLP(c.pr)+'</td><td>'+CLP(c.total)+'</td></tr><tr class="t"><td>Total</td><td>'+CLP(c.total)+'</td></tr></table></div><div class="note">Por habitación: 2 noches con desayuno, aperitivo y cena de bienvenida, brunch, 2 entradas a Termas Coñaripe con colación, cena en la casa y almuerzo de despedida.</div>'}
+  $('rcalc').innerHTML=h;
+  $('rcalc').querySelectorAll('.cg button[data-d]').forEach(function(x){x.onclick=function(){R.f=x.getAttribute('data-d');rdraw()}});
+  $('cprev').onclick=function(){R.m=R.m==='2027-03'?'2027-02':R.m==='2027-02'?'2027-01':'2026-12';rdraw()};
+  $('cnext').onclick=function(){R.m=R.m==='2026-12'?'2027-01':R.m==='2027-01'?'2027-02':'2027-03';rdraw()};
+  $('rst').querySelector('.mas').onclick=function(){if(R.n<MAXH){R.n++;rdraw()}};
+  $('rst').querySelector('.mn').onclick=function(){if(R.n>1){R.n--;rdraw()}};
+  var b=$('rbar');
+  if(c){b.innerHTML='<div class="sl"><b>'+c.n+' habitaci'+(c.n>1?'ones':'ón')+' matrimonial'+pl(c.n)+'</b><br><span class="note">Llegada '+c.F.dia+' '+fmt(c.F.i)+' · salida '+fmt(c.F.k)+'</span></div><div class="sr"><div class="tt">'+CLP(c.total)+'</div><button class="btn" id="rrs" type="button">Reservar</button></div>';$('rrs').onclick=romCk}else b.innerHTML='';
+  syncBar()}
+function romCk(){
+  var c=romCalc(),mb=$('mbox');if(!c)return;openModal();
+  function draw(){
+    mb.innerHTML='<h3 style="font-family:var(--serif)">Escapada romántica · '+c.n+' habitaci'+(c.n>1?'ones':'ón')+'</h3><div class="note">Llegada '+c.F.dia+' '+fmt(c.F.i)+', salida '+fmt(c.F.k)+' · '+2*c.n+' personas</div>'+
+    '<div class="scroll"><table class="sum"><tr><td>'+c.n+' × Escapada romántica ('+CLP(c.pr)+' por habitación)</td><td>'+CLP(c.total)+'</td></tr><tr class="t"><td>Total</td><td>'+CLP(c.total)+'</td></tr></table></div>'+
+    '<div class="good"><div>Valor total: <b>'+CLP(c.total)+'</b></div><div>Abono hoy (primera noche de alojamiento): <b>'+CLP(c.abono)+'</b></div><div>Saldo al llegar: <b>'+CLP(c.total-c.abono)+'</b></div></div>'+
+    '<div class="field"><label for="rn">Nombre</label><input id="rn"></div><div class="field"><label for="rm">Correo</label><input id="rm" type="email"></div><div class="field"><label for="rw">WhatsApp</label><input id="rw"></div>'+
+    POLDEV(0)+
+    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="rgo" type="button">Pagar abono con Flow</button><button class="btn ghost" id="rcl" type="button">Cerrar</button></div>';
+    $('rcl').onclick=closeModal;
+    $('rgo').onclick=function(){
+      var cod='CDM-'+Math.random().toString(36).slice(2,7).toUpperCase();
+      mb.innerHTML='<div class="flowbar">Flow · modo de prueba</div><p><b>Pago de '+CLP(c.abono)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Flow y la reserva se confirma solo cuando Flow lo avisa.</p><button class="btn" id="rok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="rcl2" type="button">Volver</button>';
+      $('rcl2').onclick=draw;
+      $('rok').onclick=function(){mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva confirmada (demo)</h3><div class="good">Código '+cod+'. Valor total '+CLP(c.total)+'. Abono '+CLP(c.abono)+' (primera noche de alojamiento). Saldo al llegar: '+CLP(c.total-c.abono)+'.</div><p class="note">Recibirías la confirmación por correo y WhatsApp. No se cobró ni se envió nada.</p><button class="btn" id="rcl3" type="button">Cerrar</button>';$('rcl3').onclick=closeModal};
+    };
+  }
+  draw()}
+
+var A={f:'',o:'',m:'2026-12'},MESES=['2026-12','2027-01','2027-02','2027-03'];
+function rangeOk(f,o){var ns=noches(f,o);if(!ns.length)return false;
+  if(!ns.every(function(d){var t=tipoNoche(d);return t==='baja'||t==='alta'}))return false;
+  return ROOMS.some(function(r){return ns.every(function(d){return (BLOQ[d]||[]).indexOf(r.id)<0})})}
+function advOk(iso){return rangeOk(iso,ISO(new Date(FEC(iso).getTime()+864e5)))}
+function advEn(iso){if(A.f&&iso>A.f)return rangeOk(A.f,iso);return advOk(iso)}
+function advCls(iso){if(iso===A.f||iso===A.o)return 'on';if(A.f&&A.o&&iso>A.f&&iso<A.o)return 'rg';return ''}
+function calH(ym,sel,okf,pid){
+  var MN=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],y=+ym.slice(0,4),mo=+ym.slice(5)-1;
+  var off=(new Date(Date.UTC(y,mo,1)).getUTCDay()+6)%7,nd=new Date(Date.UTC(y,mo+1,0)).getUTCDate();
+  var h='<div class="cal"><div class="ch"><button type="button" class="cn" id="'+pid+'prev" aria-label="Mes anterior"'+(ym<=MESES[0]?' disabled':'')+'>‹</button><b>'+MN[mo]+' '+y+'</b><button type="button" class="cn" id="'+pid+'next" aria-label="Mes siguiente"'+(ym>=MESES[3]?' disabled':'')+'>›</button></div><div class="cg">';
+  ['L','M','M','J','V','S','D'].forEach(function(d){h+='<i class="dw">'+d+'</i>'});
+  for(var i=0;i<off;i++)h+='<i></i>';
+  for(var d=1;d<=nd;d++){var iso=y+'-'+('0'+(mo+1)).slice(-2)+'-'+('0'+d).slice(-2);
+    h+=okf(iso)?'<button type="button" data-d="'+iso+'" class="'+(typeof sel==='function'?sel(iso):(iso===sel?'on':''))+'">'+d+'</button>':'<button type="button" disabled>'+d+'</button>'}
+  return h+'</div></div>'}
+var ACT_ON=false;
+var AB={g:0,mp:0,pc:0,a:{}};
+function abGet(k){return k.charAt(0)==='a'?(AB.a[k]||0):AB[k]}
+function abSet(k,v){if(k.charAt(0)==='a')AB.a[k]=v;else AB[k]=v}
+function abStp(k,t,sub,mx){return '<div class="mrow2"><div><b>'+t+'</b>'+(sub?'<div class="note">'+sub+'</div>':'')+'</div><div class="mstp" data-k="'+k+'" data-max="'+mx+'"><button type="button" class="mn" aria-label="Quitar">−</button><b class="q">'+abGet(k)+'</b><button type="button" class="mas" aria-label="Agregar">+</button></div></div>'}
+function abBind(root){root.querySelectorAll('.mstp').forEach(function(e){var k=e.getAttribute('data-k'),mx=+e.getAttribute('data-max');
+  e.querySelector('.mas').onclick=function(){if(abGet(k)<mx){abSet(k,abGet(k)+1);advRefresh()}};
+  e.querySelector('.mn').onclick=function(){if(abGet(k)>0){abSet(k,abGet(k)-1);advRefresh()}}})}
+function abOpt(){var o={mp:AB.mp,pc:AB.pc,nye:0};ACT.forEach(function(a){o[a.id]=AB.a[a.id]||0});return o}
+function advRefresh(){
+  var n=S.nr||0,cap=S.cap||0,show=n>0&&A.o;
+  $('astep3').hidden=!show;$('astep4').hidden=!show;
+  if(!show){AB={g:0,mp:0,pc:0,a:{}};$('abar').innerHTML='';syncBar();return}
+  if(AB.g<n||AB.g>cap){AB={g:0,mp:0,pc:0,a:{}}}
+  var g=AB.g,ns=noches(A.f,A.o),nn=ns.length,tipos=ns.map(tipoNoche);
+  var h='<div class="field"><label for="agq">Cuéntanos, ¿cuántas personas son?</label><select id="agq"><option value="">Elige cuántas…</option>';
+  for(var i=n;i<=cap;i++)h+='<option value="'+i+'"'+(i===g?' selected':'')+'>'+i+' persona'+(i>1?'s':'')+'</option>';
+  h+='</select></div>';
+  if(g)h+='<div class="mealbox"><h4>Almuerzos y cenas de la casa</h4><div class="note">¿Quieres algo distinto? <a href="'+wa('Hola, quiero consultar por almuerzos y cenas distintos para mi reserva.')+'" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>.</div>'+abStp('mp','Media pensión','Almuerzo o cena · +$15.000 por persona y noche',g-AB.pc)+abStp('pc','Pensión completa','Almuerzo y cena · +$28.000 por persona y noche',g-AB.mp)+'</div>';
+  $('astep3body').innerHTML=h;
+  $('agq').onchange=function(){var v=+$('agq').value||0;AB={g:v,mp:0,pc:0,a:{}};advRefresh()};
+  $('alist').innerHTML=ACT.map(function(a){return '<div class="act"><b>'+a.n+'</b>'+(g&&ACT_ON?'<div class="mstp" data-k="'+a.id+'" data-max="'+g+'"><button type="button" class="mn" aria-label="Quitar">−</button><b class="q">'+(AB.a[a.id]||0)+'</b><button type="button" class="mas" aria-label="Agregar">+</button></div>':'<small class="pr">Pronto</small>')+'</div>'}).join('');$('astep4').classList.toggle('soon',!ACT_ON);
+  abBind($('astep3body'));abBind($('alist'));
+  var c=calc(S.sel,ns,tipos,abOpt());
+  $('abar').innerHTML='<div class="sl"><b>'+descr(S.sel)+'</b><br><span class="note">'+nn+' noche'+(nn>1?'s':'')+' · '+fmt(A.f)+' al '+fmt(A.o)+(c.total>c.habs?' · incluye comidas':'')+(c.pend?' · actividades por confirmar':'')+'</span></div><div class="sr"><div class="tt">'+CLP(c.total)+'</div><button class="btn" id="ars" type="button"'+(g?'':' disabled')+'>Reservar</button></div>';
+  if(g)$('ars').onclick=advCk;
+  syncBar()}
+function advCk(){
+  var ns=noches(A.f,A.o),tipos=ns.map(tipoNoche),c=calc(S.sel,ns,tipos,abOpt()),mb=$('mbox');openModal();
+  function draw(){
+    mb.innerHTML='<h3 style="font-family:var(--serif)">Escapada aventura</h3><div class="note">'+descr(S.sel)+' · '+fmt(A.f)+' al '+fmt(A.o)+' · '+AB.g+' persona'+(AB.g>1?'s':'')+'</div>'+
+    '<div class="scroll"><table class="sum">'+c.items.map(function(i){return '<tr><td>'+i[0]+'</td><td>'+(typeof i[1]==='number'?CLP(i[1]):i[1])+'</td></tr>'}).join('')+'<tr class="t"><td>Total</td><td>'+CLP(c.total)+'</td></tr></table></div>'+
+    (c.pend?'<div class="note">Las actividades se suman al total cuando confirmemos sus valores, antes de cobrar el saldo.</div>':'')+
+    '<div class="good"><div>Valor total: <b>'+CLP(c.total)+'</b>'+(c.pend?' más actividades':'')+'</div><div>Abono hoy (primera noche de alojamiento): <b>'+CLP(c.anticipo)+'</b></div><div>Saldo al llegar: <b>'+CLP(c.total-c.anticipo)+'</b></div></div>'+
+    '<div class="field"><label for="vn">Nombre</label><input id="vn"></div><div class="field"><label for="vm">Correo</label><input id="vm" type="email"></div><div class="field"><label for="vw">WhatsApp</label><input id="vw"></div>'+
+    POLDEV(0)+
+    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="vgo" type="button">Pagar abono con Flow</button><button class="btn ghost" id="vcl" type="button">Cerrar</button></div>';
+    $('vcl').onclick=closeModal;
+    $('vgo').onclick=function(){
+      var cod='CDM-'+Math.random().toString(36).slice(2,7).toUpperCase();
+      mb.innerHTML='<div class="flowbar">Flow · modo de prueba</div><p><b>Pago de '+CLP(c.anticipo)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Flow y la reserva se confirma solo cuando Flow lo avisa.</p><button class="btn" id="vok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="vcl2" type="button">Volver</button>';
+      $('vcl2').onclick=draw;
+      $('vok').onclick=function(){mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva confirmada (demo)</h3><div class="good">Código '+cod+'. Valor total '+CLP(c.total)+(c.pend?' más actividades':'')+'. Abono '+CLP(c.anticipo)+' (primera noche de alojamiento). Saldo al llegar: '+CLP(c.total-c.anticipo)+'.</div><p class="note">Recibirías la confirmación por correo y WhatsApp. No se cobró ni se envió nada.</p><button class="btn" id="vcl3" type="button">Cerrar</button>';$('vcl3').onclick=closeModal};
+    };
+  }
+  draw()}
+function openAdv(){
+  $('etiles').hidden=true;$('epanel').hidden=true;$('rpanel').hidden=true;$('apanel').hidden=false;A.f='';A.o='';A.m=MESES[0];
+  S.nr=0;S.cap=0;$('arooms').innerHTML='';$('aalert').innerHTML='';$('ahd2').hidden=true;acalDraw();advRefresh();window.scrollTo(0,0)}
+function acalDraw(){
+  $('acal').innerHTML=calH(A.m,advCls,advEn,'a');
+  var nn=A.o?noches(A.f,A.o).length:0;
+  $('asum').innerHTML=!A.f?'Toca tu día de llegada.':(!A.o?'Llegada el <b>'+fmt(A.f)+'</b>. Ahora toca tu día de salida (puedes cambiarla las veces que quieras).':'Llegada <b>'+fmt(A.f)+'</b> · salida <b>'+fmt(A.o)+'</b> · '+nn+' noche'+(nn>1?'s':'')+'. Toca otro día de salida para cambiarla, o elige tus habitaciones más abajo.')+(A.f?' <button type="button" class="btn ghost" id="aclr" style="padding:4px 12px;margin-left:6px">Borrar fechas</button>':'');
+  if($('aclr'))$('aclr').onclick=function(){A.f='';A.o='';S.nr=0;S.cap=0;AB={g:0,mp:0,pc:0,a:{}};$('arooms').innerHTML='';$('aalert').innerHTML='';$('ahd2').hidden=true;acalDraw();advRefresh()};
+  $('acal').querySelectorAll('.cg button[data-d]').forEach(function(x){x.onclick=function(){
+    var d=x.getAttribute('data-d');S.nr=0;S.cap=0;AB={g:0,mp:0,pc:0,a:{}};
+    if(A.f&&d>A.f){A.o=d;$('aci').value=A.f;$('aco').value=A.o;acalDraw();$('ahd2').hidden=false;renderRooms(ADVC);advRefresh()}
+    else{A.f=d;A.o='';$('arooms').innerHTML='';$('aalert').innerHTML='';$('ahd2').hidden=true;acalDraw();advRefresh()}}});
+  $('aprev').onclick=function(){A.m=MESES[Math.max(0,MESES.indexOf(A.m)-1)];acalDraw()};
+  $('anext').onclick=function(){A.m=MESES[Math.min(3,MESES.indexOf(A.m)+1)];acalDraw()}}
+
+function packTables(){
+  ['nav','ny'].forEach(function(k){
+    var P=PACKS[k],t=$(k==='nav'?'t-nav':'t-ny'),h='<tr><th>Habitación</th><th>4 noches</th>'+(P.cena?'<th>Con cena</th>':'')+'</tr>';
+    ROOMS.forEach(function(r){var v=(k==='ny'?r.ny:r.alta)*4;h+='<tr><td>'+r.nombre.replace('Habitación ','')+' <span class="note">('+r.cap+' pers.)</span></td><td>'+CLP(v)+'</td>'+(P.cena?'<td>'+CLP(v+CENA*r.cap)+'</td>':'')+'</tr>'});
+    t.innerHTML=h;
+  });
+  var m=ROOMS[0];
+  var EINC={nav:['4 noches con desayuno incluido','Opciones de media pensión y pensión completa, excepto la cena del 24 de diciembre'],ny:['4 noches con desayuno incluido','Opciones de media pensión y pensión completa','Cena de Año Nuevo opcional ($50.000 por persona)']};
+  var EIMG={nav:'img/esc-navidad.webp',ny:'img/esc-anonuevo.webp'};
+  function openEsc(k){var P=PACKS[k];$('eci').value=P.desde;$('eco').value=P.hasta;$('epp').value='2';
+    $('etit').textContent=P.nombre;$('ebadge').textContent='4 noches · '+(k==='nav'?'23 al 27 de dic':'30 dic al 3 ene');$('eimg').src=EIMG[k];
+    $('einc').innerHTML=EINC[k].map(function(x){return '<li>'+x+'</li>'}).join('');
+    $('etiles').hidden=true;$('epanel').hidden=false;renderRooms(ESCC);window.scrollTo(0,0)}
+  $('aback').onclick=$('aback0').onclick=function(){$('apanel').hidden=true;$('etiles').hidden=false;window.scrollTo(0,0);syncBar()};
+  $('rback').onclick=$('rback0').onclick=function(){$('rpanel').hidden=true;$('etiles').hidden=false;window.scrollTo(0,0);syncBar()};
+  $('eback').onclick=$('eback0').onclick=function(){$('epanel').hidden=true;$('etiles').hidden=false;window.scrollTo(0,0);syncBar()};
+  function goPack(k){var P=PACKS[k];$('ci').value=P.desde;$('co').value=P.hasta;$('pp').value='2';closeModal();setTab('alojamiento','noches');location.hash='#alojamiento';renderRooms()}
+  document.querySelectorAll('.et').forEach(function(t){t.onclick=function(){
+    var k=t.getAttribute('data-k');if(k==='nav'||k==='ny'){openEsc(k);return}if(k==='rom'){openRom();return}if(k==='adv'){openAdv();return}
+    var i={nav:0,ny:1,adv:2}[k],c=$('pkdet').children[i];
+    $('mbox').innerHTML=c.innerHTML+'<div style="margin-top:12px"><button class="btn ghost" id="ecl" type="button">Cerrar</button></div>';
+    $('mbox').querySelectorAll('[data-pack]').forEach(function(b){b.onclick=function(){goPack(b.getAttribute('data-pack'))}});
+    $('ecl').onclick=closeModal;openModal()}});
+}
+
+var EXPS=[
+ {n:'Casino Party',p:10000,img:'img/exp-casino.jpg',afiche:'img/afiche-casino.jpg',inc:['Mesas de juego','Fichas recreativas','Bebidas ilimitadas','Ambiente de fiesta']},
+ {n:'Pizza Libre',p:15000,img:'img/exp-pizzalibre.jpg',afiche:'img/afiche-pizzalibre.jpg',inc:['Pizza libre','Bebidas ilimitadas (gaseosas y jugos)']},
+ {n:'Pizza Party',p:20000,img:'img/exp-pizzaparty.jpg',inc:['Pizza libre','Bebidas ilimitadas','Espacio para celebrar','Luces tipo fiesta'],dj:true},
+ {n:'Pizza Libre + Casino Party',p:22000,img:'img/exp-pizzacasino.jpg',afiche:'img/afiche-pizzacasino.jpg',inc:['Pizza libre','Bebidas ilimitadas','Mesas de juego','Fichas recreativas','Luces tipo fiesta y ambiente party'],dj:true,nota:'Valor individual: $25.000'},
+ {n:'Parrillada Party',p:25000,img:'img/exp-parrillada-party.jpg',afiche:'img/afiche-parrillada-party.jpg',inc:['Bebidas ilimitadas','Choripán de bienvenida','Variedad de carnes a la parrilla','Buffet de ensaladas y guarniciones','Pan de la casa y sopaipillas']}
+];
+var G={p:15,n:0,f:'',o:'',m:'2026-12',pl:'a',e:{}},PLANES=[['a','Alojamiento','con desayuno',28000,42000],['m','Media pensión','desayuno + almuerzo o cena',43000,65000],['c','Pensión completa','desayuno + almuerzo + cena',56000,84000]];
+function gnn(pn){var nb=0,na=0;if(G.n&&G.f&&G.o)noches(G.f,G.o).forEach(function(d){if(tipoNoche(d)==='alta')na++;else nb++});return {nb:nb,na:na,lod:nb*pn[3]+na*pn[4]}}
+function gtot(){var pn=PLANES.filter(function(x){return x[0]===G.pl})[0],pl=pn[3],gl=gnn(pn),ex=0,nm=[];EXPS.forEach(function(x,i){if(G.e[i]){ex+=x.p;nm.push(x)}});var fr=Math.floor(G.p/10),py=G.p-fr;return {pl:pl,lod:gl.lod,gl:gl,ex:ex,nm:nm,fr:fr,py:py,total:py*(gl.lod+ex)}}
+function gdraw(){
+  $('gpv').textContent=G.p;var t0=gtot();$('gfree').innerHTML='Grupo de <b>'+G.p+'</b>: <b>'+t0.py+'</b> pagan · <b>'+t0.fr+'</b> liberada'+(t0.fr>1?'s':'')+' (tripulación)';
+  $('gplan').innerHTML=G.n?PLANES.map(function(x){return '<label class="gpl"><input type="radio" name="gpl" value="'+x[0]+'"'+(G.pl===x[0]?' checked':'')+'><span><b>'+x[1]+'</b><small>'+x[2]+'</small></span><em>'+CLP(x[3])+(G.n&&gnn(x).na?'<small> · alta '+CLP(x[4])+'</small>':'')+'</em></label>'}).join(''):'';
+  $('gplan').querySelectorAll('input').forEach(function(r){r.onchange=function(){G.pl=r.value;gdraw()}});
+  EXPS.forEach(function(x,i){var bt=$('exa'+i);if(!bt)return;bt.textContent=G.e[i]?'Quitar':'Agregar';bt.parentNode.classList.toggle('sel',!!G.e[i])});
+  var t=gtot();
+  $('gbar').innerHTML='<div class="sg"><span>Tu paquete · '+G.p+' personas'+(t.fr?' ('+t.fr+' liberada'+(t.fr>1?'s':'')+')':'')+(G.n?' · '+G.n+' noche'+(G.n>1?'s':''):'')+(t.nm.length?' · '+t.nm.length+' experiencia'+(t.nm.length>1?'s':''):'')+'</span><span class="tt">'+CLP(t.total)+'</span></div><div class="sr"><button class="btn" id="gcot" type="button"'+(t.total?'':' disabled')+'>Reservar</button></div>';
+  $('gcot').onclick=gsum;syncBar()}
+function gsum(){
+  var t=gtot(),f=t.fr,pn=PLANES.filter(function(x){return x[0]===G.pl})[0];
+  var rows=[];if(G.n)rows.push([pn[1]+' · '+fmt(G.f)+' al '+fmt(G.o)+' ('+G.n+' noche'+(G.n>1?'s':'')+') × '+t.py+' personas que pagan',t.py*t.lod]);
+  t.nm.forEach(function(x){rows.push([x.n+' × '+t.py+' personas que pagan',t.py*x.p])});
+  var ab=G.n?t.py*(tipoNoche(G.f)==='alta'?PLANES[0][4]:PLANES[0][3]):t.total,mb=$('mbox');
+  function draw(){
+    mb.innerHTML='<h3 style="font-family:var(--serif)">Tu paquete</h3><div class="scroll"><table>'+rows.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+CLP(r[1])+'</td></tr>'}).join('')+'</table></div>'+
+    '<div class="good"><div>Valor total: <b>'+CLP(t.total)+'</b></div><div>Abono hoy ('+(G.n?'primera noche de alojamiento':'experiencias')+'): <b>'+CLP(ab)+'</b></div><div>Saldo al llegar: <b>'+CLP(t.total-ab)+'</b></div></div>'+
+    (f?'<div class="note">Grupo de '+G.p+' personas: pagan '+t.py+' y '+f+' va'+(f>1?'n':'')+' liberada'+(f>1?'s':'')+' (la tripulación). Ya está descontado.</div>':'')+
+    '<div class="field"><label for="gn">Nombre o institución</label><input id="gn"></div><div class="field"><label for="gm">Correo</label><input id="gm" type="email"></div><div class="field"><label for="gw">WhatsApp</label><input id="gw"></div>'+
+    POLDEV(0)+
+    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="ggo" type="button">Pagar abono con Flow</button><button class="btn ghost" id="cl4" type="button">Cerrar</button></div>';
+    $('cl4').onclick=closeModal;
+    $('ggo').onclick=function(){
+      var cod='CDM-'+Math.random().toString(36).slice(2,7).toUpperCase();
+      mb.innerHTML='<div class="flowbar">Flow · modo de prueba</div><p><b>Pago de '+CLP(ab)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Flow y la reserva se confirma solo cuando Flow lo avisa.</p><button class="btn" id="gok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="gv" type="button">Volver</button>';
+      $('gv').onclick=draw;
+      $('gok').onclick=function(){mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva confirmada (demo)</h3><div class="good">Código '+cod+'. Valor total '+CLP(t.total)+'. Abono '+CLP(ab)+'. Saldo al llegar: '+CLP(t.total-ab)+'.</div><p class="note">Recibirías la confirmación por correo y WhatsApp. No se cobró ni se envió nada.</p><button class="btn" id="gc3" type="button">Cerrar</button>';$('gc3').onclick=closeModal};
+    };
+  }
+  draw();openModal()}
+EXPS.forEach(function(x,i){
+  var d=document.createElement('div');d.className='exp';
+  d.innerHTML='<button type="button" class="exo"><img src="'+x.img+'" alt="" loading="lazy"><span class="ext"><b>'+x.n+'</b><span>'+CLP(x.p)+' por persona</span></span></button><button type="button" class="exa" id="exa'+i+'">Agregar</button>';
+  d.querySelector('.exa').onclick=function(){G.e[i]=!G.e[i];gdraw()};
+  d.querySelector('.exo').onclick=function(){
+    var mb=$('mbox');
+    mb.innerHTML='<img class="big" src="'+(x.afiche||x.img)+'" alt="'+x.n+'"><h3 style="font-family:var(--serif)">'+x.n+'</h3><div class="price">'+CLP(x.p)+' <small>por persona</small></div>'+(x.nota?'<div class="note">'+x.nota+'</div>':'')+'<ul class="inc">'+x.inc.map(function(t){return '<li>'+t+'</li>'}).join('')+'</ul>'+(x.dj?'<div class="note">DJ adicional opcional: +$100.000 por evento.</div>':'')+'<div class="note">Dura 3 horas · grupos desde 15 personas.</div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="cl6" type="button">'+(G.e[i]?'Quitar del paquete':'Agregar al paquete')+'</button><button class="btn ghost" id="cl4" type="button">Cerrar</button></div>';
+    openModal();$('cl4').onclick=closeModal;$('cl6').onclick=function(){G.e[i]=!G.e[i];closeModal();gdraw()};
+  };
+  $('exps').appendChild(d);
+});
+$('gpm').onclick=function(){G.p=Math.max(15,G.p-1);gFix();gcalDraw();gdraw()};
+$('gpp').onclick=function(){G.p=Math.min(24,G.p+1);gFix();gcalDraw();gdraw()};
+var GCNT={m:5,t:1,r:4};
+function gCap(d){var c=0;ROOMS.forEach(function(r){if((BLOQ[d]||[]).indexOf(r.id)<0)c+=GCNT[r.id]*r.cap});return c}
+function gNight(d){var t=tipoNoche(d);return (t==='baja'||t==='alta')&&gCap(d)>=G.p}
+function gOk(iso){if(G.f&&iso>G.f)return noches(G.f,iso).every(gNight);return gNight(iso)}
+function gFix(){if(G.f&&!gNight(G.f)){G.f='';G.o=''}else if(G.f&&G.o&&!noches(G.f,G.o).every(gNight))G.o=''}
+function gCls(iso){if(iso===G.f||iso===G.o)return 'on';if(G.f&&G.o&&iso>G.f&&iso<G.o)return 'rg';return ''}
+function gcalDraw(){
+  $('gcal').innerHTML=calH(G.m,gCls,gOk,'g');
+  G.n=G.o?noches(G.f,G.o).length:0;
+  $('gsm').innerHTML=!G.f?'Toca tu día de llegada.':(!G.o?'Llegada el <b>'+fmt(G.f)+'</b>. Ahora toca tu día de salida (puedes cambiarla las veces que quieras).':'Llegada <b>'+fmt(G.f)+'</b> · salida <b>'+fmt(G.o)+'</b> · '+G.n+' noche'+(G.n>1?'s':'')+'.')+(G.f?' <button type="button" class="btn ghost" id="gclr" style="padding:4px 12px;margin-left:6px">Borrar fechas</button>':'');
+  if($('gclr'))$('gclr').onclick=function(){G.f='';G.o='';gcalDraw();gdraw()};
+  $('gcal').querySelectorAll('.cg button[data-d]').forEach(function(x){x.onclick=function(){
+    var d=x.getAttribute('data-d');
+    if(G.f&&!G.o&&d>G.f)G.o=d;else if(G.f&&G.o&&d>G.f)G.o=d;else{G.f=d;G.o=''}
+    gcalDraw();gdraw()}});
+  $('gprev').onclick=function(){G.m=MESES[Math.max(0,MESES.indexOf(G.m)-1)];gcalDraw()};
+  $('gnext').onclick=function(){G.m=MESES[Math.min(3,MESES.indexOf(G.m)+1)];gcalDraw()}}
+$('qgo').onclick=function(){$('chat').hidden=false};
+gcalDraw();gdraw();
+
+function bindWa(btn,form,build){
+  $(btn).addEventListener('click',function(e){
+    var f=$(form);
+    if(!f.checkValidity()){e.preventDefault();f.reportValidity();return}
+    this.href=wa(build());
+  });
+}
+$('qgo').href=wa('Hola, quiero cotizar alojamiento y experiencias para un grupo. Somos ___ personas y las fechas serían ___.');
+
+var VISTAS=['inicio','alojamiento','grupos','pizzeria'];
+var ALIAS={escapadas:['alojamiento','esc'],empresas:['grupos','emp'],delivery:['pizzeria',null]};
+function setTab(v,t){
+  setTimeout(syncBar,0);
+  if(v==='alojamiento'&&t==='esc'&&$('epanel')){$('epanel').hidden=true;$('rpanel').hidden=true;$('apanel').hidden=true;$('etiles').hidden=false}
+  document.querySelectorAll('.tab[data-view="'+v+'"]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-tab')===t)});
+  document.querySelectorAll('[id^="pt-'+v+'-"]').forEach(function(p){p.classList.toggle('on',p.id==='pt-'+v+'-'+t)});
+}
+document.querySelectorAll('.tab').forEach(function(b){b.onclick=function(){setTab(b.getAttribute('data-view'),b.getAttribute('data-tab'))}});
+function route(){
+  var h=(location.hash||'#inicio').slice(1),a=ALIAS[h];
+  if(a){h=a[0];if(a[1])setTab(a[0],a[1])}
+  if(VISTAS.indexOf(h)<0)h='inicio';
+  VISTAS.forEach(function(v){$('v-'+v).classList.toggle('on',v===h)});
+  $('back').hidden=(h==='inicio');
+  if(h==='alojamiento')renderRooms();
+  window.scrollTo(0,0);
+  setTimeout(syncBar,0);
+}
+window.addEventListener('hashchange',function(){route();setTimeout(syncBar,0)});
+$('back').onclick=function(){location.hash='#inicio'};
+document.querySelectorAll('[data-home]').forEach(function(b){b.onclick=function(){location.hash='#inicio'}});
+$('ci').addEventListener('change',function(){if(!$('co').value||$('co').value<=$('ci').value){$('co').value=ISO(new Date(FEC($('ci').value).getTime()+864e5))}});
+['ci','co','pp'].forEach(function(i){$(i).addEventListener('change',function(){renderRooms()})});
+
+packTables();route();
+
+function hero(){
+  var now=Date.now(),open=Date.UTC(2026,11,2,22,0,0),el=$('count'),k=$('hk'),iso=new Date(now-3*36e5).toISOString().slice(0,10);
+  if(now<open){
+    var ms=open-now,d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4),sg=Math.floor(ms%6e4/1e3);
+    k.textContent='Gran apertura · miércoles 2 de diciembre, 19:00 h';
+    el.innerHTML='<div class="u"><b>'+d+'</b><span>días</span></div><div class="u"><b>'+h+'</b><span>horas</span></div><div class="u"><b>'+m+'</b><span>min</span></div><div class="u"><b>'+sg+'</b><span>seg</span></div>';
+    return;
+  }
+  k.textContent='Abiertos en Licán Ray · Camino a Coñaripe #100';
+  var t,l;
+  if(iso<'2026-12-23'){t='Reserva tu Escapada Navidad';l='#escapadas'}
+  else if(iso<'2027-01-03'){t='Reserva tu Escapada Año Nuevo';l='#escapadas'}
+  else{t='Reserva tu verano en Licán Ray';l='#alojamiento'}
+  el.innerHTML='<a href="'+l+'">'+t+'</a>';
+}
+function heroPz(){var el=$('pcount');if(!el)return;var ms=Date.UTC(2026,11,2,22,0,0)-Date.now();
+  if(ms<=0){el.innerHTML='<a href="#pizzeria">Ya estamos abiertos al público</a>';return}
+  var u=function(n,l){return '<div class="u"><b>'+n+'</b><span>'+l+'</span></div>'};
+  el.innerHTML=u(Math.floor(ms/864e5),'días')+u(Math.floor(ms%864e5/36e5),'horas')+u(Math.floor(ms%36e5/6e4),'min')+u(Math.floor(ms%6e4/1e3),'seg')}
+
+
+(function(){
+  var iso=new Date(Date.now()-3*36e5).toISOString().slice(0,10),pre=iso<='2026-11-30',po=$('pop');
+  if(iso>'2026-12-05')return;
+  $('pob').href=wa('Hola, quiero comprar mi entrada de pizza libre para el sábado 5 de diciembre ('+(pre?'preventa':'precio normal')+').');
+  $('pob').textContent=pre?'Compra tu preventa por WhatsApp':'Reserva tu entrada por WhatsApp';
+  function cerrar(){po.hidden=true;document.body.style.overflow=''}
+  $('pox').onclick=cerrar;
+  po.addEventListener('click',function(e){if(e.target===po)cerrar()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!po.hidden)cerrar()});
+  setTimeout(function(){po.hidden=false;document.body.style.overflow='hidden'},500);
+})();
+
+$('hci').addEventListener('change',function(){if(!$('hco').value||$('hco').value<=$('hci').value){$('hco').value=ISO(new Date(FEC($('hci').value).getTime()+864e5))}});
+$('hgo').onclick=function(){
+  var ci=$('hci').value,co=$('hco').value;
+  if(!ci)return;
+  if(!co||co<=ci)co=ISO(new Date(FEC(ci).getTime()+864e5));
+  $('ci').value=ci;$('co').value=co;$('pp').value=$('hpp').value;
+  setTab('alojamiento','noches');location.hash='#alojamiento';renderRooms()};
+hero();heroPz();setInterval(heroPz,1000);setInterval(hero,1000);
+
+var FAQ=[
+ ['¿Cuántas habitaciones hay?','Son 10 habitaciones, todas con baño privado: 5 matrimoniales, 1 doble twin y 4 triples. Capacidad máxima, 24 personas. Abajo hay 3 matrimoniales; arriba, las otras 7.'],
+ ['¿El desayuno está incluido?','Sí. Todas las habitaciones incluyen desayuno sureño semibuffet. Si no lo quieres, se descuentan $5.000 por noche.'],
+ ['¿Cómo se paga y se cancela?','Para reservar se abona con Flow el valor de la primera noche; el resto y las comidas se pagan al llegar. Con más de 72 horas de aviso, se devuelve el 100 % del abono. Si no se presenta o decide irse después de llegar, no hay devolución.'],
+ ['¿Dónde queda?','En Camino a Coñaripe #100, Licán Ray. Playa Ensenada está a 15 minutos caminando y las termas a menos de 40 minutos.'],
+ ['¿Aceptan grupos?','Sí, desde 15 personas, con una persona liberada por cada 10 que pagan. Pide tu cotización en Grupos y delegaciones.']
+];
+FAQ.forEach(function(f){var b=document.createElement('button');b.type='button';b.textContent=f[0];b.onclick=function(){var m=$('cm');var a=document.createElement('div');a.className='me';a.textContent=f[0];m.appendChild(a);var r=document.createElement('div');r.className='bot';r.textContent=f[1];m.appendChild(r);m.scrollTop=m.scrollHeight};$('cq').appendChild(b)});
+$('cb').onclick=function(){$('chat').hidden=!$('chat').hidden};
+$('cx').onclick=function(){$('chat').hidden=true};
+</script>
