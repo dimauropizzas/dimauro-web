@@ -33,6 +33,7 @@ type SelectorModal =
   | { type: "pizza-fixed"; productId: string }
   | { type: "custom-pizza" }
   | { type: "promo-two-pizzas" }
+  | { type: "promo-two-pizzas-drink" }
   | null;
 
 const WHATSAPP_NUMBER = "56956154280";
@@ -221,8 +222,9 @@ if (
   return false;
 }
   function getProductImage(product: any) {
-  const name = product.name.toLowerCase();
+  if (product.image) return product.image;
 
+  const name = product.name.toLowerCase();
   if (name.includes("bebida")) return "/productos/bebidas.png";
   if (name.includes("cerveza")) return "/productos/cervezas.png";
   if (name.includes("cóctel") || name.includes("coctel")) return "/productos/cocteles.png";
@@ -306,6 +308,8 @@ const autocompleteRef = useRef<any>(null);
   const [pizzaNote, setPizzaNote] = useState("");
   const [customPizzaNote, setCustomPizzaNote] = useState("");
   const [promoNote, setPromoNote] = useState("");
+  const [promoTrago, setPromoTrago] = useState("pisco-sour");
+  const [promoTragoNote, setPromoTragoNote] = useState("");
 
   const cartQty = cart.reduce((acc, item) => acc + item.qty, 0);
   const cartTotal = cart.reduce((acc, item) => acc + item.qty * item.price, 0);
@@ -437,6 +441,17 @@ const autocompleteRef = useRef<any>(null);
     setPromoPizza1([]);
     setPromoPizza2([]);
     setPromoNote("");
+  }
+
+  function resetPromoTragoModal() {
+    setPromoTab("pizza1");
+    setPromoPizza1Sauce("tomate");
+    setPromoPizza2Sauce("tomate");
+    setPromoPizza1([]);
+    setPromoPizza2([]);
+    setPromoNote("");
+    setPromoTrago("pisco-sour");
+    setPromoTragoNote("");
   }
 
   function resetCustomPizzaModal() {
@@ -595,40 +610,6 @@ async function detectUserLocation() {
 }
   );
 }
-    if (!navigator.geolocation) {
-      alert("Tu dispositivo no permite usar ubicación GPS");
-      return;
-    }
-
-navigator.geolocation.getCurrentPosition(
-  (position) => {
-    const coords = {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
-    };
-
-   setGpsCoords(coords);
-   console.log("COORDS FINALES:", coords);
-setLocationMessage("Ubicación GPS estimada. Para mayor precisión, usa MI DIRECCIÓN.");
-
-    calculateDeliveryForCoords(coords, "gps");
-  },
-  (error) => {
-    console.log("GPS error:", error);
-
-    setLocationMessage(
-  "No pudimos obtener tu ubicación. Escribe tu dirección manualmente."
-);
-
-    setGpsCoords(null);
-  },
-  {
-    enableHighAccuracy: true,
-    timeout: 15000,
-    maximumAge: 0,
-  }
-);
-
   function sendOrderToWhatsApp() {
     console.log("CLICK WHATSAPP");
     console.log("isStoreOpen:", isStoreOpen)
@@ -853,30 +834,6 @@ useEffect(() => {
 }, [cartOpen, deliveryType, locationMode]);
   return (
     <>
-{closedModalOpen && (
-  <div className="menuv2-closed-backdrop">
-    <div className="menuv2-closed-modal">
-      <p>En este momento no estamos recibiendo pedidos.</p>
-
-      <div>
-        <strong>Horario de atención</strong>
-        <p>Domingo a jueves: 18:00 a 23:00 hrs</p>
-        <p>Viernes: 18:00 a 00:00 hrs</p>
-        <p>Sábado: 13:00 a 00:00 hrs</p>
-      </div>
-
-      <p>
-        Para delegaciones, comunícate con nosotros directamente al
-        <br />
-        <strong>+56 9 5615 4280</strong>
-      </p>
-
-      <button onClick={() => setClosedModalOpen(false)}>
-        Entendido
-      </button>
-    </div>
-  </div>
-)}
     <div className="menuv2-page">
     {closedModalOpen && (
   <div className="menuv2-closed-overlay">
@@ -1030,7 +987,8 @@ useEffect(() => {
                       product.type === "selector-beer" ||
                       product.type === "selector-custom-pizza" ||
                       product.type === "pizza_fixed" ||
-                      product.type === "promo_pizzas";
+                      product.type === "promo_pizzas" ||
+                      product.type === "promo_pizzas_drink";
 
                     const opens =
                       product.type === "selector-burger"
@@ -1068,6 +1026,11 @@ useEffect(() => {
                         ? () => {
                             resetPromoModal();
                             openSelector({ type: "promo-two-pizzas" });
+                          }
+                        : product.type === "promo_pizzas_drink"
+                        ? () => {
+                            resetPromoTragoModal();
+                            openSelector({ type: "promo-two-pizzas-drink" });
                           }
                         : null;
 
@@ -1637,6 +1600,100 @@ useEffect(() => {
                   }}
                 >
                   Agregar al carrito · {formatCLP(promoTwoPizzasPrice)}
+                </button>
+              </div>
+            )}
+
+            {modal.type === "promo-two-pizzas-drink" && (
+              <div className="menuv2-modal-body">
+                <div className="menuv2-modal-subtitle">Elige salsa y 3 ingredientes por pizza</div>
+
+                <div className="menuv2-chip-group">
+                  <button className={promoTab === "pizza1" ? "menuv2-chip menuv2-chip--active" : "menuv2-chip"} onClick={() => setPromoTab("pizza1")}>Pizza 1</button>
+                  <button className={promoTab === "pizza2" ? "menuv2-chip menuv2-chip--active" : "menuv2-chip"} onClick={() => setPromoTab("pizza2")}>Pizza 2</button>
+                </div>
+
+                <div className="menuv2-modal-subtitle">Salsa base</div>
+                <div className="menuv2-chip-group">
+                  {promoPizzaSauces.map((sauce) => (
+                    <button
+                      key={`drink-${promoTab}-${sauce.id}`}
+                      className={(promoTab === "pizza1" ? promoPizza1Sauce : promoPizza2Sauce) === sauce.id ? "menuv2-chip menuv2-chip--active" : "menuv2-chip"}
+                      onClick={() => {
+                        if (promoTab === "pizza1") setPromoPizza1Sauce(sauce.id);
+                        else setPromoPizza2Sauce(sauce.id);
+                      }}
+                    >
+                      {sauce.name}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="menuv2-modal-subtitle">
+                  Ingredientes ({promoTab === "pizza1" ? promoPizza1.length : promoPizza2.length}/3)
+                </div>
+
+                <div className="menuv2-ingredient-list">
+                  {promoPizzaIngredients.map((ingredient) => {
+                    const selectedList = promoTab === "pizza1" ? promoPizza1 : promoPizza2;
+                    const setter = promoTab === "pizza1" ? setPromoPizza1 : setPromoPizza2;
+                    const qty = selectedList.filter((item) => item === ingredient.id).length;
+
+                    return (
+                      <div key={`drink-${promoTab}-${ingredient.id}`} className="menuv2-ingredient-row">
+                        <span>{ingredient.name}</span>
+                        <div className="menuv2-counter-row">
+                          <button className="menuv2-counter-btn" onClick={() => changePromoIngredientQty(ingredient.id, -1, setter)}>−</button>
+                          <span className="menuv2-counter-value">{qty}</span>
+                          <button className="menuv2-counter-btn" onClick={() => changePromoIngredientQty(ingredient.id, 1, setter)}>+</button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="menuv2-modal-subtitle">Trago a elección (1 litro)</div>
+                <div className="menuv2-chip-group">
+                  <button
+                    className={promoTrago === "pisco-sour" ? "menuv2-chip menuv2-chip--active" : "menuv2-chip"}
+                    onClick={() => setPromoTrago("pisco-sour")}
+                  >
+                    Pisco Sour
+                  </button>
+                  <button
+                    className={promoTrago === "mojito-tradicional" ? "menuv2-chip menuv2-chip--active" : "menuv2-chip"}
+                    onClick={() => setPromoTrago("mojito-tradicional")}
+                  >
+                    Mojito Tradicional
+                  </button>
+                </div>
+
+                <input className="menuv2-note-input" type="text" maxLength={30} placeholder="Observaciones" value={promoTragoNote} onChange={(e) => setPromoTragoNote(e.target.value)} />
+
+                <button
+                  className="menuv2-modal-add"
+                  disabled={promoPizza1.length !== 3 || promoPizza2.length !== 3}
+                  onClick={() => {
+                    if (promoPizza1.length !== 3 || promoPizza2.length !== 3) return;
+
+                    const pizza1Text = promoPizza1.map((id) => ingredients.find((item) => item.id === id)?.name || id).join(", ");
+                    const pizza2Text = promoPizza2.map((id) => ingredients.find((item) => item.id === id)?.name || id).join(", ");
+                    const sauce1Name = promoPizzaSauces.find((item) => item.id === promoPizza1Sauce)?.name || promoPizza1Sauce;
+                    const sauce2Name = promoPizzaSauces.find((item) => item.id === promoPizza2Sauce)?.name || promoPizza2Sauce;
+                    const tragoName = promoTrago === "pisco-sour" ? "Pisco Sour" : "Mojito Tradicional";
+
+                    addToCart({
+                      id: `promo-2-pizzas-trago-${promoPizza1Sauce}-${promoPizza1.join("-")}-${promoPizza2Sauce}-${promoPizza2.join("-")}-${promoTrago}-${promoTragoNote || "sin-nota"}`,
+                      name: "2 Pizzas + Trago",
+                      price: 29900,
+                      description: `Pizza 1: Salsa ${sauce1Name}, mozzarella, ${pizza1Text} · Pizza 2: Salsa ${sauce2Name}, mozzarella, ${pizza2Text} · Trago: ${tragoName} (litro)${promoTragoNote ? ` · Obs: ${promoTragoNote}` : ""}`,
+                    });
+
+                    resetPromoTragoModal();
+                    closeModal();
+                  }}
+                >
+                  Agregar al carrito · {formatCLP(29900)}
                 </button>
               </div>
             )}

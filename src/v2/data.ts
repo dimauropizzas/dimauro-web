@@ -19,6 +19,7 @@ export type ProductType =
   | "selector-happy-hour"
   | "selector-drinks"
   | "selector-beer"
+  | "promo_pizzas_drink"
   | "hidden";
 
 export type Ingredient = {
@@ -62,27 +63,25 @@ export type Product = {
   allowObservations?: boolean;
   options?: ProductOption[];
 };
+
 export const ingredients: Ingredient[] = [
   { id: "tomate", name: "Tomate", price: 1000, availableForPromo: true },
   { id: "cebolla-morada", name: "Cebolla morada", price: 1000, availableForPromo: true },
   { id: "choclo", name: "Choclo", price: 1000, availableForPromo: true },
   { id: "pimenton", name: "Pimentón", price: 1000, availableForPromo: true },
   { id: "aceituna", name: "Aceituna", price: 1000, availableForPromo: true },
-
   { id: "extra-mozzarella", name: "Extra mozzarella", price: 1500, availableForPromo: true },
   { id: "champinon", name: "Champiñón", price: 1500, availableForPromo: true },
   { id: "jamon", name: "Jamón", price: 1500, availableForPromo: true },
   { id: "pollo", name: "Pollo", price: 1500, availableForPromo: true },
   { id: "salame", name: "Salame", price: 1500, availableForPromo: true },
   { id: "pina", name: "Piña", price: 1500, availableForPromo: true },
-
   { id: "choricillo", name: "Choricillo", price: 2000, availableForPromo: true },
   { id: "chorizo-parrillero", name: "Chorizo parrillero", price: 2000, availableForPromo: true },
   { id: "pepperoni", name: "Pepperoni", price: 2000, availableForPromo: true },
   { id: "carne-mechada", name: "Carne mechada", price: 2000, availableForPromo: true },
   { id: "lomito-de-cerdo", name: "Lomito de cerdo", price: 2000, availableForPromo: true },
   { id: "pollo-bbq", name: "Pollo BBQ", price: 2000, availableForPromo: true },
-
   { id: "tocino", name: "Tocino", price: 3000, availableForPromo: false },
   { id: "jamon-serrano", name: "Jamón serrano", price: 4000, availableForPromo: false },
   { id: "camaron", name: "Camarón", price: 5000, availableForPromo: false },
@@ -95,9 +94,10 @@ export const categories: Category[] = [
   { id: "burger-sandwich", name: "Burger & Sandwich" },
   { id: "acompanamientos", name: "Acompañamientos" },
   { id: "para-beber", name: "Para beber" },
- ];
+];
 
 export const products: Product[] = [
+  // ── PROMOS ──────────────────────────────────────────────────────────────────
   {
     id: "promo-2-pizzas",
     category: "promos",
@@ -110,6 +110,17 @@ export const products: Product[] = [
     image: "/productos/promo-2-pizzas.jpg",
   },
   {
+    id: "promo-2-pizzas-trago",
+    category: "promos",
+    tags: ["promos"],
+    name: "2 Pizzas + Trago",
+    shortDescription: "2 pizzas familiares con 3 ingredientes + Mojito o Pisco Sour (1 litro)",
+    description: "Promo 2 pizzas familiares de 38 cm + cóctel a elección (litro)",
+    price: 29900,
+    type: "promo_pizzas_drink",
+    image: "/productos/promo-2-pizzas-trago.png",
+  },
+  {
     id: "promo-burger-2x",
     category: "promos",
     name: "Promo Burger 2x",
@@ -118,7 +129,7 @@ export const products: Product[] = [
     type: "selector-burger-2x",
     image: "/productos/promo-burger-2x.png",
     description: "2 burgers a elección",
-},
+  },
   {
     id: "promo-chorrillana",
     category: "promos",
@@ -127,9 +138,9 @@ export const products: Product[] = [
     shortDescription: "Para compartir",
     price: 15900,
     type: "hidden",
-    image: "/productos/chorrillana.jpg",
   },
 
+  // ── DESTACADOS ───────────────────────────────────────────────────────────────
   {
     id: "dest-villarrica",
     category: "destacados",
@@ -138,7 +149,6 @@ export const products: Product[] = [
     shortDescription: "Carne mechada, salame y champiñón",
     price: 15900,
     type: "pizza_fixed",
-    image: "/productos/pizza-villarrica.jpg",
     baseIngredients: ["carne-mechada", "salame", "champinon"],
     allowPaidExtras: true,
     allowObservations: true,
@@ -151,7 +161,6 @@ export const products: Product[] = [
     shortDescription: "Pollo BBQ, tocino y cebolla morada",
     price: 14900,
     type: "pizza_fixed",
-    image: "/productos/pizza-rinihue.jpg",
     baseIngredients: ["pollo-bbq", "tocino", "cebolla-morada"],
     allowPaidExtras: true,
     allowObservations: true,
@@ -163,7 +172,7 @@ export const products: Product[] = [
     shortDescription: "Pisco Sour, Mojitos, Piña Colada, Spritz y más",
     price: 6000,
     type: "selector-happy-hour",
-    image: "/productos/cocktails-selector.png",
+    image: "/productos/cocteles.png",
     description: "Cócteles medio litro o litro",
   },
   {
@@ -174,7 +183,7 @@ export const products: Product[] = [
     shortDescription: "Tocino, pepinillo, cebolla morada, queso fundido y salsa BBQ",
     price: 8900,
     type: "simple",
-    image: "/productos/rukapillan.jpg",
+    image: "/productos/burger-generica.png",
   },
   {
     id: "dest-papas-dobles",
@@ -184,8 +193,10 @@ export const products: Product[] = [
     shortDescription: "Porción doble para compartir",
     price: 5990,
     type: "simple",
-    image: "/productos/papas-dobles.jpg",
+    image: "/productos/papas-fritas-doble.png",
   },
+
+  // ── PIZZAS ───────────────────────────────────────────────────────────────────
   {
     id: "pizza-pellaifa",
     category: "pizzas",
@@ -193,7 +204,6 @@ export const products: Product[] = [
     shortDescription: "Camarón, tocino y cebolla morada",
     price: 19900,
     type: "pizza_fixed",
-    image: "/productos/pellaifa.jpg",
     baseIngredients: ["camaron", "tocino", "cebolla-morada"],
     allowPaidExtras: true,
     allowObservations: true,
@@ -205,7 +215,6 @@ export const products: Product[] = [
     shortDescription: "Carne mechada, salame y champiñón",
     price: 15900,
     type: "pizza_fixed",
-    image: "/productos/pizza-villarrica.jpg",
     baseIngredients: ["carne-mechada", "salame", "champinon"],
     allowPaidExtras: true,
     allowObservations: true,
@@ -217,7 +226,6 @@ export const products: Product[] = [
     shortDescription: "Pepperoni, lomito de cerdo y cebolla morada",
     price: 15900,
     type: "pizza_fixed",
-    image: "/productos/pizza-calafquen.jpg",
     baseIngredients: ["pepperoni", "lomito-de-cerdo", "cebolla-morada"],
     allowPaidExtras: true,
     allowObservations: true,
@@ -229,7 +237,6 @@ export const products: Product[] = [
     shortDescription: "Pepperoni, tocino y choricillo",
     price: 14900,
     type: "pizza_fixed",
-    image: "/productos/pizza-llanquihue.jpg",
     baseIngredients: ["pepperoni", "tocino", "choricillo"],
     allowPaidExtras: true,
     allowObservations: true,
@@ -241,7 +248,6 @@ export const products: Product[] = [
     shortDescription: "Pollo BBQ, tocino y cebolla morada",
     price: 14900,
     type: "pizza_fixed",
-    image: "/productos/pizza-rinihue.jpg",
     baseIngredients: ["pollo-bbq", "tocino", "cebolla-morada"],
     allowPaidExtras: true,
     allowObservations: true,
@@ -253,7 +259,6 @@ export const products: Product[] = [
     shortDescription: "Full pepperoni",
     price: 14900,
     type: "pizza_fixed",
-    image: "/productos/pizza-colico.jpg",
     baseIngredients: ["pepperoni"],
     allowPaidExtras: true,
     allowObservations: true,
@@ -265,7 +270,6 @@ export const products: Product[] = [
     shortDescription: "Chorizo parrillero, aceituna y cebolla morada",
     price: 13900,
     type: "pizza_fixed",
-    image: "/productos/pizza-ranco.jpg",
     baseIngredients: ["chorizo-parrillero", "aceituna", "cebolla-morada"],
     allowPaidExtras: true,
     allowObservations: true,
@@ -277,7 +281,6 @@ export const products: Product[] = [
     shortDescription: "Pollo, pimentón y choclo",
     price: 13900,
     type: "pizza_fixed",
-    image: "/productos/pizza-puyehue.jpg",
     baseIngredients: ["pollo", "pimenton", "choclo"],
     allowPaidExtras: true,
     allowObservations: true,
@@ -289,7 +292,6 @@ export const products: Product[] = [
     shortDescription: "Tomate, aceituna y jamón",
     price: 12900,
     type: "pizza_fixed",
-    image: "/productos/pizza-neltume.jpg",
     baseIngredients: ["tomate", "aceituna", "jamon"],
     allowPaidExtras: true,
     allowObservations: true,
@@ -301,7 +303,6 @@ export const products: Product[] = [
     shortDescription: "Champiñón, choclo y aceituna",
     price: 12900,
     type: "pizza_fixed",
-    image: "/productos/pizza-panguipulli.jpg",
     baseIngredients: ["champinon", "choclo", "aceituna"],
     allowPaidExtras: true,
     allowObservations: true,
@@ -313,33 +314,34 @@ export const products: Product[] = [
     shortDescription: "Tomate y jamón",
     price: 11900,
     type: "pizza_fixed",
-    image: "/productos/pizza-rupanco.jpg",
     baseIngredients: ["tomate", "jamon"],
     allowPaidExtras: true,
     allowObservations: true,
   },
 
-{
-  id: "burger-selector",
-  category: "burger-sandwich",
-  name: "Burger",
-  shortDescription: "Elige entre Rukapillán, Lanín o Llaima",
-  price: 8500,
-  type: "selector-burger",
-  image: "/productos/burger-selector.png",
-  description: "Opciones desde $8.500",
-},
-{
-  id: "sandwich-selector",
-  category: "burger-sandwich",
-  name: "Sandwich",
-  shortDescription: "Elige proteína y estilo: Solo, Luco, Italiano o Chacarero",
-  price: 6900,
-  type: "selector-sandwich",
-  image: "/productos/sandwich-selector.png",
-  description: "Opciones desde $6.900",
-},
+  // ── BURGER & SANDWICH ────────────────────────────────────────────────────────
+  {
+    id: "burger-selector",
+    category: "burger-sandwich",
+    name: "Burger",
+    shortDescription: "Elige entre Rukapillán, Lanín o Llaima",
+    price: 8500,
+    type: "selector-burger",
+    image: "/productos/burger-generica.png",
+    description: "Opciones desde $8.500",
+  },
+  {
+    id: "sandwich-selector",
+    category: "burger-sandwich",
+    name: "Sandwich",
+    shortDescription: "Elige proteína y estilo: Solo, Luco, Italiano o Chacarero",
+    price: 6900,
+    type: "selector-sandwich",
+    image: "/productos/sandwich.png",
+    description: "Opciones desde $6.900",
+  },
 
+  // ── ACOMPAÑAMIENTOS ──────────────────────────────────────────────────────────
   {
     id: "acomp-chorrillana",
     category: "acompanamientos",
@@ -347,7 +349,7 @@ export const products: Product[] = [
     shortDescription: "Para compartir",
     price: 15900,
     type: "simple",
-    image: "/productos/chorrillana.jpg",
+    image: "/productos/chorrillana.png",
   },
   {
     id: "acomp-salchipapas",
@@ -356,7 +358,7 @@ export const products: Product[] = [
     shortDescription: "Papas fritas con salchicha",
     price: 6900,
     type: "simple",
-    image: "/productos/salchipapas.jpg",
+    image: "/productos/salchipapas.png",
   },
   {
     id: "acomp-papas-dobles",
@@ -365,7 +367,7 @@ export const products: Product[] = [
     shortDescription: "Porción doble para compartir",
     price: 5990,
     type: "simple",
-    image: "/productos/papas-dobles.jpg",
+    image: "/productos/papas-fritas-doble.png",
   },
   {
     id: "acomp-papas-individual",
@@ -374,37 +376,38 @@ export const products: Product[] = [
     shortDescription: "Porción individual",
     price: 3900,
     type: "simple",
-    image: "/productos/papas-individual.jpg",
+    image: "/productos/papas-fritas-doble.png",
   },
 
-{
-  id: "cocktails-selector",
-  category: "para-beber",
-  name: "Cócteles",
-  shortDescription: "Pisco Sour, Mojitos, Piña Colada, Spritz y más",
-  price: 6000,
-  type: "selector-happy-hour",
-  image: "/productos/cocktails-selector.png",
-  description: "Cócteles medio litro o litro",
-},
-{
-  id: "drinks-selector",
-  category: "para-beber",
-  name: "Bebidas",
-  shortDescription: "Coca-Cola, Sprite o Fanta",
-  price: 3900,
-  type: "selector-drinks",
-  image: "/productos/drinks-selector.png",
-  description: "Bebidas 1.5L",
-},
-{
-  id: "beer-selector",
-  category: "para-beber",
-  name: "Cervezas",
-  shortDescription: "Kunstmann, Austral o Heineken",
-  price: 4000,
-  type: "selector-beer",
-  image: "/productos/beer-selector.png",
-  description: "Cervezas seleccionadas",
-},
+  // ── PARA BEBER ───────────────────────────────────────────────────────────────
+  {
+    id: "cocktails-selector",
+    category: "para-beber",
+    name: "Cócteles",
+    shortDescription: "Pisco Sour, Mojitos, Piña Colada, Spritz y más",
+    price: 6000,
+    type: "selector-happy-hour",
+    image: "/productos/cocteles.png",
+    description: "Cócteles medio litro o litro",
+  },
+  {
+    id: "drinks-selector",
+    category: "para-beber",
+    name: "Bebidas",
+    shortDescription: "Coca-Cola, Sprite o Fanta",
+    price: 3900,
+    type: "selector-drinks",
+    image: "/productos/bebidas.png",
+    description: "Bebidas 1.5L",
+  },
+  {
+    id: "beer-selector",
+    category: "para-beber",
+    name: "Cervezas",
+    shortDescription: "Kunstmann, Austral o Heineken",
+    price: 4000,
+    type: "selector-beer",
+    image: "/productos/cervezas.png",
+    description: "Cervezas seleccionadas",
+  },
 ];
