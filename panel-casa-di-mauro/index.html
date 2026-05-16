@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Panel Casa Di Mauro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f0e1;--surface:#fffaf0;--ink:#12291f;--muted:#5a665d;--green:#0f2a1f;--green2:#1d4331;--gold:#b98f2f;--goldl:#d9b65a;--line:#d8ccae;--ok:#1f7a4a;--warn:#a8641b;--bad:#b3392b;--serif:'Playfair Display',Georgia,serif;--sans:'Inter',system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px}
+header{background:var(--green);color:#f6f0e1;padding:14px 16px}
+header .in{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+header b{font-family:var(--serif);font-size:20px;letter-spacing:.04em}
+header small{color:var(--goldl);letter-spacing:.14em;text-transform:uppercase;font-size:11px;display:block}
+.demo{background:#f6ecd0;color:#6b4f12;border:1px solid var(--goldl);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}
+@media(min-width:760px){.kpis{grid-template-columns:repeat(4,1fr)}}
+.kpi{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--gold);border-radius:12px;padding:12px 14px}
+.kpi b{display:block;font-family:var(--serif);font-size:28px;color:var(--green);line-height:1.1}
+.kpi span{font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0 16px}
+.tab{background:var(--green);color:#f6f0e1;border:1px solid var(--green);border-radius:999px;padding:9px 18px;font-weight:600;cursor:pointer;font-family:inherit;font-size:14px;transition:transform .15s}
+.tab:hover{transform:scale(1.07)}
+.tab.on{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--gold)}
+.pane{display:none}.pane.on{display:block}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.list{display:grid;gap:10px}
+.res{display:grid;grid-template-columns:1fr;gap:6px;cursor:pointer;text-align:left;width:100%;font:inherit;color:inherit;transition:transform .12s,border-color .12s}
+.res:hover{transform:translateY(-2px);border-color:var(--gold)}
+@media(min-width:760px){.res{grid-template-columns:1.3fr 1.2fr 1fr 1.1fr;align-items:center}}
+.res h4{margin:0;font-family:var(--serif);font-size:17px;color:var(--green)}
+.res .m{font-size:13px;color:var(--muted)}
+.chip{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;margin:2px 4px 2px 0;border:1px solid}
+.chip.ok{background:#e3eee4;border-color:#9dbba3;color:#17402b}
+.chip.warn{background:#f6ecd0;border-color:#d9b65a;color:#6b4f12}
+.chip.bad{background:#f5dcd6;border-color:#d8a08f;color:#7a2a1b}
+.chip.gr{background:#eee;border-color:#ccc;color:#555}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table.cal{border-collapse:collapse;font-size:11px;min-width:980px;width:100%}
+table.cal th,table.cal td{border:1px solid var(--line);text-align:center;padding:0;height:34px;min-width:26px}
+table.cal th{background:#efe6cc;font-weight:600}
+table.cal th.r,table.cal td.r{position:sticky;left:0;background:#efe6cc;min-width:130px;text-align:left;padding:0 8px;z-index:1;font-weight:600}
+td.c{cursor:pointer}
+td.c:hover{outline:2px solid var(--gold);outline-offset:-2px}
+td.asg{background:var(--green2);color:#f6f0e1}
+td.blq{background:repeating-linear-gradient(45deg,#d8a08f,#d8a08f 4px,#f5dcd6 4px,#f5dcd6 8px)}
+td.pre{background:#f6ecd0}
+.leg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:10px 0}
+.leg i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-3px;margin-right:5px;border:1px solid var(--line)}
+.sw{display:grid;gap:10px;margin-top:10px}
+.sr{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+.tg{position:relative;width:46px;height:26px;flex:none}
+.tg input{opacity:0;position:absolute;inset:0;cursor:pointer;margin:0;z-index:1}
+.tg b{position:absolute;inset:0;border-radius:99px;background:#c9c2ad;transition:.2s}
+.tg b::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+.tg input:checked+b{background:var(--ok)}
+.tg input:checked+b::after{transform:translateX(20px)}
+h3{font-family:var(--serif);color:var(--green);margin:0 0 6px}
+.note{font-size:13px;color:var(--muted)}
+.btn{background:var(--gold);color:#fff;border:0;border-radius:999px;padding:10px 18px;font-weight:600;cursor:pointer;font-family:inherit;font-size:14px;transition:transform .15s}
+.btn:hover{transform:scale(1.04)}
+.btn.g{background:none;color:var(--green);border:1px solid var(--green)}
+.ov{position:fixed;inset:0;background:rgba(10,25,18,.55);display:none;z-index:20;justify-content:flex-end}
+.ov.on{display:flex}
+.dr{background:var(--bg);width:min(520px,100%);height:100%;overflow:auto;padding:18px;border-left:4px solid var(--gold)}
+.row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.row span:first-child{color:var(--muted)}
+.ck{list-style:none;padding:0;margin:8px 0}
+.ck li{display:flex;gap:10px;align-items:center;padding:6px 0;font-size:14px}
+.ck i{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:13px;color:#fff;flex:none}
+.ck i.y{background:var(--ok)}.ck i.n{background:#b9b19b}
+select{font:inherit;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;max-width:100%}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--green);color:#f6f0e1;border-radius:12px;padding:10px 16px;font-size:14px;display:none;z-index:30;max-width:92vw}
+.how{display:grid;gap:8px;margin-top:6px}
+.how div{display:flex;gap:10px;font-size:14px}
+.how b{background:var(--gold);color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex:none}
+</style>
+</head>
+<body>
+<header><div class="in"><div><b>Casa Di Mauro</b><small>Panel de reservas</small></div><span class="demo">Maqueta · datos de ejemplo</span></div></header>
+<div class="wrap">
+  <div class="kpis" id="kpis"></div>
+  <div class="tabs" role="tablist">
+    <button class="tab on" data-p="res" type="button">Reservas</button>
+    <button class="tab" data-p="cal" type="button">Habitaciones</button>
+    <button class="tab" data-p="esc" type="button">Escapadas</button>
+  </div>
+
+  <section class="pane on" id="p-res">
+    <div class="card" style="margin-bottom:12px"><h3>Así te llega una reserva</h3>
+      <div class="how">
+        <div><b>1</b><span>El cliente elige fechas y paga con Flow el valor de la primera noche.</span></div>
+        <div><b>2</b><span>Flow confirma el pago: la reserva aparece aquí y te llega un aviso por WhatsApp.</span></div>
+        <div><b>3</b><span>El cliente recibe el link de check-in previo y lo completa desde su celular, antes de llegar.</span></div>
+        <div><b>4</b><span>Tú asignas el número de habitación: queda bloqueada en el calendario para esas noches.</span></div>
+      </div>
+    </div>
+    <div class="list" id="list"></div>
+  </section>
+
+  <section class="pane" id="p-cal">
+    <div class="leg"><span><i style="background:#1d4331"></i>Asignada a una reserva</span><span><i style="background:#f6ecd0"></i>Reserva sin número asignado</span><span><i style="background:repeating-linear-gradient(45deg,#d8a08f,#d8a08f 3px,#f5dcd6 3px,#f5dcd6 6px)"></i>Bloqueada por ti</span><span>Toca una celda libre para bloquearla o desbloquearla.</span></div>
+    <div class="scroll"><table class="cal" id="cal"></table></div>
+    <p class="note">Diciembre 2026. Los 10 números y su tipo son de ejemplo: la distribución real de habitaciones la confirma Mauro.</p>
+  </section>
+
+  <section class="pane" id="p-esc">
+    <div class="card"><h3>Escapadas y noches sueltas</h3>
+      <p class="note" style="margin:0">Las noches de Navidad y Año Nuevo se venden primero como escapada de 4 noches. Si una habitación no se vendió en la escapada, aquí la liberas y el sitio la ofrece por noche suelta. Si alguien reserva una noche suelta, esa habitación deja de estar en la escapada.</p>
+      <div class="sw" id="sw"></div>
+    </div>
+  </section>
+</div>
+
+<div class="ov" id="ov"><div class="dr" id="dr"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+var $=function(i){return document.getElementById(i)};
+var CLP=function(n){return '$'+Math.round(n).toLocaleString('es-CL')};
+var HABS=[{n:101,t:'Matrimonial'},{n:102,t:'Matrimonial'},{n:103,t:'Matrimonial'},{n:104,t:'Matrimonial'},{n:105,t:'Doble twin'},{n:106,t:'Doble twin'},{n:107,t:'Doble twin'},{n:108,t:'Doble twin'},{n:109,t:'Triple'},{n:110,t:'Triple'}];
+var RES=[
+ {cod:'CDM-4F7K',nom:'Camila Rojas',tel:'+56 9 1111 2222',tipo:'Matrimonial',pers:2,ci:10,co:12,plan:'Solo desayuno',total:70000,ab:35000,hab:null,chk:{datos:1,doc:1,hora:0,reg:1}},
+ {cod:'CDM-9QW2',nom:'Familia Soto Vera',tel:'+56 9 3333 4444',tipo:'Doble twin',pers:2,ci:14,co:17,plan:'Media pensión',total:258000,ab:56000,hab:106,chk:{datos:1,doc:1,hora:1,reg:1}},
+ {cod:'CDM-2M8T',nom:'Daniel Fuentes',tel:'+56 9 5555 6666',tipo:'Triple',pers:3,ci:23,co:27,plan:'Escapada Navidad',total:400000,ab:100000,hab:null,chk:{datos:0,doc:0,hora:0,reg:0}},
+ {cod:'CDM-7H3B',nom:'Anne Dubois',tel:'+33 6 1234 5678',tipo:'Matrimonial',pers:2,ci:5,co:8,plan:'Solo desayuno',total:105000,ab:35000,hab:101,chk:{datos:1,doc:1,hora:1,reg:1}}
+];
+var BL={}; // "hab-dia"
+var LIB={nav:{Matrimonial:false,'Doble twin':true,Triple:true},ny:{Matrimonial:false,'Doble twin':false,Triple:false}};
+var cur=null;
+function ck(r){var n=0;for(var k in r.chk)n+=r.chk[k];return n}
+function chkChip(r){var n=ck(r);return n===4?'<span class="chip ok">Check-in completo</span>':n===0?'<span class="chip bad">Check-in sin iniciar</span>':'<span class="chip warn">Check-in '+n+'/4</span>'}
+function habChip(r){return r.hab?'<span class="chip ok">Habitación '+r.hab+'</span>':'<span class="chip warn">Sin número asignado</span>'}
+function kp(){
+  var asg=RES.filter(function(r){return r.hab}).length,pend=RES.filter(function(r){return ck(r)<4}).length,ant=RES.reduce(function(a,r){return a+r.ab},0);
+  $('kpis').innerHTML='<div class="kpi"><b>'+RES.length+'</b><span>Reservas con abono pagado</span></div><div class="kpi"><b>'+(RES.length-asg)+'</b><span>Por asignar número de habitación</span></div><div class="kpi"><b>'+pend+'</b><span>Check-in previo pendiente</span></div><div class="kpi"><b>'+CLP(ant)+'</b><span>Abonos recibidos (1ª noche)</span></div>';
+}
+function lista(){
+  $('list').innerHTML='';
+  RES.forEach(function(r,i){
+    var b=document.createElement('button');b.type='button';b.className='card res';
+    b.innerHTML='<div><h4>'+r.nom+'</h4><div class="m">'+r.cod+' · '+r.pers+' pers.</div></div><div><b>'+r.tipo+'</b><div class="m">'+r.ci+' al '+r.co+' dic · '+r.plan+'</div></div><div><b>'+CLP(r.total)+'</b><div class="m">Abono '+CLP(r.ab)+' pagado</div></div><div>'+habChip(r)+chkChip(r)+'</div>';
+    b.onclick=function(){abrir(i)};$('list').appendChild(b);
+  });
+}
+function libres(r){
+  return HABS.filter(function(h){
+    if(h.t!==r.tipo)return false;
+    for(var d=r.ci;d<r.co;d++){
+      if(BL[h.n+'-'+d])return false;
+      if(RES.some(function(o){return o!==r&&o.hab===h.n&&d>=o.ci&&d<o.co}))return false;
+    }return true;
+  });
+}
+function abrir(i){
+  cur=i;var r=RES[i],ops=libres(r),L=[['datos','Datos del huésped'],['doc','Documento (RUT o pasaporte)'],['hora','Hora de llegada'],['reg','Reglamento aceptado']];
+  $('dr').innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><h3>'+r.nom+'</h3><button class="btn g" id="x" type="button">Cerrar</button></div><div class="note">'+r.cod+'</div>'+
+  '<div class="card" style="margin:10px 0"><div class="row"><span>Teléfono</span><span>'+r.tel+'</span></div><div class="row"><span>Habitación</span><span>'+r.tipo+' · '+r.pers+' pers.</span></div><div class="row"><span>Estadía</span><span>'+r.ci+' al '+r.co+' de diciembre</span></div><div class="row"><span>Plan</span><span>'+r.plan+'</span></div><div class="row"><span>Total</span><span>'+CLP(r.total)+'</span></div><div class="row"><span>Abono pagado (1ª noche, Flow)</span><span>'+CLP(r.ab)+'</span></div><div class="row"><span>Saldo al llegar</span><span>'+CLP(r.total-r.ab)+'</span></div></div>'+
+  '<div class="card" style="margin-bottom:10px"><h3 style="font-size:17px">Check-in previo</h3><ul class="ck">'+L.map(function(x){return '<li><i class="'+(r.chk[x[0]]?'y':'n')+'">'+(r.chk[x[0]]?'✓':'·')+'</i>'+x[1]+'</li>'}).join('')+'</ul><button class="btn g" id="rec" type="button">Enviar recordatorio por WhatsApp</button><div class="note" style="margin-top:6px">Con el check-in completo, el huésped llega y va directo a su habitación.</div></div>'+
+  '<div class="card"><h3 style="font-size:17px">Número de habitación</h3>'+(r.hab?'<p style="margin:0 0 8px">Asignada: <b>'+r.hab+'</b>. Queda bloqueada del '+r.ci+' al '+r.co+' de dic.</p>':'')+
+  '<select id="sel"><option value="">'+(ops.length?'Elegir número…':'Sin habitaciones libres de este tipo')+'</option>'+ops.map(function(h){return '<option value="'+h.n+'"'+(h.n===r.hab?' selected':'')+'>'+h.n+' · '+h.t+'</option>'}).join('')+'</select> <button class="btn" id="as" type="button">Asignar y bloquear</button></div>';
+  $('ov').classList.add('on');
+  $('x').onclick=cerrar;
+  $('rec').onclick=function(){toast('Recordatorio enviado a '+r.nom+' (simulado: no se envía nada real).')};
+  $('as').onclick=function(){var v=+$('sel').value;if(!v){toast('Elige un número de habitación.');return}r.hab=v;toast('Habitación '+v+' asignada y bloqueada para '+r.nom+'.');cerrar();todo()};
+}
+function cerrar(){$('ov').classList.remove('on')}
+$('ov').addEventListener('click',function(e){if(e.target===$('ov'))cerrar()});
+function toast(t){var e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(function(){e.style.display='none'},3200)}
+function cal(){
+  var h='<tr><th class="r">Habitación</th>';for(var d=2;d<=31;d++)h+='<th>'+d+'</th>';h+='</tr>';
+  HABS.forEach(function(x){
+    h+='<tr><td class="r">'+x.n+' · '+x.t+'</td>';
+    for(var d=2;d<=31;d++){
+      var o=RES.filter(function(r){return r.hab===x.n&&d>=r.ci&&d<r.co})[0],k=x.n+'-'+d,c;
+      if(o)c='<td class="asg" title="'+o.nom+'">'+o.nom.split(' ')[0].slice(0,3)+'</td>';
+      else if(BL[k])c='<td class="c blq" data-k="'+k+'" title="Bloqueada"></td>';
+      else{var pre=RES.some(function(r){return !r.hab&&r.tipo===x.t&&d>=r.ci&&d<r.co});c='<td class="c'+(pre?' pre':'')+'" data-k="'+k+'"></td>'}
+      h+=c;
+    }h+='</tr>';
+  });
+  $('cal').innerHTML=h;
+  $('cal').querySelectorAll('td.c').forEach(function(td){td.onclick=function(){var k=td.getAttribute('data-k');if(BL[k])delete BL[k];else BL[k]=1;cal()}});
+}
+function esc(){
+  var h='';
+  [['nav','Escapada Navidad · 23 al 27 de diciembre'],['ny','Escapada Año Nuevo · 30 de diciembre al 3 de enero']].forEach(function(p){
+    h+='<h3 style="font-size:17px;margin-top:8px">'+p[1]+'</h3>';
+    ['Matrimonial','Doble twin','Triple'].forEach(function(t){
+      h+='<div class="sr"><span><b>'+t+'</b><br><span class="note">'+(LIB[p[0]][t]?'Liberada: se vende por noche suelta':'Reservada para la escapada')+'</span></span><label class="tg"><input type="checkbox" data-k="'+p[0]+'|'+t+'"'+(LIB[p[0]][t]?' checked':'')+' aria-label="Liberar '+t+'"><b></b></label></div>';
+    });
+  });
+  $('sw').innerHTML=h;
+  $('sw').querySelectorAll('input').forEach(function(i){i.onchange=function(){var a=i.getAttribute('data-k').split('|');LIB[a[0]][a[1]]=i.checked;esc();toast(a[1]+': '+(i.checked?'liberada para noches sueltas.':'vuelve a quedar reservada para la escapada.'))}});
+}
+function todo(){kp();lista();cal();esc()}
+document.querySelectorAll('.tab').forEach(function(b){b.onclick=function(){document.querySelectorAll('.tab').forEach(function(x){x.classList.toggle('on',x===b)});document.querySelectorAll('.pane').forEach(function(p){p.classList.toggle('on',p.id==='p-'+b.getAttribute('data-p'))})}});
+todo();
+</script>
+</body>
+</html>
