@@ -465,21 +465,30 @@
   }
 
   .menuv2-card {
-    flex: 0 0 280px;
+    flex: 0 0 220px;
+  }
+
+  .menuv2-image-wrap {
+    height: 200px;
   }
 
   .menuv2-card-title {
-    font-size: 16px;
-    min-height: 38px;
+    font-size: 15px;
+    min-height: 34px;
   }
 
   .menuv2-price {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .menuv2-description {
     font-size: 12px;
-    min-height: 32px;
+    min-height: 28px;
+  }
+
+  .menuv2-button {
+    padding: 9px 12px;
+    font-size: 13px;
   }
 
   .menuv2-arrow {
@@ -897,4 +906,9 @@
 
 .menuv2-closed-button:hover {
   background: #ff4d4d;
+}
+/* Tarjeta simple clickeable en móvil */
+.menuv2-card--clickable {
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0,0,0,0.04);
 }
