@@ -12,6 +12,7 @@
   "dependencies": {
     "@googlemaps/js-api-loader": "^2.0.2",
     "@radix-ui/react-dialog": "^1.1.15",
+    "@supabase/supabase-js": "^2.106.0",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.8.0",
     "react": "^19.2.4",
