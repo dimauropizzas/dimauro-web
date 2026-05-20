@@ -179,8 +179,8 @@ function getZonePriceFromName(name: string) {
 export default function MenuV2() {
 
  const FORCE_STORE_OPEN = false;
- const FORCE_STORE_CLOSED = true;
- const FORCE_CLOSED_MESSAGE = "Cerrado por reunión de trabajo. Comprenda que somos Pyme. Nos vemos mañana.";
+ const FORCE_STORE_CLOSED = false;
+ const FORCE_CLOSED_MESSAGE = "";
 
 function isStoreOpen() {
 
