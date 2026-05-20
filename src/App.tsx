@@ -312,7 +312,7 @@ function Productos({ products, setProducts }: {
             <tr><th>Orden</th><th>Producto</th><th>Categoría</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr>
           </thead>
           <tbody>
-            {filtered.map((p, idx) => {
+            {filtered.map((p) => {
               const catProducts = filtered.filter(fp => fp.category === p.category);
               const catIdx = catProducts.findIndex(fp => fp.id === p.id);
               return (
@@ -578,7 +578,6 @@ function PuntoDeVenta({ products, pedidos, setPedidos }: {
   const [cliente, setCliente] = useState("");
   const [telefono, setTelefono] = useState("");
   const [direccion, setDireccion] = useState("");
-  const [nota, setNota] = useState("");
   const [busqueda, setBusqueda] = useState("");
   const [confirmado, setConfirmado] = useState(false);
   const [filterCat, setFilterCat] = useState<CategoryId | "all">("all");
