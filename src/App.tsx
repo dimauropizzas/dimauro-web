@@ -628,7 +628,6 @@ function PuntoDeVenta({ products, pedidos, setPedidos }: {
     setCliente("");
     setTelefono("");
     setDireccion("");
-    setNota("");
     setConfirmado(true);
     setTimeout(() => setConfirmado(false), 3000);
   };
