@@ -34,6 +34,7 @@ type SelectorModal =
   | { type: "custom-pizza" }
   | { type: "promo-two-pizzas" }
   | { type: "promo-two-pizzas-drink" }
+  | { type: "promo-dimauro" }
   | null;
 
 const WHATSAPP_NUMBER = "56956154280";
@@ -316,6 +317,12 @@ const autocompleteRef = useRef<any>(null);
   const [promoNote, setPromoNote] = useState("");
   const [promoTrago, setPromoTrago] = useState("pisco-sour");
   const [promoTragoNote, setPromoTragoNote] = useState("");
+
+  // Estados promo Di Mauro
+  const [promoDiMauroSauce, setPromoDiMauroSauce] = useState("tomate");
+  const [promoDiMauroIngredients, setPromoDiMauroIngredients] = useState<string[]>([]);
+  const [promoDiMauroCoctel, setPromoDiMauroCoctel] = useState("pisco-sour");
+  const [promoDiMauroNote, setPromoDiMauroNote] = useState("");
 
   const cartQty = cart.reduce((acc, item) => acc + item.qty, 0);
   const cartTotal = cart.reduce((acc, item) => acc + item.qty * item.price, 0);
@@ -995,6 +1002,7 @@ useEffect(() => {
                       product.type === "pizza_fixed" ||
                       product.type === "promo_pizzas" ||
                       product.type === "promo_pizzas_drink" ||
+                      product.type === "promo_dimauro" ||
                       product.type === "simple";
 
                     const opens =
@@ -1038,6 +1046,14 @@ useEffect(() => {
                         ? () => {
                             resetPromoTragoModal();
                             openSelector({ type: "promo-two-pizzas-drink" });
+                          }
+                        : product.type === "promo_dimauro"
+                        ? () => {
+                            setPromoDiMauroSauce("tomate");
+                            setPromoDiMauroIngredients([]);
+                            setPromoDiMauroCoctel("pisco-sour");
+                            setPromoDiMauroNote("");
+                            openSelector({ type: "promo-dimauro" });
                           }
                         : null;
 
@@ -1712,6 +1728,108 @@ useEffect(() => {
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {modal?.type === "promo-dimauro" && (
+        <div className="menuv2-modal-backdrop" onClick={closeModal}>
+          <div className="menuv2-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="menuv2-modal-close" onClick={closeModal}>✕</button>
+            <h2 className="menuv2-modal-title">Promo Parejas</h2>
+            <div className="menuv2-modal-body">
+              <div className="menuv2-modal-subtitle">Pizza familiar + cóctel de litro a elección</div>
+
+              <div className="menuv2-modal-subtitle">Salsa base</div>
+              <div className="menuv2-chip-group">
+                {promoPizzaSauces.map((s) => (
+                  <button
+                    key={s.id}
+                    className={promoDiMauroSauce === s.id ? "menuv2-chip menuv2-chip--active" : "menuv2-chip"}
+                    onClick={() => setPromoDiMauroSauce(s.id)}
+                  >
+                    {s.name}
+                  </button>
+                ))}
+              </div>
+
+              <div className="menuv2-modal-subtitle">
+                Ingredientes ({promoDiMauroIngredients.length}/3)
+              </div>
+              <div className="menuv2-ingredient-list">
+                {promoPizzaIngredients.map((ing) => {
+                  const qty = promoDiMauroIngredients.filter((i) => i === ing.id).length;
+                  return (
+                    <div key={ing.id} className="menuv2-ingredient-row">
+                      <span>{ing.name}</span>
+                      <div className="menuv2-counter-row">
+                        <button className="menuv2-counter-btn" onClick={() => changePromoIngredientQty(ing.id, -1, setPromoDiMauroIngredients)}>−</button>
+                        <span className="menuv2-counter-value">{qty}</span>
+                        <button className="menuv2-counter-btn" onClick={() => changePromoIngredientQty(ing.id, 1, setPromoDiMauroIngredients)}>+</button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="menuv2-modal-subtitle">Cóctel de litro</div>
+              <div className="menuv2-chip-group">
+                {[
+                  { id: "pisco-sour", name: "Pisco Sour" },
+                  { id: "mojito-tradicional", name: "Mojito Tradicional" },
+                  { id: "ramazzotti-spritz", name: "Ramazzotti Spritz" },
+                  { id: "tropical-gin", name: "Tropical Gin" },
+                ].map((c) => (
+                  <button
+                    key={c.id}
+                    className={promoDiMauroCoctel === c.id ? "menuv2-chip menuv2-chip--active" : "menuv2-chip"}
+                    onClick={() => setPromoDiMauroCoctel(c.id)}
+                  >
+                    {c.name}
+                  </button>
+                ))}
+              </div>
+
+              <input
+                className="menuv2-note-input"
+                type="text"
+                maxLength={60}
+                placeholder="Observaciones (opcional)"
+                value={promoDiMauroNote}
+                onChange={(e) => setPromoDiMauroNote(e.target.value)}
+              />
+
+              <button
+                className="menuv2-modal-add"
+                onClick={() => {
+                  if (promoDiMauroIngredients.length !== 3) return;
+                  const sauceName = promoPizzaSauces.find((s) => s.id === promoDiMauroSauce)?.name ?? promoDiMauroSauce;
+                  const ingText = promoDiMauroIngredients
+                    .map((id) => promoPizzaIngredients.find((i) => i.id === id)?.name ?? id)
+                    .join(", ");
+                  const coctelNames: Record<string, string> = {
+                    "pisco-sour": "Pisco Sour",
+                    "mojito-tradicional": "Mojito Tradicional",
+                    "ramazzotti-spritz": "Ramazzotti Spritz",
+                    "tropical-gin": "Tropical Gin",
+                  };
+                  const coctelName = coctelNames[promoDiMauroCoctel] ?? promoDiMauroCoctel;
+                  addToCart({
+                    id: `promo-dimauro-${promoDiMauroSauce}-${promoDiMauroIngredients.join("-")}-${promoDiMauroCoctel}`,
+                    name: "Promo Parejas",
+                    price: 18900,
+                    description: `Salsa ${sauceName}, mozzarella, ${ingText} · Cóctel: ${coctelName} (litro)${promoDiMauroNote ? ` · Obs: ${promoDiMauroNote}` : ""}`,
+                  });
+                  setPromoDiMauroSauce("tomate");
+                  setPromoDiMauroIngredients([]);
+                  setPromoDiMauroCoctel("pisco-sour");
+                  setPromoDiMauroNote("");
+                  closeModal();
+                }}
+              >
+                Agregar al carrito · {formatCLP(18900)}
+              </button>
+            </div>
           </div>
         </div>
       )}

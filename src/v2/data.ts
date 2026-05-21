@@ -20,6 +20,7 @@ export type ProductType =
   | "selector-drinks"
   | "selector-beer"
   | "promo_pizzas_drink"
+  | "promo_dimauro"
   | "hidden";
 
 export type Ingredient = {
@@ -98,6 +99,17 @@ export const categories: Category[] = [
 
 export const products: Product[] = [
   // ── PROMOS ──────────────────────────────────────────────────────────────────
+  {
+    id: "promo-dimauro",
+    category: "promos",
+    tags: ["promos"],
+    name: "Promo Parejas",
+    shortDescription: "Pizza familiar 3 ingredientes + cóctel de litro a elección",
+    description: "1 pizza familiar con salsa y 3 ingredientes a elección + cóctel de litro",
+    price: 18900,
+    type: "promo_dimauro",
+    image: "/productos/promo-dimauro.png",
+  },
   {
     id: "promo-2-pizzas",
     category: "promos",
