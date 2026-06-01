@@ -319,6 +319,7 @@ const autocompleteRef = useRef<any>(null);
   const [promoSegundaPizza1, setPromoSegundaPizza1] = useState<string | null>(null);
   const [promoSegundaPizza2, setPromoSegundaPizza2] = useState<string | null>(null);
   const [promoSegundaNote, setPromoSegundaNote] = useState("");
+  const [promoNote, setPromoNote] = useState("");
 
   const promoSegundaPizzas = products.filter(
     (p) => p.category === "pizzas" &&
@@ -1765,8 +1766,18 @@ useEffect(() => {
                 </button>
               </div>
             )}
-            {modal.type === "promo-segunda-mitad" && (
-              <div className="menuv2-modal-body">
+          </div>
+        </div>
+      )}
+
+      {modal?.type === "promo-segunda-mitad" && (
+        <div className="menuv2-modal-backdrop" onClick={closeModal}>
+          <div className="menuv2-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="menuv2-modal-header">
+              <h3 className="menuv2-modal-title">La Segunda a Mitad de Precio</h3>
+              <button className="menuv2-modal-close" onClick={closeModal}>✕</button>
+            </div>
+            <div className="menuv2-modal-body">
                 <div className="menuv2-chip-group">
                   <button
                     className={promoSegundaTab === "pizza1" ? "menuv2-chip menuv2-chip--active" : "menuv2-chip"}
@@ -1874,9 +1885,12 @@ useEffect(() => {
                     ? `Agregar al carrito · ${formatCLP(promoSegundaTotal)}`
                     : "Elige las 2 pizzas"}
                 </button>
-              </div>
-            )}
- && (
+            </div>
+          </div>
+        </div>
+      )}
+
+      {modal?.type === "promo-dimauro" && (
         <div className="menuv2-modal-backdrop" onClick={closeModal}>
           <div className="menuv2-modal" onClick={(e) => e.stopPropagation()}>
             <button className="menuv2-modal-close" onClick={closeModal}>✕</button>
