@@ -35,6 +35,7 @@ type SelectorModal =
   | { type: "promo-two-pizzas" }
   | { type: "promo-two-pizzas-drink" }
   | { type: "promo-dimauro" }
+  | { type: "promo-segunda-mitad" }
   | null;
 
 const WHATSAPP_NUMBER = "56956154280";
@@ -314,7 +315,34 @@ const autocompleteRef = useRef<any>(null);
   const [happyHourNote, setHappyHourNote] = useState("");
   const [pizzaNote, setPizzaNote] = useState("");
   const [customPizzaNote, setCustomPizzaNote] = useState("");
-  const [promoNote, setPromoNote] = useState("");
+  const [promoSegundaTab, setPromoSegundaTab] = useState<"pizza1" | "pizza2">("pizza1");
+  const [promoSegundaPizza1, setPromoSegundaPizza1] = useState<string | null>(null);
+  const [promoSegundaPizza2, setPromoSegundaPizza2] = useState<string | null>(null);
+  const [promoSegundaNote, setPromoSegundaNote] = useState("");
+
+  const promoSegundaPizzas = products.filter(
+    (p) => p.category === "pizzas" &&
+    !["pizza-maihue", "pizza-rinihue", "pizza-caburgua"].includes(p.id) &&
+    p.type === "pizza_fixed"
+  );
+
+  const promoSegundaTotal = (() => {
+    if (!promoSegundaPizza1 || !promoSegundaPizza2) return 0;
+    const p1 = products.find((p) => p.id === promoSegundaPizza1);
+    const p2 = products.find((p) => p.id === promoSegundaPizza2);
+    if (!p1 || !p2) return 0;
+    const mayor = Math.max(p1.price, p2.price);
+    const menor = Math.min(p1.price, p2.price);
+    return mayor + Math.round(menor / 2);
+  })();
+
+  const promoSegundaAhorro = (() => {
+    if (!promoSegundaPizza1 || !promoSegundaPizza2) return 0;
+    const p1 = products.find((p) => p.id === promoSegundaPizza1);
+    const p2 = products.find((p) => p.id === promoSegundaPizza2);
+    if (!p1 || !p2) return 0;
+    return Math.round(Math.min(p1.price, p2.price) / 2);
+  })();
   const [promoTrago, setPromoTrago] = useState("pisco-sour");
   const [promoTragoNote, setPromoTragoNote] = useState("");
 
@@ -1055,6 +1083,14 @@ useEffect(() => {
                             setPromoDiMauroNote("");
                             openSelector({ type: "promo-dimauro" });
                           }
+                        : product.type === "promo_segunda_mitad"
+                        ? () => {
+                            setPromoSegundaTab("pizza1");
+                            setPromoSegundaPizza1(null);
+                            setPromoSegundaPizza2(null);
+                            setPromoSegundaNote("");
+                            openSelector({ type: "promo-segunda-mitad" });
+                          }
                         : null;
 
                     return (
@@ -1171,6 +1207,7 @@ useEffect(() => {
                 {modal.type === "pizza-fixed" && modalPizzaProduct?.name}
                 {modal.type === "custom-pizza" && "Arma tu Pizza"}
                 {modal.type === "promo-two-pizzas" && "2 Pizzas Familiares"}
+                {modal.type === "promo-segunda-mitad" && "La Segunda a Mitad de Precio"}
               </h3>
 
               <button className="menuv2-modal-close" onClick={closeModal}>✕</button>
@@ -1728,11 +1765,118 @@ useEffect(() => {
                 </button>
               </div>
             )}
-          </div>
-        </div>
-      )}
+            {modal.type === "promo-segunda-mitad" && (
+              <div className="menuv2-modal-body">
+                <div className="menuv2-chip-group">
+                  <button
+                    className={promoSegundaTab === "pizza1" ? "menuv2-chip menuv2-chip--active" : "menuv2-chip"}
+                    onClick={() => setPromoSegundaTab("pizza1")}
+                  >
+                    Pizza 1 {promoSegundaPizza1 ? "✓" : ""}
+                  </button>
+                  <button
+                    className={promoSegundaTab === "pizza2" ? "menuv2-chip menuv2-chip--active" : "menuv2-chip"}
+                    onClick={() => setPromoSegundaTab("pizza2")}
+                  >
+                    Pizza 2 {promoSegundaPizza2 ? "✓" : ""}
+                  </button>
+                </div>
 
-      {modal?.type === "promo-dimauro" && (
+                <div className="menuv2-modal-subtitle">
+                  Elige la {promoSegundaTab === "pizza1" ? "Pizza 1" : "Pizza 2"}
+                </div>
+
+                <div className="menuv2-option-list">
+                  {promoSegundaPizzas.map((pizza) => {
+                    const selected = promoSegundaTab === "pizza1"
+                      ? promoSegundaPizza1 === pizza.id
+                      : promoSegundaPizza2 === pizza.id;
+                    return (
+                      <button
+                        key={pizza.id}
+                        className={selected ? "menuv2-option menuv2-option--active" : "menuv2-option"}
+                        onClick={() => {
+                          if (promoSegundaTab === "pizza1") setPromoSegundaPizza1(pizza.id);
+                          else setPromoSegundaPizza2(pizza.id);
+                          if (promoSegundaTab === "pizza1" && !promoSegundaPizza2) setPromoSegundaTab("pizza2");
+                        }}
+                      >
+                        <div className="menuv2-option-top">
+                          <strong>{pizza.name}</strong>
+                          <span>{formatCLP(pizza.price)}</span>
+                        </div>
+                        <div className="menuv2-option-text">{pizza.shortDescription}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {promoSegundaPizza1 && promoSegundaPizza2 && (() => {
+                  const p1 = products.find((p) => p.id === promoSegundaPizza1)!;
+                  const p2 = products.find((p) => p.id === promoSegundaPizza2)!;
+                  const pizzaMayor = p1.price >= p2.price ? p1 : p2;
+                  const pizzaMenor = p1.price < p2.price ? p1 : p2;
+                  return (
+                    <div style={{ background: "#fff8f8", border: "1px solid #ffdddd", borderRadius: "10px", padding: "12px", marginTop: "8px" }}>
+                      <div style={{ fontSize: "11px", color: "#888", marginBottom: "6px", fontWeight: 600 }}>RESUMEN</div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", padding: "3px 0" }}>
+                        <span>{pizzaMayor.name}</span>
+                        <span>{formatCLP(pizzaMayor.price)}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", padding: "3px 0" }}>
+                        <span>{pizzaMenor.name} <span style={{ fontSize: "11px", color: "#888" }}>(2ª a mitad)</span></span>
+                        <span style={{ color: "#25a244" }}>{formatCLP(Math.round(pizzaMenor.price / 2))}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", padding: "3px 0", color: "#25a244" }}>
+                        <span>Ahorro</span>
+                        <span>-{formatCLP(promoSegundaAhorro)}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "15px", fontWeight: 700, borderTop: "1px solid #ffdddd", marginTop: "6px", paddingTop: "8px" }}>
+                        <span>Total</span>
+                        <span>{formatCLP(promoSegundaTotal)}</span>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                <input
+                  className="menuv2-note-input"
+                  type="text"
+                  maxLength={60}
+                  placeholder="Observaciones (opcional)"
+                  value={promoSegundaNote}
+                  onChange={(e) => setPromoSegundaNote(e.target.value)}
+                />
+
+                <button
+                  className="menuv2-modal-add"
+                  disabled={!promoSegundaPizza1 || !promoSegundaPizza2}
+                  onClick={() => {
+                    if (!promoSegundaPizza1 || !promoSegundaPizza2) return;
+                    const p1 = products.find((p) => p.id === promoSegundaPizza1)!;
+                    const p2 = products.find((p) => p.id === promoSegundaPizza2)!;
+                    const pizzaMayor = p1.price >= p2.price ? p1 : p2;
+                    const pizzaMenor = p1.price < p2.price ? p1 : p2;
+                    addToCart({
+                      id: `promo-segunda-${promoSegundaPizza1}-${promoSegundaPizza2}-${promoSegundaNote || "sin-nota"}`,
+                      name: "La Segunda a Mitad de Precio",
+                      price: promoSegundaTotal,
+                      description: `${pizzaMayor.name} + ${pizzaMenor.name} (mitad)${promoSegundaNote ? ` · Obs: ${promoSegundaNote}` : ""}`,
+                    });
+                    setPromoSegundaTab("pizza1");
+                    setPromoSegundaPizza1(null);
+                    setPromoSegundaPizza2(null);
+                    setPromoSegundaNote("");
+                    closeModal();
+                  }}
+                >
+                  {promoSegundaPizza1 && promoSegundaPizza2
+                    ? `Agregar al carrito · ${formatCLP(promoSegundaTotal)}`
+                    : "Elige las 2 pizzas"}
+                </button>
+              </div>
+            )}
+ && (
         <div className="menuv2-modal-backdrop" onClick={closeModal}>
           <div className="menuv2-modal" onClick={(e) => e.stopPropagation()}>
             <button className="menuv2-modal-close" onClick={closeModal}>✕</button>

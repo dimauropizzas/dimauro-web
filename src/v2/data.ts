@@ -21,6 +21,7 @@ export type ProductType =
   | "selector-beer"
   | "promo_pizzas_drink"
   | "promo_dimauro"
+  | "promo_segunda_mitad"
   | "hidden";
 
 export type Ingredient = {
@@ -122,15 +123,15 @@ export const products: Product[] = [
     image: "/productos/promo-2-pizzas.jpg",
   },
   {
-    id: "promo-2-pizzas-trago",
+    id: "promo-segunda-mitad",
     category: "promos",
     tags: ["promos"],
-    name: "2 Pizzas + Trago",
-    shortDescription: "2 pizzas familiares con 3 ingredientes + Mojito o Pisco Sour (1 litro)",
-    description: "Promo 2 pizzas familiares de 38 cm + cóctel a elección (litro)",
-    price: 29900,
-    type: "promo_pizzas_drink",
-    image: "/productos/promo-2-pizzas-trago.png",
+    name: "La Segunda a Mitad de Precio",
+    shortDescription: "Elige 2 pizzas del menú · La más barata a mitad de precio",
+    description: "Cualquier 2 pizzas del menú. La de menor precio queda al 50%.",
+    price: 0,
+    type: "promo_segunda_mitad",
+    image: "/productos/promo-segunda-mitad.png",
   },
   {
     id: "promo-burger-2x",
