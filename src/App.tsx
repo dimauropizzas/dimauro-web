@@ -550,7 +550,6 @@ type ItemPedido = {
   nombre: string;
   precio: number;
   cantidad: number;
-  nota?: string;
 };
 
 type Pedido = {
@@ -782,8 +781,8 @@ function Pedidos({ pedidos, setPedidos }: { pedidos: Pedido[]; setPedidos: (p: P
                   </td>
                   <td><span className="cat-badge">{p.tipo === "delivery" ? "🛵 Delivery" : "🏠 Retiro"}</span></td>
                   <td>
-                    {p.items.map((i, idx) => (
-                      <div key={idx} style={{ fontSize: 13 }}>{i.cantidad}× {i.nombre}</div>
+                    {p.items.map((i, _idx) => (
+                      <div key={_idx} style={{ fontSize: 13 }}>{i.cantidad}× {i.nombre}</div>
                     ))}
                   </td>
                   <td style={{ fontWeight: 600, color: "var(--red)" }}>{fmt(p.total)}</td>

@@ -2049,8 +2049,6 @@ useEffect(() => {
                     if (!promoSegundaPizza1 || !promoSegundaPizza2) return;
                     const p1 = products.find((p) => p.id === promoSegundaPizza1)!;
                     const p2 = products.find((p) => p.id === promoSegundaPizza2)!;
-                    const pizzaMayor = p1.price >= p2.price ? p1 : p2;
-                    const pizzaMenor = p1.price < p2.price ? p1 : p2;
                     const seg1Text = Object.entries(promoSegundaExtras1).filter(([, qty]) => qty > 0).map(([id, qty]) => { const ing = ingredients.find((i) => i.id === id); return ing ? `${ing.name} x${qty}` : id; }).join(", ");
                     const seg2Text = Object.entries(promoSegundaExtras2).filter(([, qty]) => qty > 0).map(([id, qty]) => { const ing = ingredients.find((i) => i.id === id); return ing ? `${ing.name} x${qty}` : id; }).join(", ");
                     addToCart({
