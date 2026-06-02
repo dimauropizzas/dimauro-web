@@ -19,6 +19,7 @@ function formatCLP(value: number) {
 type CartItem = {
   id: string;
   name: string;
+  description?: string;
   price: number;
   qty: number;
 };
@@ -319,6 +320,26 @@ const autocompleteRef = useRef<any>(null);
   const [promoSegundaPizza1, setPromoSegundaPizza1] = useState<string | null>(null);
   const [promoSegundaPizza2, setPromoSegundaPizza2] = useState<string | null>(null);
   const [promoSegundaNote, setPromoSegundaNote] = useState("");
+  const [promoSegundaExtras1, setPromoSegundaExtras1] = useState<Record<string, number>>({});
+  const [promoSegundaExtras2, setPromoSegundaExtras2] = useState<Record<string, number>>({});
+  const [promoSegundaExtrasOpen, setPromoSegundaExtrasOpen] = useState(false);
+
+  const promoSegundaExtrasList = ingredients.slice().sort((a, b) => a.price - b.price);
+
+  const promoSegundaExtrasTotal = (() => {
+    const extras1 = Object.entries(promoSegundaExtras1).reduce((sum, [id, qty]) => {
+      const ing = ingredients.find((i) => i.id === id);
+      return sum + (ing ? ing.price * qty : 0);
+    }, 0);
+    const extras2 = Object.entries(promoSegundaExtras2).reduce((sum, [id, qty]) => {
+      const ing = ingredients.find((i) => i.id === id);
+      return sum + (ing ? ing.price * qty : 0);
+    }, 0);
+    return extras1 + extras2;
+  })();
+
+  const promoSegundaExtrasCount1 = Object.values(promoSegundaExtras1).reduce((a, b) => a + b, 0);
+  const promoSegundaExtrasCount2 = Object.values(promoSegundaExtras2).reduce((a, b) => a + b, 0);
   const [promoNote, setPromoNote] = useState("");
 
   const promoSegundaPizzas = products.filter(
@@ -352,6 +373,32 @@ const autocompleteRef = useRef<any>(null);
   const [promoDiMauroIngredients, setPromoDiMauroIngredients] = useState<string[]>([]);
   const [promoDiMauroCoctel, setPromoDiMauroCoctel] = useState("pisco-sour");
   const [promoDiMauroNote, setPromoDiMauroNote] = useState("");
+  const [promoDiMauroExtras, setPromoDiMauroExtras] = useState<Record<string, number>>({});
+  const [promoDiMauroExtrasOpen, setPromoDiMauroExtrasOpen] = useState(false);
+
+  const [promoTwoPizzasExtras1, setPromoTwoPizzasExtras1] = useState<Record<string, number>>({});
+  const [promoTwoPizzasExtras2, setPromoTwoPizzasExtras2] = useState<Record<string, number>>({});
+  const [promoTwoPizzasExtrasOpen, setPromoTwoPizzasExtrasOpen] = useState(false);
+
+  const promoDiMauroExtrasTotal = Object.entries(promoDiMauroExtras).reduce((sum, [id, qty]) => {
+    const ing = ingredients.find((i) => i.id === id);
+    return sum + (ing ? ing.price * qty : 0);
+  }, 0);
+  const promoDiMauroExtrasCount = Object.values(promoDiMauroExtras).reduce((a, b) => a + b, 0);
+
+  const promoTwoPizzasExtrasTotal = (() => {
+    const e1 = Object.entries(promoTwoPizzasExtras1).reduce((sum, [id, qty]) => {
+      const ing = ingredients.find((i) => i.id === id);
+      return sum + (ing ? ing.price * qty : 0);
+    }, 0);
+    const e2 = Object.entries(promoTwoPizzasExtras2).reduce((sum, [id, qty]) => {
+      const ing = ingredients.find((i) => i.id === id);
+      return sum + (ing ? ing.price * qty : 0);
+    }, 0);
+    return e1 + e2;
+  })();
+  const promoTwoPizzasExtrasCount1 = Object.values(promoTwoPizzasExtras1).reduce((a, b) => a + b, 0);
+  const promoTwoPizzasExtrasCount2 = Object.values(promoTwoPizzasExtras2).reduce((a, b) => a + b, 0);
 
   const cartQty = cart.reduce((acc, item) => acc + item.qty, 0);
   const cartTotal = cart.reduce((acc, item) => acc + item.qty * item.price, 0);
@@ -483,6 +530,9 @@ const autocompleteRef = useRef<any>(null);
     setPromoPizza1([]);
     setPromoPizza2([]);
     setPromoNote("");
+    setPromoTwoPizzasExtras1({});
+    setPromoTwoPizzasExtras2({});
+    setPromoTwoPizzasExtrasOpen(false);
   }
 
   function resetPromoTragoModal() {
@@ -520,7 +570,8 @@ const autocompleteRef = useRef<any>(null);
         ...prev,
         {
           id: item.id,
-          name: item.description ? `${item.name} · ${item.description}` : item.name,
+          name: item.name,
+          description: item.description,
           price: item.price,
           qty: 1,
         },
@@ -1032,6 +1083,7 @@ useEffect(() => {
                       product.type === "promo_pizzas" ||
                       product.type === "promo_pizzas_drink" ||
                       product.type === "promo_dimauro" ||
+                      product.type === "promo_segunda_mitad" ||
                       product.type === "simple";
 
                     const opens =
@@ -1082,6 +1134,8 @@ useEffect(() => {
                             setPromoDiMauroIngredients([]);
                             setPromoDiMauroCoctel("pisco-sour");
                             setPromoDiMauroNote("");
+                            setPromoDiMauroExtras({});
+                            setPromoDiMauroExtrasOpen(false);
                             openSelector({ type: "promo-dimauro" });
                           }
                         : product.type === "promo_segunda_mitad"
@@ -1143,6 +1197,8 @@ useEffect(() => {
                               </div>
                               <div className="menuv2-price">{formatCLP(product.price)}</div>
                             </>
+                          ) : product.type === "promo_segunda_mitad" ? (
+                            <div className="menuv2-price">50% menos en la 2°</div>
                           ) : (
                             <div className="menuv2-price">{formatCLP(product.price)}</div>
                           )}
@@ -1602,8 +1658,8 @@ useEffect(() => {
                 <div className="menuv2-modal-subtitle">Elige salsa y 3 ingredientes por pizza</div>
 
                 <div className="menuv2-chip-group">
-                  <button className={promoTab === "pizza1" ? "menuv2-chip menuv2-chip--active" : "menuv2-chip"} onClick={() => setPromoTab("pizza1")}>Pizza 1</button>
-                  <button className={promoTab === "pizza2" ? "menuv2-chip menuv2-chip--active" : "menuv2-chip"} onClick={() => setPromoTab("pizza2")}>Pizza 2</button>
+                  <button className={promoTab === "pizza1" ? "menuv2-chip menuv2-chip--active" : "menuv2-chip"} onClick={() => setPromoTab("pizza1")}>Pizza 1 {promoPizza1.length === 3 ? "✓" : ""}</button>
+                  <button className={promoTab === "pizza2" ? "menuv2-chip menuv2-chip--active" : "menuv2-chip"} onClick={() => setPromoTab("pizza2")}>Pizza 2 {promoPizza2.length === 3 ? "✓" : ""}</button>
                 </div>
 
                 <div className="menuv2-modal-subtitle">Salsa base</div>
@@ -1645,6 +1701,68 @@ useEffect(() => {
                   })}
                 </div>
 
+                {/* Extras pagados por pizza */}
+                <button
+                  style={{
+                    background: promoTwoPizzasExtrasOpen ? "#fff8f8" : "#f9f9f9",
+                    border: promoTwoPizzasExtrasOpen ? "1px solid #cc0000" : "1px solid #eee",
+                    borderRadius: promoTwoPizzasExtrasOpen ? "10px 10px 0 0" : "10px",
+                    padding: "9px 14px",
+                    fontSize: "12px",
+                    color: promoTwoPizzasExtrasOpen ? "#cc0000" : "#666",
+                    width: "100%",
+                    textAlign: "left",
+                    cursor: "pointer",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                  onClick={() => setPromoTwoPizzasExtrasOpen(!promoTwoPizzasExtrasOpen)}
+                >
+                  <span>{promoTwoPizzasExtrasOpen ? "▼" : "▶"} Extras {promoTab === "pizza1" ? "Pizza 1" : "Pizza 2"} ({promoTab === "pizza1" ? promoTwoPizzasExtrasCount1 : promoTwoPizzasExtrasCount2}/6)</span>
+                  <span style={{ fontSize: "11px", color: "#888" }}>máx. 3 c/u</span>
+                </button>
+                {promoTwoPizzasExtrasOpen && (
+                  <div style={{ border: "1px solid #cc0000", borderTop: "none", borderRadius: "0 0 10px 10px", overflow: "hidden", marginTop: "-1px" }}>
+                    {promoSegundaExtrasList.map((ing, idx) => {
+                      const extras = promoTab === "pizza1" ? promoTwoPizzasExtras1 : promoTwoPizzasExtras2;
+                      const setExtras = promoTab === "pizza1" ? setPromoTwoPizzasExtras1 : setPromoTwoPizzasExtras2;
+                      const count = extras[ing.id] || 0;
+                      const totalCount = promoTab === "pizza1" ? promoTwoPizzasExtrasCount1 : promoTwoPizzasExtrasCount2;
+                      return (
+                        <div
+                          key={`two-extra-${ing.id}`}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            padding: "8px 14px",
+                            borderBottom: idx < promoSegundaExtrasList.length - 1 ? "1px solid #f5f5f5" : "none",
+                            background: idx % 2 === 1 ? "#fafafa" : "#fff",
+                          }}
+                        >
+                          <div>
+                            <div style={{ fontSize: "13px", color: "#333", fontWeight: 600 }}>{ing.name}</div>
+                            <div style={{ fontSize: "11px", color: "#888" }}>{formatCLP(ing.price)}</div>
+                          </div>
+                          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                            <button
+                              style={{ background: "#f0f0f0", border: "none", borderRadius: "99px", width: "26px", height: "26px", fontSize: "15px", cursor: "pointer", fontWeight: 700 }}
+                              onClick={() => setExtras((prev) => ({ ...prev, [ing.id]: Math.max(0, (prev[ing.id] || 0) - 1) }))}
+                            >−</button>
+                            <span style={{ fontSize: "13px", fontWeight: 700, minWidth: "16px", textAlign: "center" }}>{count}</span>
+                            <button
+                              style={{ background: totalCount >= 6 || count >= 3 ? "#ddd" : "#cc0000", border: "none", borderRadius: "99px", width: "26px", height: "26px", fontSize: "15px", cursor: "pointer", color: "white", fontWeight: 700 }}
+                              disabled={totalCount >= 6 || count >= 3}
+                              onClick={() => setExtras((prev) => ({ ...prev, [ing.id]: (prev[ing.id] || 0) + 1 }))}
+                            >+</button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
                 <input className="menuv2-note-input" type="text" maxLength={30} placeholder="Observaciones" value={promoNote} onChange={(e) => setPromoNote(e.target.value)} />
 
                 <button
@@ -1656,19 +1774,21 @@ useEffect(() => {
                     const pizza2Text = promoPizza2.map((id) => ingredients.find((item) => item.id === id)?.name || id).join(", ");
                     const sauce1Name = promoPizzaSauces.find((item) => item.id === promoPizza1Sauce)?.name || promoPizza1Sauce;
                     const sauce2Name = promoPizzaSauces.find((item) => item.id === promoPizza2Sauce)?.name || promoPizza2Sauce;
+                    const extras1Text = Object.entries(promoTwoPizzasExtras1).filter(([, qty]) => qty > 0).map(([id, qty]) => { const ing = ingredients.find((i) => i.id === id); return ing ? `${ing.name} ×${qty}` : id; }).join(", ");
+                    const extras2Text = Object.entries(promoTwoPizzasExtras2).filter(([, qty]) => qty > 0).map(([id, qty]) => { const ing = ingredients.find((i) => i.id === id); return ing ? `${ing.name} ×${qty}` : id; }).join(", ");
 
                     addToCart({
                       id: `promo-2-pizzas-${promoPizza1Sauce}-${promoPizza1.join("-")}-${promoPizza2Sauce}-${promoPizza2.join("-")}-${promoNote || "sin-nota"}`,
                       name: "2 Pizzas Familiares",
-                      price: promoTwoPizzasPrice,
-                      description: `Pizza 1: Salsa ${sauce1Name}, mozzarella, ${pizza1Text} · Pizza 2: Salsa ${sauce2Name}, mozzarella, ${pizza2Text}${promoNote ? ` · Obs: ${promoNote}` : ""}`,
+                      price: promoTwoPizzasPrice + promoTwoPizzasExtrasTotal,
+                      description: `Pizza 1: Salsa ${sauce1Name}, mozzarella, ${pizza1Text}${extras1Text ? ` + ${extras1Text}` : ""} · Pizza 2: Salsa ${sauce2Name}, mozzarella, ${pizza2Text}${extras2Text ? ` + ${extras2Text}` : ""}${promoNote ? ` · Obs: ${promoNote}` : ""}`,
                     });
 
                     resetPromoModal();
                     closeModal();
                   }}
                 >
-                  Agregar al carrito · {formatCLP(promoTwoPizzasPrice)}
+                  Agregar al carrito · {formatCLP(promoTwoPizzasPrice + promoTwoPizzasExtrasTotal)}
                 </button>
               </div>
             )}
@@ -1822,9 +1942,72 @@ useEffect(() => {
                   })}
                 </div>
 
-                {promoSegundaPizza1 && promoSegundaPizza2 && (() => {
+                {/* Extras por pizza */}
+                <button
+                  style={{
+                    background: promoSegundaExtrasOpen ? "#fff8f8" : "#f9f9f9",
+                    border: promoSegundaExtrasOpen ? "1px solid #cc0000" : "1px solid #eee",
+                    borderRadius: promoSegundaExtrasOpen ? "10px 10px 0 0" : "10px",
+                    padding: "9px 14px",
+                    fontSize: "12px",
+                    color: promoSegundaExtrasOpen ? "#cc0000" : "#666",
+                    width: "100%",
+                    textAlign: "left",
+                    cursor: "pointer",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                  onClick={() => setPromoSegundaExtrasOpen(!promoSegundaExtrasOpen)}
+                >
+                  <span>{promoSegundaExtrasOpen ? "▼" : "▶"} Extras {promoSegundaTab === "pizza1" ? "Pizza 1" : "Pizza 2"} ({promoSegundaTab === "pizza1" ? promoSegundaExtrasCount1 : promoSegundaExtrasCount2}/6)</span>
+                  <span style={{ fontSize: "11px", color: "#888" }}>máx. 3 c/u</span>
+                </button>
+                {promoSegundaExtrasOpen && (
+                  <div style={{ border: "1px solid #cc0000", borderTop: "none", borderRadius: "0 0 10px 10px", overflow: "hidden", marginTop: "-1px" }}>
+                    {promoSegundaExtrasList.map((ing, idx) => {
+                      const extras = promoSegundaTab === "pizza1" ? promoSegundaExtras1 : promoSegundaExtras2;
+                      const setExtras = promoSegundaTab === "pizza1" ? setPromoSegundaExtras1 : setPromoSegundaExtras2;
+                      const count = extras[ing.id] || 0;
+                      const totalCount = promoSegundaTab === "pizza1" ? promoSegundaExtrasCount1 : promoSegundaExtrasCount2;
+                      return (
+                        <div
+                          key={ing.id}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            padding: "8px 14px",
+                            borderBottom: idx < promoSegundaExtrasList.length - 1 ? "1px solid #f5f5f5" : "none",
+                            background: idx % 2 === 1 ? "#fafafa" : "#fff",
+                          }}
+                        >
+                          <div>
+                            <div style={{ fontSize: "13px", color: "#333", fontWeight: 600 }}>{ing.name}</div>
+                            <div style={{ fontSize: "11px", color: "#888" }}>{formatCLP(ing.price)}</div>
+                          </div>
+                          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                            <button
+                              style={{ background: "#f0f0f0", border: "none", borderRadius: "99px", width: "26px", height: "26px", fontSize: "15px", cursor: "pointer", fontWeight: 700 }}
+                              onClick={() => setExtras((prev) => ({ ...prev, [ing.id]: Math.max(0, (prev[ing.id] || 0) - 1) }))}
+                            >−</button>
+                            <span style={{ fontSize: "13px", fontWeight: 700, minWidth: "16px", textAlign: "center" }}>{count}</span>
+                            <button
+                              style={{ background: totalCount >= 6 || count >= 3 ? "#ddd" : "#cc0000", border: "none", borderRadius: "99px", width: "26px", height: "26px", fontSize: "15px", cursor: "pointer", color: "white", fontWeight: 700 }}
+                              disabled={totalCount >= 6 || count >= 3}
+                              onClick={() => setExtras((prev) => ({ ...prev, [ing.id]: (prev[ing.id] || 0) + 1 }))}
+                            >+</button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                {(() => {
+                  if (!promoSegundaPizza1 || !promoSegundaPizza2) return null;
                   const p1 = products.find((p) => p.id === promoSegundaPizza1)!;
                   const p2 = products.find((p) => p.id === promoSegundaPizza2)!;
+                  if (!p1 || !p2) return null;
                   const pizzaMayor = p1.price >= p2.price ? p1 : p2;
                   const pizzaMenor = p1.price < p2.price ? p1 : p2;
                   return (
@@ -1868,21 +2051,26 @@ useEffect(() => {
                     const p2 = products.find((p) => p.id === promoSegundaPizza2)!;
                     const pizzaMayor = p1.price >= p2.price ? p1 : p2;
                     const pizzaMenor = p1.price < p2.price ? p1 : p2;
+                    const seg1Text = Object.entries(promoSegundaExtras1).filter(([, qty]) => qty > 0).map(([id, qty]) => { const ing = ingredients.find((i) => i.id === id); return ing ? `${ing.name} x${qty}` : id; }).join(", ");
+                    const seg2Text = Object.entries(promoSegundaExtras2).filter(([, qty]) => qty > 0).map(([id, qty]) => { const ing = ingredients.find((i) => i.id === id); return ing ? `${ing.name} x${qty}` : id; }).join(", ");
                     addToCart({
                       id: `promo-segunda-${promoSegundaPizza1}-${promoSegundaPizza2}-${promoSegundaNote || "sin-nota"}`,
                       name: "La Segunda a Mitad de Precio",
-                      price: promoSegundaTotal,
-                      description: `${pizzaMayor.name} + ${pizzaMenor.name} (mitad)${promoSegundaNote ? ` · Obs: ${promoSegundaNote}` : ""}`,
+                      price: promoSegundaTotal + promoSegundaExtrasTotal,
+                      description: `Pizza 1: ${p1.name}${seg1Text ? ` · Extras P1: ${seg1Text}` : ""} · Pizza 2: ${p2.name}${seg2Text ? ` · Extras P2: ${seg2Text}` : ""}${promoSegundaNote ? ` · Obs: ${promoSegundaNote}` : ""}`,
                     });
                     setPromoSegundaTab("pizza1");
                     setPromoSegundaPizza1(null);
                     setPromoSegundaPizza2(null);
                     setPromoSegundaNote("");
+                    setPromoSegundaExtras1({});
+                    setPromoSegundaExtras2({});
+                    setPromoSegundaExtrasOpen(false);
                     closeModal();
                   }}
                 >
                   {promoSegundaPizza1 && promoSegundaPizza2
-                    ? `Agregar al carrito · ${formatCLP(promoSegundaTotal)}`
+                    ? `Agregar al carrito · ${formatCLP(promoSegundaTotal + promoSegundaExtrasTotal)}`
                     : "Elige las 2 pizzas"}
                 </button>
             </div>
@@ -1893,8 +2081,10 @@ useEffect(() => {
       {modal?.type === "promo-dimauro" && (
         <div className="menuv2-modal-backdrop" onClick={closeModal}>
           <div className="menuv2-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="menuv2-modal-close" onClick={closeModal}>✕</button>
-            <h2 className="menuv2-modal-title">Promo Parejas</h2>
+            <div className="menuv2-modal-header">
+              <h3 className="menuv2-modal-title">Promo Parejas</h3>
+              <button className="menuv2-modal-close" onClick={closeModal}>✕</button>
+            </div>
             <div className="menuv2-modal-body">
               <div className="menuv2-modal-subtitle">Pizza familiar + cóctel de litro a elección</div>
 
@@ -1912,7 +2102,7 @@ useEffect(() => {
               </div>
 
               <div className="menuv2-modal-subtitle">
-                Ingredientes ({promoDiMauroIngredients.length}/3)
+                Ingredientes ({promoDiMauroIngredients.length}/3) {promoDiMauroIngredients.length === 3 ? "✓" : ""}
               </div>
               <div className="menuv2-ingredient-list">
                 {promoPizzaIngredients.map((ing) => {
@@ -1929,6 +2119,65 @@ useEffect(() => {
                   );
                 })}
               </div>
+
+              {/* Extras pagados */}
+              <button
+                style={{
+                  background: promoDiMauroExtrasOpen ? "#fff8f8" : "#f9f9f9",
+                  border: promoDiMauroExtrasOpen ? "1px solid #cc0000" : "1px solid #eee",
+                  borderRadius: promoDiMauroExtrasOpen ? "10px 10px 0 0" : "10px",
+                  padding: "9px 14px",
+                  fontSize: "12px",
+                  color: promoDiMauroExtrasOpen ? "#cc0000" : "#666",
+                  width: "100%",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+                onClick={() => setPromoDiMauroExtrasOpen(!promoDiMauroExtrasOpen)}
+              >
+                <span>{promoDiMauroExtrasOpen ? "▼" : "▶"} Extras Pizza ({promoDiMauroExtrasCount}/6)</span>
+                <span style={{ fontSize: "11px", color: "#888" }}>máx. 3 c/u</span>
+              </button>
+              {promoDiMauroExtrasOpen && (
+                <div style={{ border: "1px solid #cc0000", borderTop: "none", borderRadius: "0 0 10px 10px", overflow: "hidden", marginTop: "-1px" }}>
+                  {promoSegundaExtrasList.map((ing, idx) => {
+                    const count = promoDiMauroExtras[ing.id] || 0;
+                    return (
+                      <div
+                        key={`dimauro-extra-${ing.id}`}
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: "8px 14px",
+                          borderBottom: idx < promoSegundaExtrasList.length - 1 ? "1px solid #f5f5f5" : "none",
+                          background: idx % 2 === 1 ? "#fafafa" : "#fff",
+                        }}
+                      >
+                        <div>
+                          <div style={{ fontSize: "13px", color: "#333", fontWeight: 600 }}>{ing.name}</div>
+                          <div style={{ fontSize: "11px", color: "#888" }}>{formatCLP(ing.price)}</div>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <button
+                            style={{ background: "#f0f0f0", border: "none", borderRadius: "99px", width: "26px", height: "26px", fontSize: "15px", cursor: "pointer", fontWeight: 700 }}
+                            onClick={() => setPromoDiMauroExtras((prev) => ({ ...prev, [ing.id]: Math.max(0, (prev[ing.id] || 0) - 1) }))}
+                          >−</button>
+                          <span style={{ fontSize: "13px", fontWeight: 700, minWidth: "16px", textAlign: "center" }}>{count}</span>
+                          <button
+                            style={{ background: promoDiMauroExtrasCount >= 6 || count >= 3 ? "#ddd" : "#cc0000", border: "none", borderRadius: "99px", width: "26px", height: "26px", fontSize: "15px", cursor: "pointer", color: "white", fontWeight: 700 }}
+                            disabled={promoDiMauroExtrasCount >= 6 || count >= 3}
+                            onClick={() => setPromoDiMauroExtras((prev) => ({ ...prev, [ing.id]: (prev[ing.id] || 0) + 1 }))}
+                          >+</button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
 
               <div className="menuv2-modal-subtitle">Cóctel de litro</div>
               <div className="menuv2-chip-group">
@@ -1972,20 +2221,23 @@ useEffect(() => {
                     "tropical-gin": "Tropical Gin",
                   };
                   const coctelName = coctelNames[promoDiMauroCoctel] ?? promoDiMauroCoctel;
+                  const diMauroExtrasText = Object.entries(promoDiMauroExtras).filter(([, qty]) => qty > 0).map(([id, qty]) => { const ing = ingredients.find((i) => i.id === id); return ing ? `${ing.name} ×${qty}` : id; }).join(", ");
                   addToCart({
                     id: `promo-dimauro-${promoDiMauroSauce}-${promoDiMauroIngredients.join("-")}-${promoDiMauroCoctel}`,
                     name: "Promo Parejas",
-                    price: 18900,
-                    description: `Salsa ${sauceName}, mozzarella, ${ingText} · Cóctel: ${coctelName} (litro)${promoDiMauroNote ? ` · Obs: ${promoDiMauroNote}` : ""}`,
+                    price: 18900 + promoDiMauroExtrasTotal,
+                    description: `Salsa ${sauceName}, mozzarella, ${ingText}${diMauroExtrasText ? ` + ${diMauroExtrasText}` : ""} · Cóctel: ${coctelName} (litro)${promoDiMauroNote ? ` · Obs: ${promoDiMauroNote}` : ""}`,
                   });
                   setPromoDiMauroSauce("tomate");
                   setPromoDiMauroIngredients([]);
                   setPromoDiMauroCoctel("pisco-sour");
                   setPromoDiMauroNote("");
+                  setPromoDiMauroExtras({});
+                  setPromoDiMauroExtrasOpen(false);
                   closeModal();
                 }}
               >
-                Agregar al carrito · {formatCLP(18900)}
+                Agregar al carrito · {formatCLP(18900 + promoDiMauroExtrasTotal)}
               </button>
             </div>
           </div>
@@ -2015,6 +2267,11 @@ useEffect(() => {
                 <strong>{item.name}</strong>
                 <span>{formatCLP(item.price)}</span>
               </div>
+              {item.description && (
+                <span style={{ fontSize: "11px", color: "#888", display: "block", marginTop: "2px" }}>
+                  {item.description}
+                </span>
+              )}
 
               <div className="menuv2-cart-controls">
                 <button onClick={() => changeCartQty(item.id, -1)}>−</button>

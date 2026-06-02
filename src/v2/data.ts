@@ -101,6 +101,17 @@ export const categories: Category[] = [
 export const products: Product[] = [
   // ── PROMOS ──────────────────────────────────────────────────────────────────
   {
+    id: "promo-segunda-mitad",
+    category: "promos",
+    tags: ["promos"],
+    name: "La Segunda a Mitad de Precio",
+    shortDescription: "Elige 2 pizzas del menú · La más barata a mitad de precio",
+    description: "Cualquier 2 pizzas del menú. La de menor precio queda al 50%.",
+    price: 0,
+    type: "promo_segunda_mitad",
+    image: "/productos/promo-segunda-mitad.png",
+  },
+  {
     id: "promo-dimauro",
     category: "promos",
     tags: ["promos"],
@@ -121,17 +132,6 @@ export const products: Product[] = [
     price: 25900,
     type: "promo_pizzas",
     image: "/productos/promo-2-pizzas.jpg",
-  },
-  {
-    id: "promo-segunda-mitad",
-    category: "promos",
-    tags: ["promos"],
-    name: "La Segunda a Mitad de Precio",
-    shortDescription: "Elige 2 pizzas del menú · La más barata a mitad de precio",
-    description: "Cualquier 2 pizzas del menú. La de menor precio queda al 50%.",
-    price: 0,
-    type: "promo_segunda_mitad",
-    image: "/productos/promo-segunda-mitad.png",
   },
   {
     id: "promo-burger-2x",
