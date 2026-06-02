@@ -718,6 +718,9 @@ async function detectUserLocation() {
 
     cart.forEach((item) => {
       lines.push(`• ${item.qty}x ${item.name} (${formatCLP(item.price)})`);
+      if (item.description) {
+        lines.push(`  └ ${item.description}`);
+      }
     });
 
     lines.push("");
