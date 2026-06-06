@@ -344,7 +344,7 @@ const autocompleteRef = useRef<any>(null);
 
   const promoSegundaPizzas = products.filter(
     (p) => p.category === "pizzas" &&
-    !["pizza-maihue", "pizza-rinihue", "pizza-caburgua"].includes(p.id) &&
+    !["pizza-maihue", "pizza-caburgua"].includes(p.id) &&
     p.type === "pizza_fixed"
   );
 
