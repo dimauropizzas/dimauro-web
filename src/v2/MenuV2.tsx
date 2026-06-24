@@ -49,9 +49,7 @@ const burgerOptions = [
 
 const sandwichProteins = [
   { id: "ave", name: "Ave" },
-  { id: "churrasco", name: "Churrasco" },
   { id: "mechada", name: "Mechada" },
-  { id: "lomito", name: "Lomito de cerdo" },
 ];
 
 const sandwichStyles = [

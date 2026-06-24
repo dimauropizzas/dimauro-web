@@ -238,7 +238,7 @@ export const products: Product[] = [
     name: "Pizza Calafquén",
     shortDescription: "Pepperoni, lomito de cerdo y cebolla morada",
     price: 15900,
-    type: "pizza_fixed",
+    type: "hidden",
     baseIngredients: ["pepperoni", "lomito-de-cerdo", "cebolla-morada"],
     allowPaidExtras: true,
     allowObservations: true,
@@ -361,7 +361,7 @@ export const products: Product[] = [
     name: "Chorrillana para 2",
     shortDescription: "Para compartir",
     price: 15900,
-    type: "simple",
+    type: "hidden",
     image: "/productos/chorrillana.png",
   },
   {
@@ -370,7 +370,7 @@ export const products: Product[] = [
     name: "Salchipapas",
     shortDescription: "Papas fritas con salchicha",
     price: 6900,
-    type: "simple",
+    type: "hidden",
     image: "/productos/salchipapas.png",
   },
   {
