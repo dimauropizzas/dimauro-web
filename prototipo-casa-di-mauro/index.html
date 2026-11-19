@@ -656,7 +656,7 @@ function estadia(r,tipos){var t=0;tipos.forEach(function(x){t+=precioNoche(r,x)}
 var MAINC={ci:'ci',co:'co',pp:'pp',alert:'alert',rooms:'rooms'},ESCC={ci:'eci',co:'eco',pp:'epp',alert:'ealert',rooms:'erooms',esc:true},ADVC={ci:'aci',co:'aco',pp:'app',alert:'aalert',rooms:'arooms',esc:true,adv:true};
 var ACT=[{id:'a0',n:'Ascenso al volcán',p:null},{id:'a1',n:'Stand-up paddle',p:null},{id:'a2',n:'Navegación',p:null},{id:'a3',n:'Buceo',p:null},{id:'a4',n:'Parapente',p:null},{id:'a5',n:'Trekking',p:null}];
 /* ===== Conexión en vivo con Atiende (reservas y pago por Khipu). Con CDM_CONFIG.key vacío el sitio funciona en modo demostración, como siempre. ===== */
-window.CDM_CONFIG=window.CDM_CONFIG||{base:'https://atiende-bot-production-4757.up.railway.app',key:''};
+window.CDM_CONFIG=window.CDM_CONFIG||{base:'https://atiende-bot-production-4757.up.railway.app',key:'',keyExp:''};
 var LIVE={on:function(){return !!(window.CDM_CONFIG&&CDM_CONFIG.key)},cache:{},pend:{},
   api:function(m,path,body,clave,extra){var h={'Authorization':'Bearer '+CDM_CONFIG.key};if(extra)for(var k in extra)h[k]=extra[k];if(body)h['Content-Type']='application/json';if(clave)h['Idempotency-Key']=clave;
     return fetch(CDM_CONFIG.base+'/api/alojamiento/v1'+path,{method:m,headers:h,body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return {ok:false,codigo:'respuesta_invalida'}}).then(function(j){j._http=r.status;return j})}).catch(function(){return {ok:false,codigo:'sin_conexion'}})},
@@ -964,6 +964,20 @@ function packTables(){
     $('ecl').onclick=closeModal;openModal()}});
 }
 
+/* Experiencias en vivo (motor de cupos de Atiende). Con CDM_CONFIG.keyExp vacío, las fechas y cupos son de demostración. */
+var LX={on:function(){return !!(window.CDM_CONFIG&&CDM_CONFIG.keyExp)},st:{},
+  api:function(m,path,body,clave){var h={'Authorization':'Bearer '+CDM_CONFIG.keyExp};if(body)h['Content-Type']='application/json';if(clave)h['Idempotency-Key']=clave;
+    return fetch(CDM_CONFIG.base+'/api/turismo/v1'+path,{method:m,headers:h,body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return {ok:false,codigo:'respuesta_invalida'}}).then(function(j){j._http=r.status;return j})}).catch(function(){return {ok:false,codigo:'sin_conexion'}})},
+  loc:function(iso){var t=new Date(iso).toLocaleString('sv-SE',{timeZone:'America/Santiago',hour12:false});return {d:t.slice(0,10),h:+t.slice(11,13)}},
+  get:function(i){return LX.st[EXPS[i].code+'|'+G.p]},
+  load:function(i){var k=EXPS[i].code+'|'+G.p;if(LX.st[k])return Promise.resolve();
+    var hoy=ISO(new Date()),ini=G.n?G.f:'2026-12-04';if(ini<hoy)ini=hoy;var tope=G.n?G.o:'2027-03-31',fin=ISO(new Date(FEC(ini).getTime()+119*864e5));if(fin>tope)fin=tope;
+    LX.st[k]={loading:true};
+    return LX.api('GET','/disponibilidad?actividad='+EXPS[i].code+'&desde='+ini+'&hasta='+fin+'&personas='+G.p).then(function(j){
+      if(!j.ok){LX.st[k]={error:true};setTimeout(function(){delete LX.st[k]},15000);return}
+      var by={};(j.sesiones||[]).forEach(function(q){var l=LX.loc(q.inicio),b=l.h<16?'a':'b';(by[l.d]=by[l.d]||{})[b]={sid:q.sesion_id,hay:!!q.hay,libre:q.cupos_disponibles,conf:q.confirmados||0}});
+      LX.st[k]={by:by,fin:fin}})},
+  msg:function(c){return ({sin_cupo:'Ya no queda cupo en ese horario para tu grupo. Elige otro día u horario.',minimo_grupo:'Para ese día y horario no podemos tomar un grupo tan pequeño. Elige otra fecha.',sin_conexion:'No pudimos conectar. Revisa tu internet e inténtalo de nuevo.',demasiados_pedidos:'Hay demasiados intentos. Espera un momento e inténtalo otra vez.',pasarela_no_configurada:'El pago en línea aún no está disponible.'})[c]||'No pudimos completar la reserva. Inténtalo de nuevo o escríbenos por WhatsApp.'}};
 var EXPS=[
  {n:'Casino Party',cap:80,p:10000,img:'img/exp-casino.jpg',afiche:'img/afiche-casino.jpg',inc:['Mesas de juego','Fichas recreativas','Bebidas ilimitadas','Ambiente de fiesta']},
  {n:'Pizza Libre',cap:100,p:15000,img:'img/exp-pizzalibre.jpg',afiche:'img/afiche-pizzalibre.jpg',inc:['Pizza libre','Bebidas ilimitadas (gaseosas y jugos)']},
@@ -971,6 +985,7 @@ var EXPS=[
  {n:'Pizza Libre + Casino Party',cap:80,p:22000,img:'img/exp-pizzacasino.jpg',afiche:'img/afiche-pizzacasino.jpg',inc:['Pizza libre','Bebidas ilimitadas','Mesas de juego','Fichas recreativas','Luces tipo fiesta y ambiente party'],dj:true,nota:'Valor individual: $25.000'},
  {n:'Parrillada Party',cap:50,p:25000,img:'img/exp-parrillada-party.jpg',afiche:'img/afiche-parrillada-party.jpg',inc:['Bebidas ilimitadas','Choripán de bienvenida','Variedad de carnes a la parrilla','Buffet de ensaladas y guarniciones','Pan de la casa y sopaipillas']}
 ];
+['casino_party','pizza_libre','pizza_party','pizza_libre_casino','parrillada_party'].forEach(function(c,i){EXPS[i].code=c});
 var G={p:15,n:0,f:'',o:'',m:'2026-12',pl:'a',e:{}},PLANES=[['a','Alojamiento','con desayuno',28000,42000],['m','Media pensión','desayuno + almuerzo o cena',43000,65000],['c','Pensión completa','desayuno + almuerzo + cena',56000,84000]];
 function gnn(pn){var nb=0,na=0;if(G.n&&G.f&&G.o)noches(G.f,G.o).forEach(function(d){if(tipoNoche(d)==='alta')na++;else nb++});return {nb:nb,na:na,lod:nb*pn[3]+na*pn[4]}}
 function gtot(){var pn=PLANES.filter(function(x){return x[0]===G.pl})[0],pl=pn[3],gl=gnn(pn),ex=0,nm=[];EXPS.forEach(function(x,i){if(G.e[i]){ex+=x.p;nm.push(x)}});var fr=Math.floor(G.p/10),py=G.p;return {pl:pl,lod:gl.lod,gl:gl,ex:ex,nm:nm,fr:fr,py:py,total:py*(gl.lod+ex)}}
@@ -978,13 +993,17 @@ var EVB=[['a','13:00 a 16:00','Almuerzo'],['b','18:00 a 21:00','Tarde']],EVCERR=
 // Ejemplo de ocupación (personas ya reservadas por día|bloque|experiencia). El 5 y el 19 de dic las dos pueden estar llenas.
 ['a','b'].forEach(function(b){[0,1,2,3,4].forEach(function(k){['2026-12-05','2026-12-19'].forEach(function(d){EVTOM[d+'|'+b+'|'+k]=EXPS[k].cap})})});
 G.ev={};G.day='';
-function evTom(d,b,i){return EVTOM[d+'|'+b+'|'+i]||0}
+function evCell(d,b,i){
+  if(LX.on()){var s=LX.get(i),c=s&&s.by&&s.by[d]&&s.by[d][b];if(!c)return {tom:EXPS[i].cap,conf:0,hay:false,sid:null};var lib=c.libre==null?(c.hay?EXPS[i].cap:0):c.libre;return {tom:EXPS[i].cap-lib,conf:c.conf,hay:c.hay,sid:c.sid}}
+  var tom=EVTOM[d+'|'+b+'|'+i]||0;return {tom:tom,conf:tom,hay:G.p<=EXPS[i].cap-tom&&(G.p>=15||tom>=15),sid:null}}
+function evTom(d,b,i){return evCell(d,b,i).tom}
 function evFull(d,b,i){return evTom(d,b,i)+G.p>EXPS[i].cap}
 function evUsado(i,d,b){return EXPS.some(function(x,k){return k!==i&&G.e[k]&&G.ev[k]&&G.ev[k].d===d&&G.ev[k].b===b})}
 function evOk(){return EXPS.every(function(x,i){return !G.e[i]||(G.ev[i]&&G.ev[i].d&&G.ev[i].b)})}
 function evResumen(){return EXPS.map(function(x,i){if(!G.e[i]||!G.ev[i]||!G.ev[i].d)return '';var b=EVB.filter(function(q){return q[0]===G.ev[i].b})[0];return '<div class="note">'+x.n+': <b>'+fmt(G.ev[i].d)+'</b>'+(b?' · '+b[1]+' h':'')+'</div>'}).join('')}
 function evDiasUnir(min,max,i){var m={};
-  EVB.forEach(function(bb){Object.keys(EVTOM).forEach(function(k){var a=k.split('|');if(a[2]!==String(i)||a[1]!==bb[0])return;var d=a[0],tom=EVTOM[k];
+  if(LX.on()){var s=LX.get(i);if(s&&s.by)Object.keys(s.by).forEach(function(d){if(d<min||d>max||EVCERR.indexOf(d)>-1)return;EVB.forEach(function(bb){var c=s.by[d][bb[0]];if(c&&c.hay)(m[d]=m[d]||[]).push(bb[1].slice(0,5))})})}
+  else EVB.forEach(function(bb){Object.keys(EVTOM).forEach(function(k){var a=k.split('|');if(a[2]!==String(i)||a[1]!==bb[0])return;var d=a[0],tom=EVTOM[k];
     if(d<min||d>max||EVCERR.indexOf(d)>-1||tom<15||G.p>EXPS[i].cap-tom)return;(m[d]=m[d]||[]).push(bb[1].slice(0,5))})});
   return Object.keys(m).sort().slice(0,10).map(function(d){return {d:d,t:m[d]}})}
 G.cur=null;
@@ -994,12 +1013,15 @@ function gdispDraw(){
   if(G.cur!==null&&(!G.pset||G.p>EXPS[G.cur].cap))G.cur=null;
   if(G.pset&&G.cur===null&&G.want!=null&&G.p<=EXPS[G.want].cap){G.cur=G.want;G.ver=true;G.want=null}
   $('gpick').innerHTML=G.pset?EXPS.map(function(x,k){var no=G.p>x.cap;return '<button type="button" class="btn'+(G.cur===k?'':' ghost')+' evpick" data-i="'+k+'"'+(no?' disabled':'')+'><span>'+x.n+(no?'<small>hasta '+x.cap+'</small>':'')+'</span></button>'}).join(''):'';
-  var i=G.cur,peq=G.pset&&G.p<15,h='',aviso=false,hay=false,dias=[],vd=G.pset&&i!==null&&G.ver;
+  var i=G.cur,peq=G.pset&&G.p<15,h='',aviso=false,hay=false,dias=[],vd=G.pset&&i!==null&&G.ver,carga=false,falla=false;
+  if(vd&&LX.on()){var sx=LX.get(i);if(!sx||sx.loading){carga=true;if(!sx)LX.load(i).then(gdraw)}else if(sx.error)falla=true}
   if(i===null)G.ver=false;
   $('gdet').innerHTML=(G.pset&&i!==null)?(function(x){return '<div class="gdet"><img src="'+(x.afiche||x.img)+'" alt="'+x.n+'"><div><h4>'+x.n+'</h4><div class="price">'+CLP(x.p)+' <small>por persona</small></div><small>Hasta '+x.cap+' personas</small>'+(x.nota?'<div class="note">'+x.nota+'</div>':'')+'<ul>'+x.inc.map(function(t){return '<li>'+t+'</li>'}).join('')+'</ul>'+(G.ver?'':'<button type="button" class="btn" id="gver">Ver disponibilidad</button>')+'</div></div>'})(EXPS[i]):'';
   dI.parentNode.style.display=(vd&&!peq)?'':'none';
   dI.value=G.day||'';
-  if(vd){var x=EXPS[i];
+  if(vd&&carga)h='<div class="note">Consultando disponibilidad…</div>';
+  else if(vd&&falla)h='<div class="warn">No pudimos consultar la disponibilidad ahora. Inténtalo de nuevo en un momento o escríbenos por WhatsApp.</div>';
+  else if(vd){var x=EXPS[i];
     if(peq){dias=evDiasUnir(min,max,i);
       h=dias.length?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">'+dias.map(function(q){return '<button type="button" class="btn'+(G.day===q.d?'':' ghost')+' evdia" data-d="'+q.d+'" style="padding:4px 10px;font-size:13px">'+fmt(q.d)+' · '+q.t.join(', ')+'</button>'}).join('')+'</div>'
         :'<div class="warn">Por ahora no hay fechas disponibles para esta experiencia con tu grupo. Escríbenos por WhatsApp y vemos una alternativa: <a href="'+wa('Hola, somos un grupo de '+G.p+' personas y queremos '+x.n+'. ¿Qué fechas tienen?')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.</div>'}
@@ -1007,7 +1029,7 @@ function gdispDraw(){
     if(ver){
       if(EVCERR.indexOf(G.day)>-1)h+='<div class="note">Ese día no tomamos eventos. Elige otra fecha.</div>';
       else{h+='<div class="dx"><b>'+x.n+'</b><small>'+CLP(x.p)+' por persona · hasta '+x.cap+' personas</small><div class="evbs">'+EVB.map(function(b){
-        var tom=evTom(G.day,b[0],i),libre=x.cap-tom,sel=G.ev[i]&&G.ev[i].d===G.day&&G.ev[i].b===b[0],us=evUsado(i,G.day,b[0]),cabe=G.p<=libre&&(G.p>=15||tom>=15);
+        var ce=evCell(G.day,b[0],i),tom=ce.tom,libre=x.cap-tom,sel=G.ev[i]&&G.ev[i].d===G.day&&G.ev[i].b===b[0],us=evUsado(i,G.day,b[0]),cabe=ce.hay;
         var st=sel?'Elegida':us?'Ya la usas en otra experiencia':cabe?'Disponible':libre<=0?'Completo':(G.p>libre&&libre>=15)?'Hay lugar para hasta '+libre+' personas':'No disponible';
         if(!sel&&!cabe&&!us)aviso=true;if(cabe&&!us)hay=true;
         return '<button type="button" class="evb'+(sel?' on':'')+'" data-i="'+i+'" data-b="'+b[0]+'"'+(!sel&&(!cabe||us)?' disabled':'')+'><b>'+b[1]+' h</b><small>'+b[2]+' · '+st+'</small><small>Capacidad '+x.cap+' · quedan '+Math.max(0,libre)+'</small></button>'}).join('')+'</div></div>';
@@ -1017,7 +1039,7 @@ function gdispDraw(){
   var gv=$('gver');if(gv)gv.onclick=function(){G.ver=true;gdraw();var e=$('gdisp');if(e&&e.scrollIntoView)e.scrollIntoView({block:'nearest',behavior:'smooth'})};
   $('gdisp').querySelectorAll('.evdia').forEach(function(b){b.onclick=function(){G.day=b.getAttribute('data-d');gdraw()}});
   $('gdisp').querySelectorAll('.evb').forEach(function(b){b.onclick=function(){var k=+b.getAttribute('data-i'),bl=b.getAttribute('data-b');
-    if(G.ev[k]&&G.ev[k].d===G.day&&G.ev[k].b===bl){G.e[k]=false;delete G.ev[k]}else{G.e[k]=true;G.ev[k]={d:G.day,b:bl}}gdraw()}});
+    if(G.ev[k]&&G.ev[k].d===G.day&&G.ev[k].b===bl){G.e[k]=false;delete G.ev[k]}else{G.e[k]=true;G.ev[k]={d:G.day,b:bl,sid:evCell(G.day,bl,k).sid}}gdraw()}});
   $('gdispn').innerHTML=!aviso?'':'¿No hay cupo para tu grupo, o prefieres otro día u horario? Escríbenos por WhatsApp. <a href="'+wa('Hola, quiero consultar disponibilidad para una experiencia de grupo. Somos ___ personas y el día sería ___.')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.'}
 function gevDraw(){
   var t=gtot(),box=$('gev');box.hidden=!t.nm.length;
@@ -1029,7 +1051,8 @@ function gdraw(){
   if(document.activeElement!==$('gpv'))$('gpv').value=G.pset?G.p:'';
   $('gplan').innerHTML=G.n?PLANES.map(function(x){return '<label class="gpl"><input type="radio" name="gpl" value="'+x[0]+'"'+(G.pl===x[0]?' checked':'')+'><span><b>'+x[1]+'</b><small>'+x[2]+'</small></span><em>'+CLP(x[3])+(G.n&&gnn(x).na?'<small> · alta '+CLP(x[4])+'</small>':'')+'</em></label>'}).join('')+'<div class="note" style="margin-top:6px"><b>Box lunch para salidas:</b> si tu grupo quiere recorrer la zona, puede pedirlo en lugar del almuerzo, al mismo valor, y llevarlo listo. Se gestiona el día previo.</div>':'';
   $('gplan').querySelectorAll('input').forEach(function(r){r.onchange=function(){G.pl=r.value;gdraw()}});
-  EXPS.forEach(function(x,i){if(G.e[i]&&(G.p>x.cap||(G.ev[i]&&(evFull(G.ev[i].d,G.ev[i].b,i)||(G.p<15&&evTom(G.ev[i].d,G.ev[i].b,i)<15))))){G.e[i]=false;delete G.ev[i]}});
+  if(LX.on()&&G.pLast!=null&&G.pLast!==G.p){G.e={};G.ev={};G.day=''}G.pLast=G.p;
+  EXPS.forEach(function(x,i){if(G.e[i]&&(G.p>x.cap||(G.ev[i]&&(!LX.on()&&evFull(G.ev[i].d,G.ev[i].b,i)||(!LX.on()&&G.p<15&&evTom(G.ev[i].d,G.ev[i].b,i)<15))))){G.e[i]=false;delete G.ev[i]}});
   gdispDraw();gevDraw();var t=gtot(),okEv=!t.nm.length||evOk();
   $('gbar').innerHTML='<div class="sg"><span>Tu paquete · '+G.p+' personas'+(G.n?' · '+G.n+' noche'+(G.n>1?'s':''):'')+(t.nm.length?' · '+t.nm.length+' experiencia'+(t.nm.length>1?'s':''):'')+'</span><span class="tt">'+CLP(t.total)+'</span></div><div class="sr"><button class="btn" id="gcot" type="button"'+(t.total&&okEv&&G.pset?'':' disabled')+'>Reservar</button></div>';
   $('gcot').onclick=gsum;syncBar()}
@@ -1045,9 +1068,26 @@ function gsum(){
     (f?'<div class="note">Se libera una persona por cada 10 pagados. El descuento se hará al momento de pagar el '+(G.n?'saldo restante':'50 % restante')+'.</div>':'')+
     '<div class="field"><label for="gn">Nombre o institución</label><input id="gn"></div><div class="field"><label for="gm">Correo</label><input id="gm" type="email"></div><div class="field"><label for="gw">WhatsApp</label><input id="gw"></div>'+
     (G.n?POLDEV(0):'')+(t.nm.length?POLEXP():'')+
-    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="ggo" type="button">Pagar abono con Flow</button><button class="btn ghost" id="cl4" type="button">Cerrar</button></div>';
+    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="ggo" type="button">'+(LX.on()?(G.modo==='exp'?'Pagar abono con Khipu':'Enviar solicitud por WhatsApp'):'Pagar abono con Flow')+'</button><button class="btn ghost" id="cl4" type="button">Cerrar</button></div>';
     $('cl4').onclick=closeModal;
     $('ggo').onclick=function(){
+      if(LX.on()){
+        var nom=($('gn').value||'').trim(),tel=($('gw').value||'').trim(),cor=($('gm').value||'').trim();
+        var aviso=function(tx){var w=mb.querySelector('.livemsg');if(!w){w=document.createElement('div');w.className='warn livemsg';$('ggo').parentNode.insertBefore(w,$('ggo'))}w.textContent=tx};
+        if(!nom||!tel){aviso('Escribe tu nombre y tu WhatsApp para reservar.');return}
+        if(G.modo!=='exp'){window.open(wa('Hola, soy '+nom+' ('+tel+'). Somos un grupo de '+G.p+' personas y queremos reservar alojamiento'+(G.n?' del '+fmt(G.f)+' al '+fmt(G.o):'')+', plan '+PLANES.filter(function(x){return x[0]===G.pl})[0][1]+(t.nm.length?', con '+t.nm.map(function(x,k){return x.n}).join(' y '):'')+'.'),'_blank');return}
+        var lineas=[];EXPS.forEach(function(x,k){if(G.e[k]&&G.ev[k]&&G.ev[k].sid)lineas.push({sesion_id:G.ev[k].sid,categoria:'persona',personas:G.p})});
+        if(!lineas.length||lineas.length!==t.nm.length){aviso('Vuelve a elegir el día y el horario de tu experiencia.');return}
+        $('ggo').disabled=true;$('ggo').textContent='Creando tu reserva…';
+        var clave='web-'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+        LX.api('POST','/reservas',{contacto:{nombre:nom,telefono:tel},lineas:lineas},clave).then(function(j){
+          if(!j.ok){aviso(LX.msg(j.codigo));$('ggo').disabled=false;$('ggo').textContent='Pagar abono con Khipu';LX.st={};return}
+          try{sessionStorage.setItem('cdm_expres',String(j.reserva_id))}catch(e){}
+          $('ggo').textContent='Abriendo el pago…';
+          LX.api('POST','/reservas/'+j.reserva_id+'/pago',{email:cor||undefined,urlRetorno:location.origin+location.pathname+'?pago=exp'},'pago-'+j.reserva_id).then(function(pg){
+            if(pg.ok&&pg.urlPago){location.href=pg.urlPago;return}
+            mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva retenida</h3><div class="warn">'+LX.msg(pg.codigo)+'</div><p class="note">Tu reserva quedó retenida por un tiempo limitado. Cuando el pago esté disponible podrás completarlo; si necesitas ayuda, escríbenos por el botón de Rayén.</p><button class="btn" id="cl9" type="button">Cerrar</button>';$('cl9').onclick=closeModal})});
+        return}
       var cod='CDM-'+Math.random().toString(36).slice(2,7).toUpperCase();
       mb.innerHTML='<div class="flowbar">Flow · modo de prueba</div><p><b>Pago de '+CLP(ab)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Flow y la reserva se confirma solo cuando Flow lo avisa.</p><button class="btn" id="gok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="gv" type="button">Volver</button>';
       $('gv').onclick=draw;
@@ -1135,7 +1175,12 @@ function bindWa(btn,form,build){
   });
 }
 
-(function(){var q=location.search.indexOf('pago=')>-1,c=null;try{c=sessionStorage.getItem('cdm_clave')}catch(e){}
+(function(){var q=location.search.indexOf('pago=exp')>-1,c=null;try{c=sessionStorage.getItem('cdm_expres')}catch(e){}
+  if(!q||!c||!LX.on())return;
+  LX.api('GET','/reservas/'+c).then(function(j){var mb=$('mbox'),ok=j.ok&&j.estado==='confirmada';
+    mb.innerHTML=ok?'<h3 style="font-family:var(--serif)">¡Reserva confirmada!</h3><div class="good">Recibimos tu abono. Tu experiencia quedó confirmada. Te esperamos en Casa Di Mauro.</div><button class="btn" id="cl10" type="button">Cerrar</button>':'<h3 style="font-family:var(--serif)">Estamos confirmando tu pago</h3><div class="note">Tu banco puede demorar unos minutos. Cuando Khipu lo confirme, tu reserva quedará confirmada automáticamente. Si pasa más de una hora, escríbenos por el botón de Rayén.</div><button class="btn" id="cl10" type="button">Cerrar</button>';
+    openModal();$('cl10').onclick=closeModal;try{history.replaceState(null,'',location.pathname)}catch(e){}})})();
+(function(){var q=location.search.indexOf('pago=volvio')>-1,c=null;try{c=sessionStorage.getItem('cdm_clave')}catch(e){}
   if(!q||!c||!LIVE.on())return;
   LIVE.api('GET','/reservas/'+c).then(function(j){var mb=$('mbox'),ok=j.ok&&j.habitaciones&&j.habitaciones.length&&j.habitaciones.every(function(h){return h.estado==='confirmada'});
     mb.innerHTML=ok?'<h3 style="font-family:var(--serif)">¡Reserva confirmada!</h3><div class="good">Recibimos tu pago. Tu reserva quedó confirmada. Te esperamos en Casa Di Mauro.</div><button class="btn" id="cl8" type="button">Cerrar</button>':'<h3 style="font-family:var(--serif)">Estamos confirmando tu pago</h3><div class="note">Tu banco puede demorar unos minutos. Cuando Khipu lo confirme, tu reserva quedará confirmada automáticamente. Si pasa más de una hora, escríbenos por el botón de Rayén.</div><button class="btn" id="cl8" type="button">Cerrar</button>';
