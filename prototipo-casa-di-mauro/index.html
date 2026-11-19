@@ -630,6 +630,13 @@ function descr(sel){return ROOMS.filter(function(r){return sel[r.id]>0}).map(fun
 function estadia(r,tipos){var t=0;tipos.forEach(function(x){t+=precioNoche(r,x)});return t}
 var MAINC={ci:'ci',co:'co',pp:'pp',alert:'alert',rooms:'rooms'},ESCC={ci:'eci',co:'eco',pp:'epp',alert:'ealert',rooms:'erooms',esc:true},ADVC={ci:'aci',co:'aco',pp:'app',alert:'aalert',rooms:'arooms',esc:true,adv:true};
 var ACT=[{id:'a0',n:'Ascenso al volcán',p:null},{id:'a1',n:'Stand-up paddle',p:null},{id:'a2',n:'Navegación',p:null},{id:'a3',n:'Buceo',p:null},{id:'a4',n:'Parapente',p:null},{id:'a5',n:'Trekking',p:null}];
+/* ===== Conexión en vivo con Atiende (reservas y pago por Khipu). Con CDM_CONFIG.key vacío el sitio funciona en modo demostración, como siempre. ===== */
+window.CDM_CONFIG=window.CDM_CONFIG||{base:'https://atiende-bot-production-4757.up.railway.app',key:''};
+var LIVE={on:function(){return !!(window.CDM_CONFIG&&CDM_CONFIG.key)},cache:{},pend:{},
+  api:function(m,path,body,clave){var h={'Authorization':'Bearer '+CDM_CONFIG.key};if(body)h['Content-Type']='application/json';if(clave)h['Idempotency-Key']=clave;
+    return fetch(CDM_CONFIG.base+'/api/alojamiento/v1'+path,{method:m,headers:h,body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return {ok:false,codigo:'respuesta_invalida'}}).then(function(j){j._http=r.status;return j})}).catch(function(){return {ok:false,codigo:'sin_conexion'}})},
+  tipo:{m:'matrimonial',t:'twin',r:'triple'},
+  msg:function(c){return ({sin_disponibilidad:'Ya no quedan habitaciones de ese tipo para esas fechas. Prueba con otras fechas u otra habitación.',fechas_de_paquete:'Esas fechas son de una escapada: reserva la escapada completa.',fecha_pasada:'Esa fecha ya pasó.',contacto_invalido:'Falta tu nombre o tu WhatsApp.',clave_en_uso:'Esa reserva ya existe con otras fechas.',reserva_no_vigente:'Esa reserva ya no está vigente.',sin_conexion:'No pudimos conectarnos. Revisa tu internet e inténtalo de nuevo.',pagos_no_disponibles:'El pago en línea no está disponible por ahora.',cobro_no_creado:'No pudimos crear el link de pago. Inténtalo de nuevo en un momento.'})[c]||'No pudimos completar la reserva. Inténtalo de nuevo.'}};
 function renderRooms(C){
   C=(C&&C.rooms)?C:MAINC;S.ctx=C;
   var ci=$(C.ci).value,co=$(C.co).value,pp=+$(C.pp).value,al=$(C.alert),box=$(C.rooms);
@@ -648,6 +655,9 @@ function renderRooms(C){
     av[r.id]={ok:!!(libLib&&ns.every(function(d){return (BLOQ[d]||[]).indexOf(r.id)<0})),lib:!!libLib};
     if(av[r.id].ok)algunaLibre=true;
   });
+  if(LIVE.on()&&!pk){var kd=ci+'|'+co,dd=LIVE.cache[kd];
+    if(dd){ROOMS.forEach(function(r){var o=dd[LIVE.tipo[r.id]];if(o===0)av[r.id].ok=false;});algunaLibre=ROOMS.some(function(r){return av[r.id].ok})}
+    else if(!LIVE.pend[kd]){LIVE.pend[kd]=1;LIVE.api('GET','/disponibilidad?entrada='+ci+'&salida='+co).then(function(j){delete LIVE.pend[kd];if(j&&j.ok&&j.opciones){var m={};j.opciones.forEach(function(o){m[o.tipo]=o.disponibles});LIVE.cache[kd]=m;renderRooms(C)}})}}
   var ids=ROOMS.filter(function(r){return av[r.id].ok}).map(function(r){return r.id});
   ROOMS.forEach(function(r){
     var libre=av[r.id].ok,libLib=av[r.id].lib;
@@ -726,7 +736,7 @@ function openCheckout(){
     '<div class="good"><div>Valor total: <b>'+CLP(c.total)+'</b></div><div>Abono hoy (primera noche de alojamiento): <b>'+CLP(c.anticipo)+'</b></div><div>Saldo al llegar'+(c.total>c.habs||c.pend?(K.adv?', con las comidas y actividades':', con las comidas'):'')+': <b>'+CLP(c.total-c.anticipo)+'</b></div></div>'+
     '<div class="field"><label for="gn">Nombre</label><input id="gn"></div><div class="field"><label for="gm">Correo</label><input id="gm" type="email"></div><div class="field"><label for="gw">WhatsApp</label><input id="gw"></div>':'<div class="warn">Cuéntanos cuántas personas son para mostrarte el total.</div>')+
     POLDEV(pack)+
-    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="go" type="button"'+(g?'':' disabled')+'>Pagar abono con Flow</button><button class="btn ghost" id="cl" type="button">Cerrar</button></div>';
+    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="go" type="button"'+(g?'':' disabled')+'>'+(LIVE.on()?'Pagar abono con Khipu':'Pagar abono con Flow')+'</button><button class="btn ghost" id="cl" type="button">Cerrar</button></div>';
     ['gn','gm','gw'].forEach(function(i){if($(i)&&opt.f[i])$(i).value=opt.f[i]});
     $('gq').onchange=function(){keep();opt.g=+$('gq').value||0;if(opt.mp+opt.pc>opt.g){opt.mp=0;opt.pc=0}if(opt.nye>opt.g)opt.nye=0;ACT.forEach(function(a){if(opt[a.id]>opt.g)opt[a.id]=0});draw()};
     mb.querySelectorAll('.mstp').forEach(function(e){var k=e.getAttribute('data-k'),mx=+e.getAttribute('data-max');
@@ -735,6 +745,24 @@ function openCheckout(){
     $('cl').onclick=closeModal;
     $('go').onclick=function(){
       if(!g)return;
+      if(LIVE.on()){
+        keep();var nom=(opt.f.gn||'').trim(),tel=(opt.f.gw||'').trim(),cor=(opt.f.gm||'').trim();
+        if(!nom||!tel){var w=mb.querySelector('.livemsg');if(!w){w=document.createElement('div');w.className='warn livemsg';$('go').parentNode.insertBefore(w,$('go'))}w.textContent='Escribe tu nombre y tu WhatsApp para reservar.';return}
+        $('go').disabled=true;$('go').textContent='Creando tu reserva…';
+        var hab=[],rest=g;ROOMS.forEach(function(r){for(var q=0;q<(sel[r.id]||0);q++)hab.push({tipo:LIVE.tipo[r.id],cap:r.cap})});
+        hab.forEach(function(h,ix){var left=hab.length-ix-1,p=Math.max(1,Math.min(h.cap,rest-left));h.personas=p;rest-=p;delete h.cap});
+        var clave='web-'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+        var body={contacto:{nombre:nom,telefono:tel},habitaciones:hab};
+        if(pack)body.paquete=pack==='ny'?'ano_nuevo':'navidad';else{body.entrada=ci;body.salida=co}
+        LIVE.api('POST','/reservas',body,clave).then(function(j){
+          if(!j.ok){var m=mb.querySelector('.livemsg')||document.createElement('div');m.className='warn livemsg';m.textContent=LIVE.msg(j.codigo);if(!m.parentNode)$('go').parentNode.insertBefore(m,$('go'));$('go').disabled=false;$('go').textContent='Pagar abono con Khipu';return}
+          try{sessionStorage.setItem('cdm_clave',clave)}catch(e){}
+          $('go').textContent='Abriendo el pago…';
+          LIVE.api('POST','/reservas/'+clave+'/pago',{email:cor||undefined,urlRetorno:location.origin+location.pathname+'?pago=volvio'}).then(function(p){
+            if(p.ok&&p.urlPago){location.href=p.urlPago;return}
+            mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva retenida</h3><div class="warn">'+LIVE.msg(p.codigo)+'</div><p class="note">Tu reserva quedó retenida por 24 horas. Cuando el pago esté disponible podrás completarlo; si necesitas ayuda, escríbenos por el botón de Rayén.</p><button class="btn" id="cl7" type="button">Cerrar</button>';$('cl7').onclick=closeModal});
+        });
+        return}
       var cod='CDM-'+Math.random().toString(36).slice(2,7).toUpperCase();
       mb.innerHTML='<div class="flowbar">Flow · modo de prueba</div><p><b>Pago de '+CLP(c.anticipo)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Flow y la reserva se confirma solo cuando Flow lo avisa.</p><button class="btn" id="ok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="cl2" type="button">Volver</button>';
       $('cl2').onclick=draw;
@@ -1009,6 +1037,11 @@ function bindWa(btn,form,build){
   });
 }
 
+(function(){var q=location.search.indexOf('pago=')>-1,c=null;try{c=sessionStorage.getItem('cdm_clave')}catch(e){}
+  if(!q||!c||!LIVE.on())return;
+  LIVE.api('GET','/reservas/'+c).then(function(j){var mb=$('mbox'),ok=j.ok&&j.habitaciones&&j.habitaciones.length&&j.habitaciones.every(function(h){return h.estado==='confirmada'});
+    mb.innerHTML=ok?'<h3 style="font-family:var(--serif)">¡Reserva confirmada!</h3><div class="good">Recibimos tu pago. Tu reserva quedó confirmada. Te esperamos en Casa Di Mauro.</div><button class="btn" id="cl8" type="button">Cerrar</button>':'<h3 style="font-family:var(--serif)">Estamos confirmando tu pago</h3><div class="note">Tu banco puede demorar unos minutos. Cuando Khipu lo confirme, tu reserva quedará confirmada automáticamente. Si pasa más de una hora, escríbenos por el botón de Rayén.</div><button class="btn" id="cl8" type="button">Cerrar</button>';
+    openModal();$('cl8').onclick=closeModal;try{history.replaceState(null,'',location.pathname)}catch(e){}})})();
 var VISTAS=['inicio','alojamiento','grupos','pizzeria'];
 var ALIAS={escapadas:['alojamiento','esc'],empresas:['grupos','emp'],delivery:['pizzeria',null]};
 function setTab(v,t){
