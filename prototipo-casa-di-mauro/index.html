@@ -916,7 +916,7 @@ var EXPS=[
 var G={p:15,n:0,f:'',o:'',m:'2026-12',pl:'a',e:{}},PLANES=[['a','Alojamiento','con desayuno',28000,42000],['m','Media pensión','desayuno + almuerzo o cena',43000,65000],['c','Pensión completa','desayuno + almuerzo + cena',56000,84000]];
 function gnn(pn){var nb=0,na=0;if(G.n&&G.f&&G.o)noches(G.f,G.o).forEach(function(d){if(tipoNoche(d)==='alta')na++;else nb++});return {nb:nb,na:na,lod:nb*pn[3]+na*pn[4]}}
 function gtot(){var pn=PLANES.filter(function(x){return x[0]===G.pl})[0],pl=pn[3],gl=gnn(pn),ex=0,nm=[];EXPS.forEach(function(x,i){if(G.e[i]){ex+=x.p;nm.push(x)}});var fr=Math.floor(G.p/10),py=G.p-fr;return {pl:pl,lod:gl.lod,gl:gl,ex:ex,nm:nm,fr:fr,py:py,total:py*(gl.lod+ex)}}
-var EVB=[['a','18:00 a 21:00'],['b','21:30 a 00:30']],EVMAX=2,EVRES={'2026-12-05':{a:2,b:2},'2026-12-11':{a:1,b:0},'2026-12-12':{a:2,b:1},'2026-12-19':{a:2,b:2}};
+var EVB=[['a','13:00 a 16:00','Almuerzo'],['b','18:00 a 21:00','Tarde']],EVMAX=2,EVRES={'2026-12-05':{a:2,b:2},'2026-12-11':{a:1,b:0},'2026-12-12':{a:2,b:1},'2026-12-19':{a:2,b:2}};
 G.ed='';G.eb='';
 function evFull(d,b){return ((EVRES[d]||{})[b]||0)>=EVMAX}
 function gevDraw(){
@@ -926,7 +926,7 @@ function gevDraw(){
   if(G.ed&&(G.ed<d.min||G.ed>d.max)){G.ed='';G.eb=''}
   d.value=G.ed;
   if(G.eb&&G.ed&&evFull(G.ed,G.eb))G.eb='';
-  $('gevb').innerHTML=G.ed?EVB.map(function(b){var fu=evFull(G.ed,b[0]);return '<button type="button" class="evb'+(G.eb===b[0]?' on':'')+'" data-b="'+b[0]+'"'+(fu?' disabled':'')+'><b>'+b[1]+' h</b><small>'+(fu?'Completo':'Disponible')+'</small></button>'}).join(''):'<div class="note">Elige primero el día.</div>';
+  $('gevb').innerHTML=G.ed?EVB.map(function(b){var fu=evFull(G.ed,b[0]);return '<button type="button" class="evb'+(G.eb===b[0]?' on':'')+'" data-b="'+b[0]+'"'+(fu?' disabled':'')+'><b>'+b[1]+' h</b><small>'+b[2]+' · '+(fu?'Completo':'Disponible')+'</small></button>'}).join(''):'<div class="note">Elige primero el día.</div>';
   $('gevb').querySelectorAll('.evb').forEach(function(x){x.onclick=function(){G.eb=x.getAttribute('data-b');gdraw()}});
   $('gevn').innerHTML='¿Prefieres otro horario? <a href="'+wa('Hola, quiero consultar otro horario para una experiencia de grupo. Somos ___ personas y el día sería ___.')+'" target="_blank" rel="noopener">Consúltalo por WhatsApp</a>.'}
 $('gevd').onchange=function(){G.ed=$('gevd').value;G.eb='';gdraw()};
