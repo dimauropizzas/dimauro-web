@@ -555,6 +555,7 @@ body.hasbar .chat-b{bottom:calc(var(--barh,90px) + 26px + env(safe-area-inset-bo
     <img src="img/pizza-mojito.jpg" alt="Pizza y mojito" loading="lazy">
     <div class="cap"><div class="k">Apertura al público · miércoles 2 de diciembre, 19:00 h</div><div class="s">Pronto abrimos nuestras puertas</div><div class="count" id="pcount"></div></div>
   </div>
+  <div class="car sec" id="pcar" style="max-width:640px;margin-left:auto;margin-right:auto;border-radius:14px;overflow:hidden"><div class="trk"><img src="img/patio.jpg" alt="Patio de Casa Di Mauro" loading="lazy"><img src="img/comedor.jpg" alt="Comedor" loading="lazy"><img src="img/pizza.jpg" alt="Pizzas artesanales" loading="lazy"><img src="img/pizza-mojito.jpg" alt="Pizza y mojito" loading="lazy"><img src="img/exterior.jpg" alt="Casa Di Mauro por fuera" loading="lazy"></div><button class="cb2 pv" type="button" aria-label="Foto anterior">‹</button><button class="cb2 nx" type="button" aria-label="Foto siguiente">›</button><div class="dts"><i class="on"></i><i></i><i></i><i></i><i></i></div></div>
   <div class="bk"><button class="btn ghost" data-home type="button">← Volver al inicio</button></div>
 </section>
 
@@ -958,6 +959,7 @@ function gcalDraw(){
     gcalDraw();gdraw()}});
   $('gprev').onclick=function(){G.m=MESES[Math.max(0,MESES.indexOf(G.m)-1)];gcalDraw()};
   $('gnext').onclick=function(){G.m=MESES[Math.min(3,MESES.indexOf(G.m)+1)];gcalDraw()}}
+(function(){var c=$('pcar'),t=c.querySelector('.trk'),ds=c.querySelectorAll('.dts i');function go(n){t.scrollTo({left:n*t.clientWidth,behavior:'smooth'})}c.querySelector('.pv').onclick=function(){var i=Math.round(t.scrollLeft/t.clientWidth);go(i<=0?ds.length-1:i-1)};c.querySelector('.nx').onclick=function(){var i=Math.round(t.scrollLeft/t.clientWidth);go(i>=ds.length-1?0:i+1)};t.addEventListener('scroll',function(){var i=Math.round(t.scrollLeft/t.clientWidth);ds.forEach(function(d,k){d.classList.toggle('on',k===i)})},{passive:true})})();
 gcalDraw();gdraw();
 
 function bindWa(btn,form,build){
