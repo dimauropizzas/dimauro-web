@@ -702,6 +702,7 @@ function openModal(){$('modal').hidden=false}
 function closeModal(){$('modal').hidden=true}
 $('modal').addEventListener('click',function(e){if(e.target===$('modal'))closeModal()});
 function POLDEV(pack){return '<details class="pol2"><summary>Política de devolución</summary><div class="note">'+'Devolución del abono: 100 % si avisas con 15 días o más de anticipación; con menos aviso, o si no llegas, no se devuelve. Si la fecha se logra revender, la casa puede hacer una excepción. Sin devolución si decides irte después de llegar.</div></details>'}
+function POLEXP(){return '<details class="pol2"><summary>Política de devolución de las experiencias</summary><div class="note">Devolución del abono: con 72 horas o más de aviso se devuelve el 50 %; con menos de 72 horas de aviso se devuelve el 25 %. Si no avisas (menos de 1 hora antes del evento) o no llegas, no se devuelve.</div></details>'}
 function openCheckout(){
   var K=S.ctx||MAINC,sel=JSON.parse(JSON.stringify(S.sel)),ci=$(K.ci).value,co=$(K.co).value,pp0=K.esc?0:+$(K.pp).value;
   var ns=noches(ci,co),tipos=ns.map(tipoNoche),pack=S.pack,mb=$('mbox'),nr=0,cap=0;
@@ -947,7 +948,7 @@ function gsum(){
     (t.nm.length?'<div class="note">Evento: <b>'+fmt(G.ed)+'</b> · '+EVB.filter(function(b){return b[0]===G.eb})[0][1]+' h</div>':'')+
     (f?'<div class="note">Se libera una persona por cada 10 pagados. El descuento se hará al momento de pagar el '+(G.n?'saldo restante':'50 % restante')+'.</div>':'')+
     '<div class="field"><label for="gn">Nombre o institución</label><input id="gn"></div><div class="field"><label for="gm">Correo</label><input id="gm" type="email"></div><div class="field"><label for="gw">WhatsApp</label><input id="gw"></div>'+
-    POLDEV(0)+
+    (G.n?POLDEV(0):'')+(t.nm.length?POLEXP():'')+
     '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="ggo" type="button">Pagar abono con Flow</button><button class="btn ghost" id="cl4" type="button">Cerrar</button></div>';
     $('cl4').onclick=closeModal;
     $('ggo').onclick=function(){

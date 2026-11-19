@@ -69,3 +69,6 @@ No modifiqué `atiende-app`. Solo lo clone para leerlo. Tampoco conecté la web 
 
 ## Corrección
 La primera versión de este informe decía que el tenant 45 era Casa Di Mauro alojamiento. Es la pizzería. Corregido arriba.
+
+## Devolución de las experiencias (Mauro, 19-nov)
+Con 72 horas o más de aviso se devuelve el 50 % del abono; con menos de 72 horas, el 25 %; sin aviso (menos de 1 hora antes) o si no llega, nada. Configurado en producción (negocio 50) y staging con `cupo_bo_politica_tramos_guardar` (tramos 72 h y 1 h). La web ya lo muestra. Interpretación mía: «hasta el día del evento» = hasta 1 hora antes del evento.
