@@ -536,6 +536,7 @@ h1,h2,h3,.tile b,.et b,.mealbox h4,.mealc h3,.sug .st{font-family:var(--serif);f
 <section class="view" id="v-grupos">
   <h2>Grupos y delegaciones</h2>
   <p class="lead">Contamos con alternativas de alojamiento, alimentación y actividades adecuadas a tu grupo. Para grupos desde 15 personas.</p>
+  <div class="good" style="margin-bottom:12px"><b>Gran capacidad para tu evento:</b> recibimos hasta 100 personas por evento (80 en Casino Party y en Pizza Libre + Casino Party). Varios grupos pueden compartir el mismo horario mientras sumen la capacidad: ideal para tour operadores y delegaciones. <a id="gtour" href="#" target="_blank" rel="noopener">Cotiza varios grupos por WhatsApp</a></div>
   <div class="card sec" id="gmodoc"><h3 style="margin-bottom:14px">¿Qué necesita tu grupo?</h3>
     <div style="display:flex;gap:12px;flex-wrap:wrap" id="gmodo"><button type="button" class="btn" data-m="aloj">Alojamiento y experiencias</button><button type="button" class="btn ghost" data-m="exp">Solo experiencias, sin alojamiento</button></div>
     <p class="note" id="gmodon" style="margin-top:14px"></p></div>
@@ -979,7 +980,7 @@ function gdispDraw(){
     return r+'<div class="evbs">'+EVB.map(function(b){
       var libre=x.cap-evTom(G.day,b[0],i),sel=G.ev[i]&&G.ev[i].d===G.day&&G.ev[i].b===b[0],us=evUsado(i,G.day,b[0]),cabe=G.p<=libre;
       var st=sel?'Elegida':us?'Ya la usas en otra experiencia':cabe?'Disponible':libre<=0?'Completo':libre>=15?'Hay lugar para hasta '+libre+' personas':'Sin cupo para tu grupo';
-      return '<button type="button" class="evb'+(sel?' on':'')+'" data-i="'+i+'" data-b="'+b[0]+'"'+(!sel&&(!cabe||us)?' disabled':'')+'><b>'+b[1]+' h</b><small>'+b[2]+' · '+st+'</small></button>'}).join('')+'</div></div>'}).join('');
+      return '<button type="button" class="evb'+(sel?' on':'')+'" data-i="'+i+'" data-b="'+b[0]+'"'+(!sel&&(!cabe||us)?' disabled':'')+'><b>'+b[1]+' h</b><small>'+b[2]+' · '+st+'</small><small>Capacidad '+x.cap+' · quedan '+Math.max(0,libre)+'</small></button>'}).join('')+'</div></div>'}).join('');
   $('gdisp').innerHTML=h;
   $('gdisp').querySelectorAll('.evb').forEach(function(x){x.onclick=function(){var i=+x.getAttribute('data-i'),b=x.getAttribute('data-b');
     if(G.ev[i]&&G.ev[i].d===G.day&&G.ev[i].b===b){G.e[i]=false;delete G.ev[i]}else{G.e[i]=true;G.ev[i]={d:G.day,b:b}}gdraw()}});
@@ -1047,6 +1048,7 @@ function gModo(m){
 document.querySelectorAll('#gmodo button').forEach(function(b){b.onclick=function(){gModo(b.getAttribute('data-m'))}});
 $('gpv').oninput=function(){var v=parseInt(this.value,10);if(v>=15&&v<=gTope()){G.p=v;gFix();gcalDraw();gdraw()}};
 $('gpv').onchange=function(){var v=parseInt(this.value,10);if(!(v>=15))v=15;G.p=Math.min(gTope(),v);this.value=G.p;gFix();gcalDraw();gdraw()};
+$('gtour').href=wa('Hola, soy tour operador y quiero cotizar varios grupos para el mismo horario. Somos ___ grupos, ___ personas en total.');
 $('gday').onchange=function(){G.day=this.value;gdraw()};
 var GCNT={m:5,t:1,r:4};
 function gCap(d){var c=0;ROOMS.forEach(function(r){if((BLOQ[d]||[]).indexOf(r.id)<0)c+=GCNT[r.id]*r.cap});return c}
