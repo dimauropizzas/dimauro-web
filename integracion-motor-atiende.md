@@ -84,3 +84,6 @@ Casino Party 80, Pizza Libre 100, Pizza Party 100, Parrillada Party 50, Pizza Li
 
 ## Entrada «solo experiencias» en Grupos y delegaciones (Mauro, 19-nov)
 La pantalla de Grupos tiene un selector al inicio: «Alojamiento y experiencias» (grupos de 15 a 24, la capacidad de la casa) o «Solo experiencias, sin alojamiento» (de 15 hasta el máximo de cada experiencia: Casino 80, Pizza Libre 100, Pizza Party 100, Pizza Libre + Casino 80, Parrillada 50). Cada experiencia se apaga si el grupo la supera. Sin alojamiento el día puede ser cualquiera de la temporada (4-dic al 31-mar, salvo 24/25-dic, 31-dic y 1-ene). Pendiente: conectar esta pantalla a la API real de experiencias y a su cobro.
+
+## Orden del flujo de experiencias (Mauro, 19-nov)
+Cantidad de personas (se puede escribir a mano, de 15 al tope) -> día -> disponibilidad de cada experiencia y bloque para ESE grupo -> elegir. Si el bloque no alcanza para el grupo, el sitio dice «Hay lugar para hasta N personas» (si N >= 15) o «Sin cupo para tu grupo», y siempre ofrece escribir por WhatsApp (a veces se puede acomodar un grupo más pequeño). Varias experiencias en días distintos: se cambia el día y se elige otra. Nota: el sitio muestra cuántas personas caben cuando el bloque está parcialmente lleno; la API real oculta los cupos (`mostrar_cupos` = false), así que al conectar hay que decidir si se muestran.
