@@ -876,7 +876,7 @@ function packTables(){
   var EIMG={nav:'img/esc-navidad.webp',ny:'img/esc-anonuevo.webp'};
   function openEsc(k){var P=PACKS[k];$('eci').value=P.desde;$('eco').value=P.hasta;$('epp').value='2';
     $('etit').textContent=P.nombre;$('ebadge').textContent='4 noches · '+(k==='nav'?'23 al 27 de dic':'30 dic al 3 ene');$('eimg').src=EIMG[k];
-    $('einc').innerHTML=EINC[k].map(function(x){return typeof x==='string'?'<li>'+x+'</li>':'<li><button type="button" class="eg">'+x[0]+' · ver y sumar</button></li>'}).join('');
+    $('einc').innerHTML=EINC[k].map(function(x){return typeof x==='string'?'<li>'+x+'</li>':'<li><button type="button" class="eg">'+x[0]+'</button></li>'}).join('');
     $('etiles').hidden=true;$('epanel').hidden=false;renderRooms(ESCC);
     $('einc').querySelectorAll('.eg').forEach(function(b){b.onclick=function(){var t=$('erooms').querySelector('.tgm');if(t)t.click()}});window.scrollTo(0,0)}
   $('aback').onclick=$('aback0').onclick=function(){$('apanel').hidden=true;$('etiles').hidden=false;window.scrollTo(0,0);syncBar()};
