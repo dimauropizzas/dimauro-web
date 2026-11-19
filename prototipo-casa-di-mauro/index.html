@@ -282,6 +282,8 @@ body.hasbar .chat-b{bottom:calc(var(--barh,90px) + 26px + env(safe-area-inset-bo
 .sbar .sg select{padding:8px;border:1.5px solid #b8923a;border-radius:10px;background:#fff;font:inherit;min-width:140px}
 
 .mealbox{border:1px solid #d9cfae;border-radius:12px;padding:12px;margin:12px 0;background:#fffdf6}
+.dayrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid #eee}.dayrow>b{min-width:96px;font-size:15px}.dayrow select{flex:1 1 150px;padding:9px;border:1.5px solid #9dbba3;border-radius:10px;background:#fff;font:inherit;font-size:14px;min-width:0}.dayrow .dnum{flex:0 0 92px}
+@media(max-width:560px){.dayrow>b{flex:0 0 100%;min-width:0}.dayrow select{flex:2 1 0;font-size:13px;padding:9px 6px}.dayrow .dnum{flex:0 0 86px}}
 .nch{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 2px}
 .nc{padding:5px 10px;border-radius:999px;border:1.5px solid #17402b;background:#fffaf0;color:#17402b;font:inherit;font-size:13px;cursor:pointer}
 .nc.on{background:#17402b;color:#fff}
@@ -636,7 +638,8 @@ var ROOMS=[
  {id:'r',nombre:'Habitación triple',cap:3,cama:'1 cama de 2 plazas + 1 cama de plaza y media',baja:70000,alta:105000,ny:140000,img:'img/hab-triple.jpg',imgs:['img/hab-triple.jpg','img/habitacion.jpg','img/desayuno.jpg']}
 ];
 var PACKS={nav:{nombre:'Escapada Navidad',desde:'2026-12-23',hasta:'2026-12-27',cena:false},ny:{nombre:'Escapada Año Nuevo',desde:'2026-12-30',hasta:'2027-01-03',cena:true}};
-var CENA=50000, MP=15000, PC=28000;
+var CENA=50000, MP=15000, PC=28000, BL=15000;
+var PTIPO={mp:['Media pensión',MP],pc:['Pensión completa',PC],bl:['Box lunch para salir',BL]};
 var LIB={nav:{m:false,t:true,r:true},ny:{m:false,t:false,r:false}};
 var BLOQ={'2026-12-12':['t'],'2026-12-13':['t']};
 function tipoNoche(iso){
@@ -739,10 +742,10 @@ function calc(sel,ns,tipos,opt){
   var items=[],tot=0,nn=ns.length;
   ROOMS.forEach(function(r){var k=sel[r.id]||0;if(!k)return;var a=estadia(r,tipos)*k;items.push([(k>1?k+' × ':'')+r.nombre+' ('+nn+' noche'+(nn>1?'s':'')+', desayuno incluido)',a]);tot+=a});
   var habs=tot;
-  var mN=(opt.mpN||ns).length,pN=(opt.pcN||ns).length;
-  function nl(sel,k){return k===nn?(nn>1?'las '+nn+' noches':'1 noche'):k+' noche'+(k>1?'s':'')+': '+sel.map(function(d){return fmt(d)}).join(', ')}
-  if(opt.mp){var v=MP*opt.mp*mN;items.push(['Media pensión ('+opt.mp+' pers. × '+nl(opt.mpN||ns,mN)+')',v]);tot+=v}
-  if(opt.pc){var v2=PC*opt.pc*pN;items.push(['Pensión completa ('+opt.pc+' pers. × '+nl(opt.pcN||ns,pN)+')',v2]);tot+=v2}
+  var diasP=ns.concat([ISO(new Date(FEC(ns[ns.length-1]).getTime()+864e5))]),gr={};
+  diasP.forEach(function(d){var q=opt.plan&&opt.plan[d];if(!q||!q.t||q.t==='n'||!q.n)return;var k=q.t+'|'+q.n;(gr[k]=gr[k]||[]).push(d)});
+  ['mp','pc','bl'].forEach(function(t){Object.keys(gr).filter(function(k){return k.split('|')[0]===t}).forEach(function(k){var n=+k.split('|')[1],ds=gr[k],v=PTIPO[t][1]*n*ds.length;
+    items.push([PTIPO[t][0]+' ('+n+' pers. × '+ds.length+' día'+(ds.length>1?'s':'')+': '+ds.map(function(d){return fmt(d)}).join(', ')+')',v]);tot+=v})});
   if(opt.nye){var v4=CENA*opt.nye;items.push(['Cena de Año Nuevo ('+opt.nye+' pers.)',v4]);tot+=v4}
   var pend=0;ACT.forEach(function(a){var k=opt[a.id]||0;if(!k)return;if(a.p){var va=a.p*k;items.push([a.n+' ('+k+' pers.)',va]);tot+=va}else{items.push([a.n+' ('+k+' pers.)','Valor por confirmar']);pend++}});
   var prim=0;ROOMS.forEach(function(r){prim+=(sel[r.id]||0)*precioNoche(r,tipos[0])});
@@ -757,21 +760,24 @@ function openCheckout(){
   var K=S.ctx||MAINC,sel=JSON.parse(JSON.stringify(S.sel)),ci=$(K.ci).value,co=$(K.co).value,pp0=K.esc?0:+$(K.pp).value;
   var ns=noches(ci,co),tipos=ns.map(tipoNoche),pack=S.pack,mb=$('mbox'),nr=0,cap=0;
   ROOMS.forEach(function(r){var k=sel[r.id]||0;nr+=k;cap+=k*r.cap});
-  var opt={g:(pp0>=nr&&pp0<=cap)?pp0:(K.esc?0:Math.min(Math.max(pp0,nr),cap)),mp:0,pc:0,mpN:ns.slice(),pcN:ns.slice(),nye:0,a0:0,a1:0,a2:0,a3:0,a4:0,a5:0,f:{}};
+  var opt={g:(pp0>=nr&&pp0<=cap)?pp0:(K.esc?0:Math.min(Math.max(pp0,nr),cap)),plan:{},nye:0,a0:0,a1:0,a2:0,a3:0,a4:0,a5:0,f:{}};
   openModal();
   function stp(k,t,sub,mx){return '<div class="mrow2"><div><b>'+t+'</b><div class="note">'+sub+'</div></div><div class="mstp" data-k="'+k+'" data-max="'+mx+'"><button type="button" class="mn" aria-label="Quitar">−</button><b class="q">'+opt[k]+'</b><button type="button" class="mas" aria-label="Agregar">+</button></div></div>'}
-  function ov(){return opt.mpN.some(function(d){return opt.pcN.indexOf(d)>-1})}
-  function chips(k){return ns.length>1?'<div class="nch" data-k="'+k+'"><span class="note">Noches:</span>'+ns.map(function(d){return '<button type="button" class="nc'+(opt[k+'N'].indexOf(d)>-1?' on':'')+'" data-d="'+d+'" aria-pressed="'+(opt[k+'N'].indexOf(d)>-1)+'">'+fmt(d)+'</button>'}).join('')+'</div>':''}
+  var dias=ns.concat([ISO(new Date(FEC(ns[ns.length-1]).getTime()+864e5))]);
+  function optT(d,sal,v){var o=[['n','Sin comidas'],['mp',sal?'Almuerzo (media pensión)':'Media pensión'],['bl','Box lunch para salir']];if(!sal)o.splice(2,0,['pc','Pensión completa']);return o.map(function(x){return '<option value="'+x[0]+'"'+(v===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join('')}
+  function planHtml(g){var h='<div class="note" style="margin:8px 0">Desde Casa Di Mauro puedes recorrer la zona. Para cada día elige si comes en la casa, si te llevas un box lunch para salir o si no necesitas comidas; así lo dejamos listo. El box lunch se gestiona el día previo.</div>';
+    if(dias.length>2)h+='<div class="dayrow"><b>Mismo plan todos los días</b><select id="dall"><option value="">Elegir…</option><option value="n">Sin comidas</option><option value="mp">Media pensión</option><option value="pc">Pensión completa</option><option value="bl">Box lunch para salir</option></select></div>';
+    dias.forEach(function(d,ix){var sal=ix===dias.length-1,q=opt.plan[d]||{t:'n',n:g};
+      h+='<div class="dayrow"><b>'+fmt(d)+(sal?' · salida':'')+'</b><select class="dsel" data-d="'+d+'" aria-label="Comidas '+fmt(d)+'">'+optT(d,sal,q.t)+'</select>'+(q.t!=='n'?'<select class="dnum" data-d="'+d+'" aria-label="Personas '+fmt(d)+'">'+Array.apply(null,Array(g)).map(function(_,i){return '<option value="'+(i+1)+'"'+(q.n===i+1?' selected':'')+'>'+(i+1)+' pers.</option>'}).join('')+'</select><div class="note" style="flex:0 0 100%;margin:0">'+CLP(PTIPO[q.t][1])+' por persona · '+q.n+' pers. = <b>'+CLP(PTIPO[q.t][1]*q.n)+'</b>'+(q.t==='bl'?' · se gestiona el día previo':'')+'</div>':'')+'</div>'});
+    return h}
   function keep(){['gn','gm','gw'].forEach(function(i){if($(i))opt.f[i]=$(i).value})}
   function draw(){
     var c=calc(sel,ns,tipos,opt),g=opt.g,nn=ns.length;
     var gh='<div class="field"><label for="gq">Cuéntanos, ¿cuántas personas son?</label><select id="gq"><option value="">Elige cuántas…</option>';for(var i=nr;i<=cap;i++)gh+='<option value="'+i+'"'+(i===g?' selected':'')+'>'+i+' persona'+(i>1?'s':'')+'</option>';gh+='</select></div>';
     var meals='';
     if(g){
-      meals='<div class="mealbox"><h4>Almuerzos y cenas de la casa</h4><div class="note">'+'<b>Box lunch para tus salidas:</b> si vas a comer fuera de la casa, puedes pedirlo en lugar del almuerzo, al mismo valor. Se gestiona el día previo. ¿Quieres algo distinto? <a href="'+wa('Hola, quiero consultar por almuerzos y cenas distintos para mi reserva.')+'" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>.</div>'+
-        (nn>1?'<div class="note" style="margin-top:8px">Se cobra por persona y por noche. Elige para cuántas personas y para qué noches de tu estadía ('+nn+' noches); por defecto, todas.</div>':'')+
-        stp('mp','Media pensión','Almuerzo o cena · +$15.000 por persona y noche',g-(ov()?opt.pc:0))+chips('mp')+(ov()&&opt.pc>=g?'<div class="note">Esas noches ya tienen pensión completa para todas las personas. Quita noches arriba para sumar media pensión en otras.</div>':'')+
-        stp('pc','Pensión completa','Almuerzo y cena · +$28.000 por persona y noche',g-(ov()?opt.mp:0))+chips('pc')+(ov()&&opt.mp>=g?'<div class="note">Esas noches ya tienen media pensión para todas las personas. Quita noches arriba para sumar pensión completa en otras.</div>':'')+
+      meals='<div class="mealbox"><h4>Comidas, día por día</h4><div class="note">'+'¿Quieres algo distinto? <a href="'+wa('Hola, quiero consultar por almuerzos y cenas distintos para mi reserva.')+'" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>.</div>'+
+        planHtml(g)+
         (pack==='ny'?stp('nye','Cena de Año Nuevo','+$50.000 por persona · Aperitivo, entrada, fondo, postres, buffet de postres y copa de espumante a la medianoche',g):'')+'</div>'+(K.adv?'<div class="mealbox"><h4>Actividades</h4><div class="note">Elige para cuántas personas. Cada actividad se cobra por persona. Los valores se están coordinando: te confirmamos el total de las actividades antes de cobrar el saldo.</div>'+ACT.map(function(a){return stp(a.id,a.n,a.p?'$'+a.p.toLocaleString('es-CL')+' por persona':'Valor por confirmar',g)}).join('')+'</div>':'');
     }
     mb.innerHTML='<h3 style="font-family:var(--serif)">'+descr(sel)+'</h3><div class="note">'+fmt(ci)+' al '+fmt(co)+'</div>'+gh+meals+
@@ -781,10 +787,10 @@ function openCheckout(){
     POLDEV(pack)+
     '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="go" type="button"'+(g?'':' disabled')+'>'+(LIVE.on()?'Pagar abono con Khipu':'Pagar abono con Khipu')+'</button><button class="btn ghost" id="cl" type="button">Cerrar</button></div>';
     ['gn','gm','gw'].forEach(function(i){if($(i)&&opt.f[i])$(i).value=opt.f[i]});
-    $('gq').onchange=function(){keep();opt.g=+$('gq').value||0;if(opt.mp+opt.pc>opt.g){opt.mp=0;opt.pc=0}if(opt.nye>opt.g)opt.nye=0;ACT.forEach(function(a){if(opt[a.id]>opt.g)opt[a.id]=0});draw()};
-    mb.querySelectorAll('.nch').forEach(function(w){var k=w.getAttribute('data-k'),o=k==='mp'?'pc':'mp';w.querySelectorAll('.nc').forEach(function(b){b.onclick=function(){keep();var d=b.getAttribute('data-d'),a=opt[k+'N'],i=a.indexOf(d);
-      if(i>-1){if(a.length>1)a.splice(i,1)}else{a.push(d);a.sort()}
-      if(ov()&&opt[k]+opt[o]>opt.g)opt[k]=Math.max(0,opt.g-opt[o]);draw()}})});
+    $('gq').onchange=function(){keep();opt.g=+$('gq').value||0;Object.keys(opt.plan).forEach(function(d){if(opt.plan[d].n>opt.g)opt.plan[d].n=opt.g});if(opt.nye>opt.g)opt.nye=0;ACT.forEach(function(a){if(opt[a.id]>opt.g)opt[a.id]=0});draw()};
+    mb.querySelectorAll('.dsel').forEach(function(e){e.onchange=function(){keep();var d=e.getAttribute('data-d');opt.plan[d]={t:e.value,n:(opt.plan[d]&&opt.plan[d].n)||opt.g};draw()}});
+    mb.querySelectorAll('.dnum').forEach(function(e){e.onchange=function(){keep();var d=e.getAttribute('data-d');opt.plan[d].n=+e.value;draw()}});
+    var da=$('dall');if(da)da.onchange=function(){keep();if(!da.value)return;dias.forEach(function(d,ix){var sal=ix===dias.length-1,t=da.value;if(sal&&t==='pc')t='mp';opt.plan[d]={t:t,n:opt.g}});draw()};
     mb.querySelectorAll('.mstp').forEach(function(e){var k=e.getAttribute('data-k'),mx=+e.getAttribute('data-max');
       e.querySelector('.mas').onclick=function(){if(opt[k]<mx){keep();opt[k]++;draw()}};
       e.querySelector('.mn').onclick=function(){if(opt[k]>0){keep();opt[k]--;draw()}}});
@@ -799,6 +805,7 @@ function openCheckout(){
         hab.forEach(function(h,ix){var left=hab.length-ix-1,p=Math.max(1,Math.min(h.cap,rest-left));h.personas=p;rest-=p;delete h.cap});
         var clave='web-'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
         var body={contacto:{nombre:nom,telefono:tel},habitaciones:hab};
+        if(window.CDM_CONFIG&&CDM_CONFIG.comidasApi){var cm=[];Object.keys(opt.plan||{}).sort().forEach(function(d){var q=opt.plan[d];if(q&&q.t&&q.t!=='n'&&q.n)cm.push({fecha:d,tipo:({mp:'media_pension',pc:'pension_completa',bl:'box_lunch'})[q.t],personas:q.n})});if(cm.length)body.comidas=cm}
         if(pack)body.paquete=pack==='ny'?'ano_nuevo':'navidad';else{body.entrada=ci;body.salida=co}
         LIVE.token().then(function(tk){return LIVE.api('POST','/reservas',body,clave,tk?{'X-Turnstile-Token':tk}:null)}).then(function(j){
           if(!j.ok){var m=mb.querySelector('.livemsg')||document.createElement('div');m.className='warn livemsg';m.textContent=LIVE.msg(j.codigo);if(!m.parentNode)$('go').parentNode.insertBefore(m,$('go'));$('go').disabled=false;$('go').textContent='Pagar abono con Khipu';return}
