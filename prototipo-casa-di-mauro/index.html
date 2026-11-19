@@ -159,6 +159,7 @@ footer a:nth-child(even){text-align:right}
 .chat .q button{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-size:13px;cursor:pointer}
 .modal{position:fixed;inset:0;background:rgba(10,24,17,.7);display:flex;align-items:center;justify-content:center;padding:16px;z-index:40}
 .modal .box{background:#fff;color:#1c2b3a;border-radius:14px;max-width:460px;width:100%;padding:20px;display:flex;flex-direction:column;gap:12px;max-height:92vh;overflow:auto}
+.modal .box{position:relative}.mx{position:sticky;top:0;align-self:flex-end;order:-1;margin:-8px -8px -34px 0;width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#17402b;font-size:26px;line-height:1;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.3);z-index:2}.mx:hover,.mx:focus-visible{box-shadow:inset 0 0 0 2px #c9a24a,0 1px 6px rgba(0,0,0,.3);outline:none}
 .modal .box img.big{width:100%;border-radius:10px}
 .flowbar{background:#1d6fe0;color:#fff;border-radius:8px;padding:8px 12px;font-weight:600}
 .sum td:last-child,.sum th:last-child{text-align:right}
@@ -991,6 +992,7 @@ function gdispDraw(){
   var min=G.n?G.f:'2026-12-04',max=G.n?G.o:'2027-03-31',dI=$('gday');dI.min=min;dI.max=max;
   if(G.day&&(G.day<min||G.day>max))G.day='';
   if(G.cur!==null&&(!G.pset||G.p>EXPS[G.cur].cap))G.cur=null;
+  if(G.pset&&G.cur===null&&G.want!=null&&G.p<=EXPS[G.want].cap){G.cur=G.want;G.ver=true;G.want=null}
   $('gpick').innerHTML=G.pset?EXPS.map(function(x,k){var no=G.p>x.cap;return '<button type="button" class="btn'+(G.cur===k?'':' ghost')+' evpick" data-i="'+k+'"'+(no?' disabled':'')+'><span>'+x.n+(no?'<small>hasta '+x.cap+'</small>':'')+'</span></button>'}).join(''):'';
   var i=G.cur,peq=G.pset&&G.p<15,h='',aviso=false,hay=false,dias=[],vd=G.pset&&i!==null&&G.ver;
   if(i===null)G.ver=false;
@@ -1058,8 +1060,13 @@ EXPS.forEach(function(x,i){
   d.innerHTML='<button type="button" class="exo"><img src="'+x.img+'" alt="" loading="lazy"><span class="ext"><b>'+x.n+'</b><span>'+CLP(x.p)+' por persona · hasta '+x.cap+' personas</span></span></button>';
   d.querySelector('.exo').onclick=function(){
     var mb=$('mbox');
-    mb.innerHTML='<img class="big" src="'+(x.afiche||x.img)+'" alt="'+x.n+'"><h3 style="font-family:var(--serif)">'+x.n+'</h3><div class="price">'+CLP(x.p)+' <small>por persona</small></div>'+(x.nota?'<div class="note">'+x.nota+'</div>':'')+'<ul class="inc">'+x.inc.map(function(t){return '<li>'+t+'</li>'}).join('')+'</ul>'+(x.dj?'<div class="note">DJ adicional opcional: +$100.000 por evento.</div>':'')+'<div class="note">Dura 3 horas · grupos desde 15 personas.</div><div class="note">Para elegir el día y el horario usa «3. Elige el día y ve la disponibilidad».</div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="cl4" type="button">Cerrar</button></div>';
+    mb.innerHTML='<img class="big" src="'+(x.afiche||x.img)+'" alt="'+x.n+'"><h3 style="font-family:var(--serif)">'+x.n+'</h3><div class="price">'+CLP(x.p)+' <small>por persona</small></div>'+(x.nota?'<div class="note">'+x.nota+'</div>':'')+'<ul class="inc">'+x.inc.map(function(t){return '<li>'+t+'</li>'}).join('')+'</ul>'+(x.dj?'<div class="note">DJ adicional opcional: +$100.000 por evento.</div>':'')+'<div class="note">Dura 3 horas · grupos desde 15 personas.</div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="cl5" type="button">Ver disponibilidad</button></div><button class="mx" id="cl4" type="button" aria-label="Cerrar">×</button>';
     openModal();$('cl4').onclick=closeModal;
+    $('cl5').onclick=function(){closeModal();G.want=i;
+      if(G.pset&&G.p<=x.cap){G.cur=i;G.ver=true;G.day='';G.want=null}
+      gdraw();
+      var t=G.pset?$('gexp'):$('gpv').closest('.card');if(t&&t.scrollIntoView)t.scrollIntoView({behavior:'smooth',block:'start'});
+      if(!G.pset)setTimeout(function(){$('gpv').focus()},500)};
   };
   $('exps').appendChild(d);
 });
