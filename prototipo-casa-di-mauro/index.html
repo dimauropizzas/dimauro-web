@@ -159,7 +159,7 @@ footer a:nth-child(even){text-align:right}
 .chat .q button{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-size:13px;cursor:pointer}
 .modal{position:fixed;inset:0;background:rgba(10,24,17,.7);display:flex;align-items:center;justify-content:center;padding:16px;z-index:40}
 .modal .box{background:#fff;color:#1c2b3a;border-radius:14px;max-width:460px;width:100%;padding:20px;display:flex;flex-direction:column;gap:12px;max-height:92vh;overflow:auto}
-.modal .box{position:relative}.mx{position:sticky;top:0;align-self:flex-end;order:-1;margin:-8px -8px -34px 0;width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#17402b;font-size:26px;line-height:1;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.3);z-index:2}.mx:hover,.mx:focus-visible{box-shadow:inset 0 0 0 2px #c9a24a,0 1px 6px rgba(0,0,0,.3);outline:none}
+.modal .box>*{flex-shrink:0}.modal .box>div:last-child:has(>.btn){position:sticky;bottom:-20px;background:#fff;padding:10px 0 4px;margin-top:auto;z-index:3;border-top:1px solid #eee}.modal .box{position:relative}.mx{position:sticky;top:0;align-self:flex-end;order:-1;margin:-8px -8px -34px 0;width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#17402b;font-size:26px;line-height:1;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.3);z-index:2}.mx:hover,.mx:focus-visible{box-shadow:inset 0 0 0 2px #c9a24a,0 1px 6px rgba(0,0,0,.3);outline:none}
 .modal .box img.big{width:100%;border-radius:10px}
 .flowbar{background:#1d6fe0;color:#fff;border-radius:8px;padding:8px 12px;font-weight:600}
 .sum td:last-child,.sum th:last-child{text-align:right}
@@ -408,6 +408,8 @@ body.hasbar .chat-b{bottom:calc(var(--barh,90px) + 26px + env(safe-area-inset-bo
 .gpick .evpick.ghost{background:#fffaf0;color:#17402b;border:1.5px solid #17402b}
 #gmodo button,.gpick .evpick{transition:box-shadow .12s}
 #gmodo button:hover,.gpick .evpick:hover:not(:disabled),#gmodo button:focus-visible,.gpick .evpick:focus-visible,#gmodo button:active,.gpick .evpick:active:not(:disabled){box-shadow:inset 0 0 0 2px #c9a24a;outline:none}
+@media(max-width:560px){.chat-b .t{display:none}.chat-b{padding:4px!important;gap:0!important}
+#gbar{flex-wrap:nowrap;gap:8px;padding:8px 12px}#gbar .sg{flex:1;min-width:0}#gbar .sg>span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#gbar .tt{font-size:22px}#gbar .sr{margin-left:0}#gbar .btn{padding:10px 20px}}
 .card.sec{scroll-margin-top:150px}
 .gpick{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:8px}
 .gpick .evpick{grid-column:span 2;padding:10px 8px!important;font-size:15px!important;line-height:1.2;min-height:52px;display:flex;align-items:center;justify-content:center;text-align:center}
@@ -765,9 +767,9 @@ function openCheckout(){
     mb.innerHTML='<h3 style="font-family:var(--serif)">'+descr(sel)+'</h3><div class="note">'+fmt(ci)+' al '+fmt(co)+'</div>'+gh+meals+
     (g?'<div class="scroll"><table class="sum">'+c.items.map(function(i){return '<tr><td>'+i[0]+'</td><td>'+(typeof i[1]==='number'?CLP(i[1]):i[1])+'</td></tr>'}).join('')+'<tr class="t"><td>Total</td><td>'+CLP(c.total)+'</td></tr></table></div>'+
     '<div class="good"><div>Valor total: <b>'+CLP(c.total)+'</b></div><div>Abono hoy (primera noche de alojamiento): <b>'+CLP(c.anticipo)+'</b></div><div>Saldo al llegar'+(c.total>c.habs||c.pend?(K.adv?', con las comidas y actividades':', con las comidas'):'')+': <b>'+CLP(c.total-c.anticipo)+'</b></div></div>'+
-    '<div class="field"><label for="gn">Nombre</label><input id="gn"></div><div class="field"><label for="gm">Correo</label><input id="gm" type="email"></div><div class="field"><label for="gw">WhatsApp</label><input id="gw"></div>':'<div class="warn">Cuéntanos cuántas personas son para mostrarte el total.</div>')+
+    '<div class="field"><label for="gn">Nombre</label><input id="gn" autocomplete="organization" autocapitalize="words"></div><div class="field"><label for="gm">Correo</label><input id="gm" type="email" inputmode="email" autocomplete="email"></div><div class="field"><label for="gw">WhatsApp</label><input id="gw" type="tel" inputmode="tel" autocomplete="tel"></div>':'<div class="warn">Cuéntanos cuántas personas son para mostrarte el total.</div>')+
     POLDEV(pack)+
-    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="go" type="button"'+(g?'':' disabled')+'>'+(LIVE.on()?'Pagar abono con Khipu':'Pagar abono con Flow')+'</button><button class="btn ghost" id="cl" type="button">Cerrar</button></div>';
+    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="go" type="button"'+(g?'':' disabled')+'>'+(LIVE.on()?'Pagar abono con Khipu':'Pagar abono con Khipu')+'</button><button class="btn ghost" id="cl" type="button">Cerrar</button></div>';
     ['gn','gm','gw'].forEach(function(i){if($(i)&&opt.f[i])$(i).value=opt.f[i]});
     $('gq').onchange=function(){keep();opt.g=+$('gq').value||0;if(opt.mp+opt.pc>opt.g){opt.mp=0;opt.pc=0}if(opt.nye>opt.g)opt.nye=0;ACT.forEach(function(a){if(opt[a.id]>opt.g)opt[a.id]=0});draw()};
     mb.querySelectorAll('.mstp').forEach(function(e){var k=e.getAttribute('data-k'),mx=+e.getAttribute('data-max');
@@ -795,7 +797,7 @@ function openCheckout(){
         });
         return}
       var cod='CDM-'+Math.random().toString(36).slice(2,7).toUpperCase();
-      mb.innerHTML='<div class="flowbar">Flow · modo de prueba</div><p><b>Pago de '+CLP(c.anticipo)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Flow y la reserva se confirma solo cuando Flow lo avisa.</p><button class="btn" id="ok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="cl2" type="button">Volver</button>';
+      mb.innerHTML='<div class="flowbar">Khipu · modo de prueba</div><p><b>Pago de '+CLP(c.anticipo)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Khipu y la reserva se confirma solo cuando Khipu lo avisa.</p><button class="btn" id="ok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="cl2" type="button">Volver</button>';
       $('cl2').onclick=draw;
       $('ok').onclick=function(){mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva confirmada (demo)</h3><div class="good">Código '+cod+'. Valor total '+CLP(c.total)+'. Abono '+CLP(c.anticipo)+' (primera noche de alojamiento). Saldo al llegar: '+CLP(c.total-c.anticipo)+'.</div><p class="note">Recibirías la confirmación por correo y WhatsApp. No se cobró ni se envió nada.</p><button class="btn" id="cl3" type="button">Cerrar</button>';$('cl3').onclick=closeModal};
     };
@@ -850,11 +852,11 @@ function romCk(){
     '<div class="good"><div>Valor total: <b>'+CLP(c.total)+'</b></div><div>Abono hoy (primera noche de alojamiento): <b>'+CLP(c.abono)+'</b></div><div>Saldo al llegar: <b>'+CLP(c.total-c.abono)+'</b></div></div>'+
     '<div class="field"><label for="rn">Nombre</label><input id="rn"></div><div class="field"><label for="rm">Correo</label><input id="rm" type="email"></div><div class="field"><label for="rw">WhatsApp</label><input id="rw"></div>'+
     POLDEV(0)+
-    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="rgo" type="button">Pagar abono con Flow</button><button class="btn ghost" id="rcl" type="button">Cerrar</button></div>';
+    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="rgo" type="button">Pagar abono con Khipu</button><button class="btn ghost" id="rcl" type="button">Cerrar</button></div>';
     $('rcl').onclick=closeModal;
     $('rgo').onclick=function(){
       var cod='CDM-'+Math.random().toString(36).slice(2,7).toUpperCase();
-      mb.innerHTML='<div class="flowbar">Flow · modo de prueba</div><p><b>Pago de '+CLP(c.abono)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Flow y la reserva se confirma solo cuando Flow lo avisa.</p><button class="btn" id="rok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="rcl2" type="button">Volver</button>';
+      mb.innerHTML='<div class="flowbar">Khipu · modo de prueba</div><p><b>Pago de '+CLP(c.abono)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Khipu y la reserva se confirma solo cuando Khipu lo avisa.</p><button class="btn" id="rok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="rcl2" type="button">Volver</button>';
       $('rcl2').onclick=draw;
       $('rok').onclick=function(){mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva confirmada (demo)</h3><div class="good">Código '+cod+'. Valor total '+CLP(c.total)+'. Abono '+CLP(c.abono)+' (primera noche de alojamiento). Saldo al llegar: '+CLP(c.total-c.abono)+'.</div><p class="note">Recibirías la confirmación por correo y WhatsApp. No se cobró ni se envió nada.</p><button class="btn" id="rcl3" type="button">Cerrar</button>';$('rcl3').onclick=closeModal};
     };
@@ -913,11 +915,11 @@ function advCk(){
     '<div class="good"><div>Valor total: <b>'+CLP(c.total)+'</b>'+(c.pend?' más actividades':'')+'</div><div>Abono hoy (primera noche de alojamiento): <b>'+CLP(c.anticipo)+'</b></div><div>Saldo al llegar: <b>'+CLP(c.total-c.anticipo)+'</b></div></div>'+
     '<div class="field"><label for="vn">Nombre</label><input id="vn"></div><div class="field"><label for="vm">Correo</label><input id="vm" type="email"></div><div class="field"><label for="vw">WhatsApp</label><input id="vw"></div>'+
     POLDEV(0)+
-    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="vgo" type="button">Pagar abono con Flow</button><button class="btn ghost" id="vcl" type="button">Cerrar</button></div>';
+    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="vgo" type="button">Pagar abono con Khipu</button><button class="btn ghost" id="vcl" type="button">Cerrar</button></div>';
     $('vcl').onclick=closeModal;
     $('vgo').onclick=function(){
       var cod='CDM-'+Math.random().toString(36).slice(2,7).toUpperCase();
-      mb.innerHTML='<div class="flowbar">Flow · modo de prueba</div><p><b>Pago de '+CLP(c.anticipo)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Flow y la reserva se confirma solo cuando Flow lo avisa.</p><button class="btn" id="vok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="vcl2" type="button">Volver</button>';
+      mb.innerHTML='<div class="flowbar">Khipu · modo de prueba</div><p><b>Pago de '+CLP(c.anticipo)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Khipu y la reserva se confirma solo cuando Khipu lo avisa.</p><button class="btn" id="vok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="vcl2" type="button">Volver</button>';
       $('vcl2').onclick=draw;
       $('vok').onclick=function(){mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva confirmada (demo)</h3><div class="good">Código '+cod+'. Valor total '+CLP(c.total)+(c.pend?' más actividades':'')+'. Abono '+CLP(c.anticipo)+' (primera noche de alojamiento). Saldo al llegar: '+CLP(c.total-c.anticipo)+'.</div><p class="note">Recibirías la confirmación por correo y WhatsApp. No se cobró ni se envió nada.</p><button class="btn" id="vcl3" type="button">Cerrar</button>';$('vcl3').onclick=closeModal};
     };
@@ -1001,6 +1003,10 @@ function evFull(d,b,i){return evTom(d,b,i)+G.p>EXPS[i].cap}
 function evUsado(i,d,b){return EXPS.some(function(x,k){return k!==i&&G.e[k]&&G.ev[k]&&G.ev[k].d===d&&G.ev[k].b===b})}
 function evOk(){return EXPS.every(function(x,i){return !G.e[i]||(G.ev[i]&&G.ev[i].d&&G.ev[i].b)})}
 function evResumen(){return EXPS.map(function(x,i){if(!G.e[i]||!G.ev[i]||!G.ev[i].d)return '';var b=EVB.filter(function(q){return q[0]===G.ev[i].b})[0];return '<div class="note">'+x.n+': <b>'+fmt(G.ev[i].d)+'</b>'+(b?' · '+b[1]+' h':'')+'</div>'}).join('')}
+function evDiasLibres(min,max,i){var m={},ds=[];
+  if(LX.on()){var s=LX.get(i);if(s&&s.by)ds=Object.keys(s.by).sort()}else for(var k=0;k<75;k++)ds.push(ISO(new Date(FEC(min).getTime()+k*864e5)));
+  ds.forEach(function(d){if(d<min||d>max||EVCERR.indexOf(d)>-1)return;EVB.forEach(function(bb){if(evCell(d,bb[0],i).hay)(m[d]=m[d]||[]).push(bb[1].slice(0,5))})});
+  return Object.keys(m).sort().slice(0,8).map(function(d){return {d:d,t:m[d]}})}
 function evDiasUnir(min,max,i){var m={};
   if(LX.on()){var s=LX.get(i);if(s&&s.by)Object.keys(s.by).forEach(function(d){if(d<min||d>max||EVCERR.indexOf(d)>-1)return;EVB.forEach(function(bb){var c=s.by[d][bb[0]];if(c&&c.hay)(m[d]=m[d]||[]).push(bb[1].slice(0,5))})})}
   else EVB.forEach(function(bb){Object.keys(EVTOM).forEach(function(k){var a=k.split('|');if(a[2]!==String(i)||a[1]!==bb[0])return;var d=a[0],tom=EVTOM[k];
@@ -1022,6 +1028,8 @@ function gdispDraw(){
   if(vd&&carga)h='<div class="note">Consultando disponibilidad…</div>';
   else if(vd&&falla)h='<div class="warn">No pudimos consultar la disponibilidad ahora. Inténtalo de nuevo en un momento o escríbenos por WhatsApp.</div>';
   else if(vd){var x=EXPS[i];
+    if(!peq){dias=evDiasLibres(min,max,i);var lb=dI.parentNode.querySelector('label');if(lb)lb.textContent=dias.length?'Otra fecha':'Día';
+      h=dias.length?'<div class="note" style="margin:6px 0 2px">Próximos días disponibles</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px">'+dias.map(function(q){return '<button type="button" class="btn'+(G.day===q.d?'':' ghost')+' evdia" data-d="'+q.d+'" style="padding:6px 12px;font-size:14px">'+fmt(q.d)+'</button>'}).join('')+'</div>':''}
     if(peq){dias=evDiasUnir(min,max,i);
       h=dias.length?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">'+dias.map(function(q){return '<button type="button" class="btn'+(G.day===q.d?'':' ghost')+' evdia" data-d="'+q.d+'" style="padding:4px 10px;font-size:13px">'+fmt(q.d)+' · '+q.t.join(', ')+'</button>'}).join('')+'</div>'
         :'<div class="warn">Por ahora no hay fechas disponibles para esta experiencia con tu grupo. Escríbenos por WhatsApp y vemos una alternativa: <a href="'+wa('Hola, somos un grupo de '+G.p+' personas y queremos '+x.n+'. ¿Qué fechas tienen?')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.</div>'}
@@ -1045,7 +1053,7 @@ function gevDraw(){
   var t=gtot(),box=$('gev'),pn=PLANES.filter(function(x){return x[0]===G.pl})[0];box.hidden=!(t.nm.length||(G.n&&G.pset));
   if(box.hidden){return}
   var h='';
-  if(G.n)h+='<div class="dx" style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><span><b>Alojamiento · '+pn[1]+'</b><small>'+pn[2]+' · '+fmt(G.f)+' al '+fmt(G.o)+' · '+G.n+' noche'+(G.n>1?'s':'')+' × '+t.py+' personas</small></span><b>'+CLP(t.py*t.lod)+'</b></div>';
+  if(G.n)h+='<div class="dx" style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><span><b>'+(G.pl==='a'?'Alojamiento con desayuno':'Alojamiento · '+pn[1])+'</b><small>'+(G.pl==='a'?'':pn[2]+' · ')+fmt(G.f)+' al '+fmt(G.o)+' · '+G.n+' noche'+(G.n>1?'s':'')+' × '+t.py+' personas</small></span><b>'+CLP(t.py*t.lod)+'</b></div>';
   h+=EXPS.map(function(x,i){if(!G.e[i]||!G.ev[i])return '';var b=EVB.filter(function(q){return q[0]===G.ev[i].b})[0];
     return '<div class="dx" style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><span><b>'+x.n+'</b><small>'+fmt(G.ev[i].d)+' · '+b[1]+' h · '+t.py+' personas × '+CLP(x.p)+'</small><button type="button" class="btn ghost evq" data-i="'+i+'" style="padding:3px 12px;margin-top:4px">Quitar</button></span><b>'+CLP(t.py*x.p)+'</b></div>'}).join('');
   h+='<div class="dx" style="display:flex;justify-content:space-between;gap:10px;align-items:center"><b>Total</b><b style="font-size:20px">'+CLP(t.total)+'</b></div>';
@@ -1070,9 +1078,9 @@ function gsum(){
     '<div class="good"><div>Valor total: <b>'+CLP(t.total)+'</b></div><div>Abono hoy ('+(G.n?'primera noche de alojamiento':'50 % de las experiencias')+'): <b>'+CLP(ab)+'</b></div><div>Saldo '+(G.n?'al llegar':'el día del evento')+': <b>'+CLP(t.total-ab)+'</b></div></div>'+
     (t.nm.length?evResumen():'')+
     (f?'<div class="note">Se libera una persona por cada 10 pagados. El descuento se hará al momento de pagar el '+(G.n?'saldo restante':'50 % restante')+'.</div>':'')+
-    '<div class="field"><label for="gn">Nombre o institución</label><input id="gn"></div><div class="field"><label for="gm">Correo</label><input id="gm" type="email"></div><div class="field"><label for="gw">WhatsApp</label><input id="gw"></div>'+
+    '<div class="field"><label for="gn">Nombre o institución</label><input id="gn" autocomplete="organization" autocapitalize="words"></div><div class="field"><label for="gm">Correo</label><input id="gm" type="email" inputmode="email" autocomplete="email"></div><div class="field"><label for="gw">WhatsApp</label><input id="gw" type="tel" inputmode="tel" autocomplete="tel"></div>'+
     (G.n?POLDEV(0):'')+(t.nm.length?POLEXP():'')+
-    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="ggo" type="button">'+(LX.on()?(G.modo==='exp'?'Pagar abono con Khipu':'Enviar solicitud por WhatsApp'):'Pagar abono con Flow')+'</button><button class="btn ghost" id="cl4" type="button">Cerrar</button></div>';
+    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="ggo" type="button">'+(LX.on()?(G.modo==='exp'?'Pagar abono con Khipu':'Enviar solicitud por WhatsApp'):'Pagar abono con Khipu')+'</button><button class="btn ghost" id="cl4" type="button">Cerrar</button></div>';
     $('cl4').onclick=closeModal;
     $('ggo').onclick=function(){
       if(LX.on()){
@@ -1093,7 +1101,7 @@ function gsum(){
             mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva retenida</h3><div class="warn">'+LX.msg(pg.codigo)+'</div><p class="note">Tu reserva quedó retenida por un tiempo limitado. Cuando el pago esté disponible podrás completarlo; si necesitas ayuda, escríbenos por el botón de Rayén.</p><button class="btn" id="cl9" type="button">Cerrar</button>';$('cl9').onclick=closeModal})});
         return}
       var cod='CDM-'+Math.random().toString(36).slice(2,7).toUpperCase();
-      mb.innerHTML='<div class="flowbar">Flow · modo de prueba</div><p><b>Pago de '+CLP(ab)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Flow y la reserva se confirma solo cuando Flow lo avisa.</p><button class="btn" id="gok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="gv" type="button">Volver</button>';
+      mb.innerHTML='<div class="flowbar">Khipu · modo de prueba</div><p><b>Pago de '+CLP(ab)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Khipu y la reserva se confirma solo cuando Khipu lo avisa.</p><button class="btn" id="gok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="gv" type="button">Volver</button>';
       $('gv').onclick=draw;
       $('gok').onclick=function(){mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva confirmada (demo)</h3><div class="good">Código '+cod+'. Valor total '+CLP(t.total)+'. Abono '+CLP(ab)+'. Saldo '+(G.n?'al llegar':'el día del evento')+': '+CLP(t.total-ab)+'.</div><p class="note">Recibirías la confirmación por correo y WhatsApp. No se cobró ni se envió nada.</p><button class="btn" id="gc3" type="button">Cerrar</button>';$('gc3').onclick=closeModal};
     };
@@ -1261,7 +1269,7 @@ hero();heroPz();setInterval(heroPz,1000);setInterval(hero,1000);
 var FAQ=[
  ['¿Cuántas habitaciones hay?','Son 10 habitaciones, todas con baño privado: 5 matrimoniales, 1 doble twin y 4 triples. Capacidad máxima, 24 personas. Abajo hay 3 matrimoniales; arriba, las otras 7.'],
  ['¿El desayuno está incluido?','Sí. Todas las habitaciones incluyen desayuno sureño semibuffet.'],
- ['¿Cómo se paga y se cancela?','Para reservar se abona con Flow el valor de la primera noche; el resto y las comidas se pagan al llegar. Con 15 días o más de aviso, se devuelve el 100 % del abono. Con menos aviso, si no se presenta o decide irse después de llegar, no hay devolución.'],
+ ['¿Cómo se paga y se cancela?','Para reservar se abona con Khipu el valor de la primera noche; el resto y las comidas se pagan al llegar. Con 15 días o más de aviso, se devuelve el 100 % del abono. Con menos aviso, si no se presenta o decide irse después de llegar, no hay devolución.'],
  ['¿Dónde queda?','En Camino a Coñaripe #100, Licán Ray. Playa Ensenada está a 15 minutos caminando y las termas a menos de 40 minutos.'],
  ['¿Aceptan grupos?','Sí, desde 15 personas, con una persona liberada por cada 10 que pagan. Pide tu cotización en Grupos y delegaciones.']
 ];
