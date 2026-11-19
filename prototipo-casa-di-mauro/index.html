@@ -553,7 +553,8 @@ h1,h2,h3,.tile b,.et b,.mealbox h4,.mealc h3,.sug .st{font-family:var(--serif);f
   <div class="card sec" id="gstep2"><h3>2. Alojamiento y comidas</h3>
     <div id="gsm" class="note" style="margin-top:8px"></div><div id="gcal"></div>
     <div class="gplan" id="gplan"></div></div>
-  <div class="card sec" id="gexp"><h3 id="gh3">3. Elige el día y ve la disponibilidad</h3>
+  <div class="card sec" id="gexp"><h3 id="gh3">3. Elige tu experiencia y el día</h3>
+    <div id="gpick" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px"></div>
     <div class="field"><label for="gday">Día</label><input id="gday" type="date"></div>
     <div id="gdisp"></div>
     <p class="note" id="gdispn"></p></div>
@@ -967,39 +968,38 @@ function evFull(d,b,i){return evTom(d,b,i)+G.p>EXPS[i].cap}
 function evUsado(i,d,b){return EXPS.some(function(x,k){return k!==i&&G.e[k]&&G.ev[k]&&G.ev[k].d===d&&G.ev[k].b===b})}
 function evOk(){return EXPS.every(function(x,i){return !G.e[i]||(G.ev[i]&&G.ev[i].d&&G.ev[i].b)})}
 function evResumen(){return EXPS.map(function(x,i){if(!G.e[i]||!G.ev[i]||!G.ev[i].d)return '';var b=EVB.filter(function(q){return q[0]===G.ev[i].b})[0];return '<div class="note">'+x.n+': <b>'+fmt(G.ev[i].d)+'</b>'+(b?' · '+b[1]+' h':'')+'</div>'}).join('')}
-function evDiasUnir(min,max){var m={};
-  Object.keys(EVTOM).forEach(function(k){var a=k.split('|'),d=a[0],b=a[1],i=+a[2],tom=EVTOM[k];
-    if(d<min||d>max||EVCERR.indexOf(d)>-1||tom<15||G.p>EXPS[i].cap-tom)return;
-    (m[d]=m[d]||[]).push(EXPS[i].n+' '+(EVB.filter(function(q){return q[0]===b})[0][1]).slice(0,5))});
-  return Object.keys(m).sort().slice(0,8).map(function(d){return {d:d,t:m[d]}})}
+function evDiasUnir(min,max,i){var m={};
+  EVB.forEach(function(bb){Object.keys(EVTOM).forEach(function(k){var a=k.split('|');if(a[2]!==String(i)||a[1]!==bb[0])return;var d=a[0],tom=EVTOM[k];
+    if(d<min||d>max||EVCERR.indexOf(d)>-1||tom<15||G.p>EXPS[i].cap-tom)return;(m[d]=m[d]||[]).push(bb[1].slice(0,5))})});
+  return Object.keys(m).sort().slice(0,10).map(function(d){return {d:d,t:m[d]}})}
+G.cur=null;
 function gdispDraw(){
-  var min=G.n?G.f:'2026-12-04',max=G.n?G.o:'2027-03-31',d=$('gday');d.min=min;d.max=max;
+  var min=G.n?G.f:'2026-12-04',max=G.n?G.o:'2027-03-31',dI=$('gday');dI.min=min;dI.max=max;
   if(G.day&&(G.day<min||G.day>max))G.day='';
-  d.value=G.day||'';
-  var h='';
-  var hay=false;
-  d.disabled=!G.pset;var aviso=false;
-  if(!G.pset||!G.day)h='';
-  else if(EVCERR.indexOf(G.day)>-1)h='<div class="note">Ese día no tomamos eventos. Elige otra fecha.</div>';
-  else h=EXPS.map(function(x,i){
-    var r='<div class="dx"><b>'+x.n+'</b><small>'+CLP(x.p)+' por persona · hasta '+x.cap+' personas</small>';
-    if(G.p>x.cap)return r+'<div class="note">Tu grupo supera el máximo de esta experiencia ('+x.cap+' personas).</div></div>';
-    return r+'<div class="evbs">'+EVB.map(function(b){
-      var tom=evTom(G.day,b[0],i),libre=x.cap-tom,sel=G.ev[i]&&G.ev[i].d===G.day&&G.ev[i].b===b[0],us=evUsado(i,G.day,b[0]),cabe=G.p<=libre&&(G.p>=15||tom>=15);
-      var st=sel?'Elegida':us?'Ya la usas en otra experiencia':cabe?'Disponible':(G.p<15&&tom<15&&G.p<=libre)?'Desde 15 personas, o sumándote a otro grupo':libre<=0?'Completo':G.p>libre&&libre>=15?'Hay lugar para hasta '+libre+' personas':'Sin cupo para tu grupo';
-      if(!sel&&!cabe&&!us)aviso=true;
-      if(cabe&&!us)hay=true;
-      return '<button type="button" class="evb'+(sel?' on':'')+'" data-i="'+i+'" data-b="'+b[0]+'"'+(!sel&&(!cabe||us)?' disabled':'')+'><b>'+b[1]+' h</b><small>'+b[2]+' · '+st+'</small><small>Capacidad '+x.cap+' · quedan '+Math.max(0,libre)+'</small></button>'}).join('')+'</div></div>'}).join('');
-  var dU='';
-  if(G.pset&&G.p<15){var dias=evDiasUnir(min,max);
-    dU=dias.length?'<div class="good" style="margin-bottom:10px">Con menos de 15 personas solo podemos reservar los días en que ya hay otro grupo en esa experiencia. Si vienes varios días, puedes adaptarte a alguno de estos: <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">'+dias.map(function(x){return '<button type="button" class="btn ghost evdia" data-d="'+x.d+'" style="padding:4px 10px;font-size:13px">'+fmt(x.d)+' · '+x.t.join(', ')+'</button>'}).join('')+'</div></div>'
-    :'<div class="warn" style="margin-bottom:10px">Con menos de 15 personas solo podemos reservar los días en que ya hay otro grupo en esa experiencia, y por ahora no hay ninguno. Escríbenos por WhatsApp y vemos una alternativa: <a href="'+wa('Hola, somos un grupo de '+G.p+' personas y queremos sumarnos a una experiencia. ¿Qué días tienen otro grupo?')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.</div>'}
-  if(G.pset&&G.day&&EVCERR.indexOf(G.day)<0&&!hay&&G.p>=15&&!Object.keys(G.ev).length)h='<div class="warn">'+(G.p<15?'Con menos de 15 personas solo puedes sumarte a un horario donde ya haya otro grupo de la misma experiencia, y ese día no hay. ':'Ese día no tenemos cupo para un grupo de '+G.p+' personas. ')+'Escríbenos por WhatsApp y vemos una alternativa: <a href="'+wa('Hola, somos un grupo de '+G.p+' personas y queremos una experiencia el '+G.day+'. ¿Tienen alternativa?')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.</div>'+h;
-  $('gdisp').innerHTML=dU+h;
-  $('gdisp').querySelectorAll('.evdia').forEach(function(x){x.onclick=function(){G.day=x.getAttribute('data-d');gdraw()}});
-  $('gdisp').querySelectorAll('.evb').forEach(function(x){x.onclick=function(){var i=+x.getAttribute('data-i'),b=x.getAttribute('data-b');
-    if(G.ev[i]&&G.ev[i].d===G.day&&G.ev[i].b===b){G.e[i]=false;delete G.ev[i]}else{G.e[i]=true;G.ev[i]={d:G.day,b:b}}gdraw()}});
-  $('gdispn').innerHTML=!aviso?'':'¿No hay cupo para tu grupo, o prefieres otro día u horario? Escríbenos por WhatsApp: muchas veces podemos acomodar un grupo más pequeño si ya hay otro grupo ese día. <a href="'+wa('Hola, quiero consultar disponibilidad para una experiencia de grupo. Somos ___ personas y el día sería ___.')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.'}
+  if(G.cur!==null&&(!G.pset||G.p>EXPS[G.cur].cap))G.cur=null;
+  $('gpick').innerHTML=G.pset?EXPS.map(function(x,k){var no=G.p>x.cap;return '<button type="button" class="btn'+(G.cur===k?'':' ghost')+' evpick" data-i="'+k+'"'+(no?' disabled':'')+' style="padding:6px 12px;font-size:14px">'+x.n+(no?' · hasta '+x.cap:'')+'</button>'}).join(''):'';
+  var i=G.cur,peq=G.pset&&G.p<15,h='',aviso=false,hay=false,dias=[];
+  dI.parentNode.style.display=(G.pset&&i!==null&&!peq)?'':'none';
+  dI.value=G.day||'';
+  if(G.pset&&i!==null){var x=EXPS[i];
+    if(peq){dias=evDiasUnir(min,max,i);
+      h=dias.length?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">'+dias.map(function(q){return '<button type="button" class="btn'+(G.day===q.d?'':' ghost')+' evdia" data-d="'+q.d+'" style="padding:4px 10px;font-size:13px">'+fmt(q.d)+' · '+q.t.join(', ')+'</button>'}).join('')+'</div>'
+        :'<div class="warn">Por ahora no hay fechas disponibles para esta experiencia con tu grupo. Escríbenos por WhatsApp y vemos una alternativa: <a href="'+wa('Hola, somos un grupo de '+G.p+' personas y queremos '+x.n+'. ¿Qué fechas tienen?')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.</div>'}
+    var ver=G.day&&(!peq||dias.some(function(q){return q.d===G.day}));
+    if(ver){
+      if(EVCERR.indexOf(G.day)>-1)h+='<div class="note">Ese día no tomamos eventos. Elige otra fecha.</div>';
+      else{h+='<div class="dx"><b>'+x.n+'</b><small>'+CLP(x.p)+' por persona · hasta '+x.cap+' personas</small><div class="evbs">'+EVB.map(function(b){
+        var tom=evTom(G.day,b[0],i),libre=x.cap-tom,sel=G.ev[i]&&G.ev[i].d===G.day&&G.ev[i].b===b[0],us=evUsado(i,G.day,b[0]),cabe=G.p<=libre&&(G.p>=15||tom>=15);
+        var st=sel?'Elegida':us?'Ya la usas en otra experiencia':cabe?'Disponible':libre<=0?'Completo':(G.p>libre&&libre>=15)?'Hay lugar para hasta '+libre+' personas':'No disponible';
+        if(!sel&&!cabe&&!us)aviso=true;if(cabe&&!us)hay=true;
+        return '<button type="button" class="evb'+(sel?' on':'')+'" data-i="'+i+'" data-b="'+b[0]+'"'+(!sel&&(!cabe||us)?' disabled':'')+'><b>'+b[1]+' h</b><small>'+b[2]+' · '+st+'</small><small>Capacidad '+x.cap+' · quedan '+Math.max(0,libre)+'</small></button>'}).join('')+'</div></div>';
+        if(!peq&&!hay&&!(G.ev[i]&&G.ev[i].d===G.day))h='<div class="warn">Ese día no tenemos cupo para un grupo de '+G.p+' personas en esta experiencia. Escríbenos por WhatsApp y vemos una alternativa: <a href="'+wa('Hola, somos un grupo de '+G.p+' personas y queremos '+x.n+' el '+G.day+'. ¿Tienen alternativa?')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.</div>'+h}}}
+  $('gdisp').innerHTML=h;
+  $('gpick').querySelectorAll('.evpick').forEach(function(b){b.onclick=function(){G.cur=+b.getAttribute('data-i');if(G.p<15)G.day='';gdraw()}});
+  $('gdisp').querySelectorAll('.evdia').forEach(function(b){b.onclick=function(){G.day=b.getAttribute('data-d');gdraw()}});
+  $('gdisp').querySelectorAll('.evb').forEach(function(b){b.onclick=function(){var k=+b.getAttribute('data-i'),bl=b.getAttribute('data-b');
+    if(G.ev[k]&&G.ev[k].d===G.day&&G.ev[k].b===bl){G.e[k]=false;delete G.ev[k]}else{G.e[k]=true;G.ev[k]={d:G.day,b:bl}}gdraw()}});
+  $('gdispn').innerHTML=!aviso?'':'¿No hay cupo para tu grupo, o prefieres otro día u horario? Escríbenos por WhatsApp. <a href="'+wa('Hola, quiero consultar disponibilidad para una experiencia de grupo. Somos ___ personas y el día sería ___.')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.'}
 function gevDraw(){
   var t=gtot(),box=$('gev');box.hidden=!t.nm.length;
   if(box.hidden){return}
@@ -1010,7 +1010,7 @@ function gdraw(){
   if(document.activeElement!==$('gpv'))$('gpv').value=G.pset?G.p:'';
   $('gplan').innerHTML=G.n?PLANES.map(function(x){return '<label class="gpl"><input type="radio" name="gpl" value="'+x[0]+'"'+(G.pl===x[0]?' checked':'')+'><span><b>'+x[1]+'</b><small>'+x[2]+'</small></span><em>'+CLP(x[3])+(G.n&&gnn(x).na?'<small> · alta '+CLP(x[4])+'</small>':'')+'</em></label>'}).join('')+'<div class="note" style="margin-top:6px"><b>Box lunch para salidas:</b> si tu grupo quiere recorrer la zona, puede pedirlo en lugar del almuerzo, al mismo valor, y llevarlo listo. Se gestiona el día previo.</div>':'';
   $('gplan').querySelectorAll('input').forEach(function(r){r.onchange=function(){G.pl=r.value;gdraw()}});
-  EXPS.forEach(function(x,i){if(G.e[i]&&(G.p>x.cap||(G.ev[i]&&evFull(G.ev[i].d,G.ev[i].b,i)))){G.e[i]=false;delete G.ev[i]}});
+  EXPS.forEach(function(x,i){if(G.e[i]&&(G.p>x.cap||(G.ev[i]&&(evFull(G.ev[i].d,G.ev[i].b,i)||(G.p<15&&evTom(G.ev[i].d,G.ev[i].b,i)<15))))){G.e[i]=false;delete G.ev[i]}});
   gdispDraw();gevDraw();var t=gtot(),okEv=!t.nm.length||evOk();
   $('gbar').innerHTML='<div class="sg"><span>Tu paquete · '+G.p+' personas'+(G.n?' · '+G.n+' noche'+(G.n>1?'s':''):'')+(t.nm.length?' · '+t.nm.length+' experiencia'+(t.nm.length>1?'s':''):'')+'</span><span class="tt">'+CLP(t.total)+'</span></div><div class="sr"><button class="btn" id="gcot" type="button"'+(t.total&&okEv&&G.pset?'':' disabled')+'>Reservar</button></div>';
   $('gcot').onclick=gsum;syncBar()}
@@ -1056,7 +1056,7 @@ function gModo(m){
   document.querySelectorAll('#gmodo button').forEach(function(b){b.className='btn'+(b.getAttribute('data-m')===m?'':' ghost')});$('gpv').max=gTope();
   $('gcap').hidden=ex;$('gstep2').hidden=ex;
   if(ex){G.f='';G.o='';G.n=0}else{if(G.p>24)G.p=24;if(G.p<15)G.p=15}
-  $('gh3').textContent=(ex?'2':'3')+'. Elige el día y ve la disponibilidad';
+  $('gh3').textContent=(ex?'2':'3')+'. Elige tu experiencia y el día';
   $('gh4').textContent=(ex?'3':'4')+'. Tu selección';
   $('gmodon').textContent=ex?'Fiesta para tu grupo sin alojarte en la casa: desde 15 personas hasta el máximo de cada experiencia.':'Alojamiento en la casa para grupos de 15 a 24 personas, y puedes sumar experiencias dentro de tu estadía.';
   $('gtope').textContent='';

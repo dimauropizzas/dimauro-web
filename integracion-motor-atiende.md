@@ -96,3 +96,6 @@ Botón «Solo experiencias». Un grupo de menos de 15 solo puede reservar en un 
 
 ## Días para grupos de menos de 15 (Mauro, 19-nov)
 Con menos de 15 personas el sitio dice que solo se puede reservar los días en que ya hay otro grupo de esa experiencia, y lista esos días (con experiencia y horario) como botones tocables; muchas veces vienen 4 o 5 días y se pueden adaptar. Si no hay ninguno, manda a WhatsApp. Al conectar con la base real, esos días salen de las sesiones con reservas confirmadas que suman 15 o más y a las que el grupo todavía le cabe.
+
+## Flujo final de experiencias en Grupos (Mauro, 19-nov)
+Cantidad de personas -> experiencia -> día/disponibilidad. Sin explicar la regla de menos de 15: el grupo chico solo ve, para la experiencia elegida, los días en que puede sumarse (botones) y, al tocar uno, los horarios disponibles; si no hay fechas, aviso corto con WhatsApp. Para 15 o más: calendario del día con los dos horarios, capacidad y cupos restantes. Se pueden elegir varias experiencias en días distintos.
