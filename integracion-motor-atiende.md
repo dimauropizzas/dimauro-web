@@ -99,3 +99,9 @@ Con menos de 15 personas el sitio dice que solo se puede reservar los días en q
 
 ## Flujo final de experiencias en Grupos (Mauro, 19-nov)
 Cantidad de personas -> experiencia -> día/disponibilidad. Sin explicar la regla de menos de 15: el grupo chico solo ve, para la experiencia elegida, los días en que puede sumarse (botones) y, al tocar uno, los horarios disponibles; si no hay fechas, aviso corto con WhatsApp. Para 15 o más: calendario del día con los dos horarios, capacidad y cupos restantes. Se pueden elegir varias experiencias en días distintos.
+
+## Experiencias de grupo conectadas a los cupos reales (19/11/2026)
+- El sitio (`index.html`) trae el modo en vivo de experiencias: con `CDM_CONFIG.keyExp` (la credencial `web` de EXPERIENCIAS, distinta de la de alojamiento) consulta `GET /api/turismo/v1/disponibilidad` (una llamada por experiencia y tamaño de grupo, ventana de 120 días), reserva con `POST /reservas` (una línea por experiencia, categoría `persona`, `Idempotency-Key`) y pide el pago del abono con `POST /reservas/:id/pago` (`{email, urlRetorno}` → `{urlPago}`), igual que alojamiento. Con `keyExp` vacío todo sigue en demostración.
+- La disponibilidad ya respeta el mínimo por evento: `docs/cdm_exp_06_disponibilidad_minimo.sql` (staging y producción). Un grupo de menos de 15 ve `hay` solo en las sesiones con 15 o más personas confirmadas; la respuesta trae `confirmados`.
+- Solo el modo «Solo experiencias» reserva y cobra en vivo. En «Alojamiento y experiencias» el alojamiento de delegaciones (por pasajero y noche, habitación compartida) aún no existe en el motor: con la llave puesta, el botón envía la solicitud por WhatsApp.
+- Al volver del pago (`?pago=exp`) el sitio consulta la reserva y muestra confirmada o «estamos confirmando tu pago».
