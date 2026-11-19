@@ -392,6 +392,7 @@ body.hasbar .chat-b{bottom:calc(var(--barh,90px) + 26px + env(safe-area-inset-bo
 
 .tags .tgm{grid-column:1/-1;display:flex;align-items:center;justify-content:center;text-align:center;font:inherit;font-size:13px;font-weight:700;line-height:1.2;min-height:40px;padding:6px 10px;border-radius:12px;background:#e3eee4;border:1px solid #9dbba3;color:#17402b;cursor:pointer;width:100%}
 .tags .tgm:hover{background:#d3e6d6}
+.inc .eg{font:inherit;text-align:left;background:#e3eee4;border:1px solid #9dbba3;color:#17402b;border-radius:10px;padding:6px 10px;cursor:pointer;font-weight:600}.inc .eg:hover{background:#d3e6d6}
 </style>
 
 <div class="proto">Prototipo para revisión: precios y disponibilidad de ejemplo. Nada se cobra ni se envía.</div>
@@ -511,7 +512,7 @@ body.hasbar .chat-b{bottom:calc(var(--barh,90px) + 26px + env(safe-area-inset-bo
       <ul class="inc"><li>4 noches con desayuno sureño</li></ul>
       <div class="scroll"><table id="t-nav"></table></div><button class="btn" data-pack="nav" type="button">Elegir habitaciones</button></div>
     <div class="card"><span class="badge">4 noches · 30 dic al 3 ene</span><h3>Escapada Año Nuevo</h3>
-      <ul class="inc"><li>4 noches con desayuno sureño</li><li>Cena de Año Nuevo opcional ($50.000 por persona)</li></ul>
+      <ul class="inc"><li>4 noches con desayuno sureño</li><li>Cena de Año Nuevo opcional ($50.000 por persona): aperitivo, entrada, fondo, postres, buffet de postres y copa de espumante a la medianoche</li></ul>
       <div class="scroll"><table id="t-ny"></table></div><button class="btn gold" data-pack="ny" type="button">Elegir habitaciones</button></div>
   </div>
   </div>
@@ -663,7 +664,7 @@ function renderRooms(C){
       S.ctx=C;S.pack=pk;
       if(S.nr){openCheckout();return}
       var mb=$('mbox');openModal();
-      mb.innerHTML='<h3 style="font-family:var(--serif)">Opciones de alimentación</h3><div class="note">Desayuno sureño incluido en todas las habitaciones.</div><table class="sum"><tr><td>Media pensión (almuerzo o cena)</td><td>+'+CLP(MP)+' por persona y noche</td></tr><tr><td>Pensión completa (almuerzo y cena)</td><td>+'+CLP(PC)+' por persona y noche</td></tr>'+(pk==='ny'?'<tr><td>Cena de Año Nuevo</td><td>+'+CLP(CENA)+' por persona</td></tr>':'')+'</table><div class="warn" style="margin-top:10px">Primero elige tu habitación: ahí indicas cuántas personas son y sumas las comidas a tu total.</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px"><button class="btn" id="mgo" type="button">Elegir habitación</button><button class="btn ghost" id="mcl" type="button">Cerrar</button></div>';
+      mb.innerHTML='<h3 style="font-family:var(--serif)">Opciones de alimentación</h3><div class="note">Desayuno sureño incluido en todas las habitaciones.</div><table class="sum"><tr><td>Media pensión (almuerzo o cena)</td><td>+'+CLP(MP)+' por persona y noche</td></tr><tr><td>Pensión completa (almuerzo y cena)</td><td>+'+CLP(PC)+' por persona y noche</td></tr>'+(pk==='ny'?'<tr><td>Cena de Año Nuevo<br><span class="note">Aperitivo, entrada, fondo, postres, buffet de postres y copa de espumante a la medianoche</span></td><td>+'+CLP(CENA)+' por persona</td></tr>':'')+'</table><div class="warn" style="margin-top:10px">Primero elige tu habitación: ahí indicas cuántas personas son y sumas las comidas a tu total.</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px"><button class="btn" id="mgo" type="button">Elegir habitación</button><button class="btn ghost" id="mcl" type="button">Cerrar</button></div>';
       $('mcl').onclick=closeModal;
       $('mgo').onclick=function(){closeModal();var f=box.querySelector('.room');if(f)f.scrollIntoView({behavior:'smooth',block:'start'})}}});
     var bar=document.createElement('div');bar.className='sbar';box.appendChild(bar);
@@ -704,7 +705,7 @@ function openCheckout(){
       meals='<div class="mealbox"><h4>Almuerzos y cenas de la casa</h4><div class="note">'+'¿Quieres algo distinto? <a href="'+wa('Hola, quiero consultar por almuerzos y cenas distintos para mi reserva.')+'" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>.</div>'+
         stp('mp','Media pensión','Almuerzo o cena · +$15.000 por persona y noche',g-opt.pc)+
         stp('pc','Pensión completa','Almuerzo y cena · +$28.000 por persona y noche',g-opt.mp)+
-        (pack==='ny'?stp('nye','Cena de Año Nuevo','+$50.000 por persona',g):'')+'</div>'+(K.adv?'<div class="mealbox"><h4>Actividades</h4><div class="note">Elige para cuántas personas. Cada actividad se cobra por persona. Los valores se están coordinando: te confirmamos el total de las actividades antes de cobrar el saldo.</div>'+ACT.map(function(a){return stp(a.id,a.n,a.p?'$'+a.p.toLocaleString('es-CL')+' por persona':'Valor por confirmar',g)}).join('')+'</div>':'');
+        (pack==='ny'?stp('nye','Cena de Año Nuevo','+$50.000 por persona · Aperitivo, entrada, fondo, postres, buffet de postres y copa de espumante a la medianoche',g):'')+'</div>'+(K.adv?'<div class="mealbox"><h4>Actividades</h4><div class="note">Elige para cuántas personas. Cada actividad se cobra por persona. Los valores se están coordinando: te confirmamos el total de las actividades antes de cobrar el saldo.</div>'+ACT.map(function(a){return stp(a.id,a.n,a.p?'$'+a.p.toLocaleString('es-CL')+' por persona':'Valor por confirmar',g)}).join('')+'</div>':'');
     }
     mb.innerHTML='<h3 style="font-family:var(--serif)">'+descr(sel)+'</h3><div class="note">'+fmt(ci)+' al '+fmt(co)+'</div>'+gh+meals+
     (g?'<div class="scroll"><table class="sum">'+c.items.map(function(i){return '<tr><td>'+i[0]+'</td><td>'+(typeof i[1]==='number'?CLP(i[1]):i[1])+'</td></tr>'}).join('')+'<tr class="t"><td>Total</td><td>'+CLP(c.total)+'</td></tr></table></div>'+
@@ -871,12 +872,13 @@ function packTables(){
     t.innerHTML=h;
   });
   var m=ROOMS[0];
-  var EINC={nav:['4 noches con desayuno incluido','Opciones de media pensión y pensión completa'],ny:['4 noches con desayuno incluido','Opciones de media pensión y pensión completa','Cena de Año Nuevo opcional ($50.000 por persona)']};
+  var EINC={nav:['4 noches con desayuno incluido',['Opciones de media pensión y pensión completa']],ny:['4 noches con desayuno incluido',['Opciones de media pensión y pensión completa'],['Cena de Año Nuevo opcional ($50.000 por persona): aperitivo, entrada, fondo, postres, buffet de postres y copa de espumante a la medianoche']]};
   var EIMG={nav:'img/esc-navidad.webp',ny:'img/esc-anonuevo.webp'};
   function openEsc(k){var P=PACKS[k];$('eci').value=P.desde;$('eco').value=P.hasta;$('epp').value='2';
     $('etit').textContent=P.nombre;$('ebadge').textContent='4 noches · '+(k==='nav'?'23 al 27 de dic':'30 dic al 3 ene');$('eimg').src=EIMG[k];
-    $('einc').innerHTML=EINC[k].map(function(x){return '<li>'+x+'</li>'}).join('');
-    $('etiles').hidden=true;$('epanel').hidden=false;renderRooms(ESCC);window.scrollTo(0,0)}
+    $('einc').innerHTML=EINC[k].map(function(x){return typeof x==='string'?'<li>'+x+'</li>':'<li><button type="button" class="eg">'+x[0]+' · ver y sumar</button></li>'}).join('');
+    $('etiles').hidden=true;$('epanel').hidden=false;renderRooms(ESCC);
+    $('einc').querySelectorAll('.eg').forEach(function(b){b.onclick=function(){var t=$('erooms').querySelector('.tgm');if(t)t.click()}});window.scrollTo(0,0)}
   $('aback').onclick=$('aback0').onclick=function(){$('apanel').hidden=true;$('etiles').hidden=false;window.scrollTo(0,0);syncBar()};
   $('rback').onclick=$('rback0').onclick=function(){$('rpanel').hidden=true;$('etiles').hidden=false;window.scrollTo(0,0);syncBar()};
   $('eback').onclick=$('eback0').onclick=function(){$('epanel').hidden=true;$('etiles').hidden=false;window.scrollTo(0,0);syncBar()};
