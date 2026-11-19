@@ -402,6 +402,14 @@ body.hasbar .chat-b{bottom:calc(var(--barh,90px) + 26px + env(safe-area-inset-bo
 .evb:disabled{background:#eee8d6;color:#8a8a80;cursor:not-allowed;border-color:#d8ccae}
 .evbs .note,#gevn{grid-column:1/-1}
 .gnum{width:104px;text-align:center;font:inherit;font-size:20px;font-weight:700;border:0;background:transparent;color:inherit;-moz-appearance:textfield}.gnum::-webkit-outer-spin-button,.gnum::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.gnum:focus{outline:2px solid #b98f2f;border-radius:8px}
+.gpick{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:8px}
+.gpick .evpick{grid-column:span 2;padding:10px 8px!important;font-size:15px!important;line-height:1.2;min-height:52px;display:flex;align-items:center;justify-content:center;text-align:center}
+.gpick .evpick:nth-child(n+4){grid-column:span 3}
+.gpick .evpick small{display:block;font-size:12px;opacity:.8}
+.gdet{display:flex;gap:16px;align-items:flex-start;margin:6px 0 10px;padding:12px;border:1.5px solid #d8ccae;border-radius:14px;background:#fffaf0}
+.gdet img{width:190px;max-width:42%;border-radius:10px;flex:none}
+.gdet h4{font-family:var(--serif);margin:0 0 2px;font-size:20px}.gdet ul{margin:6px 0 10px;padding-left:18px}
+@media(max-width:560px){.gpick{grid-template-columns:repeat(6,1fr)}.gpick .evpick{font-size:13px!important;padding:8px 4px!important}.gdet{flex-direction:column}.gdet img{width:100%;max-width:260px;align-self:center}}
 .dx{margin-top:12px;padding-top:10px;border-top:1px solid #d8ccae}.dx small{display:block;color:#5a665d;margin-bottom:6px}
 /* Tipografía: títulos con la letra de la cabecera (Playfair Display 600, mayúsculas espaciadas), números alineados */
 body{font-variant-numeric:lining-nums}
@@ -554,7 +562,7 @@ h1,h2,h3,.tile b,.et b,.mealbox h4,.mealc h3,.sug .st{font-family:var(--serif);f
     <div id="gsm" class="note" style="margin-top:8px"></div><div id="gcal"></div>
     <div class="gplan" id="gplan"></div></div>
   <div class="card sec" id="gexp"><h3 id="gh3">3. Elige tu experiencia y el día</h3>
-    <div id="gpick" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px"></div>
+    <div id="gpick" class="gpick"></div><div id="gdet"></div>
     <div class="field"><label for="gday">Día</label><input id="gday" type="date"></div>
     <div id="gdisp"></div>
     <p class="note" id="gdispn"></p></div>
@@ -977,11 +985,13 @@ function gdispDraw(){
   var min=G.n?G.f:'2026-12-04',max=G.n?G.o:'2027-03-31',dI=$('gday');dI.min=min;dI.max=max;
   if(G.day&&(G.day<min||G.day>max))G.day='';
   if(G.cur!==null&&(!G.pset||G.p>EXPS[G.cur].cap))G.cur=null;
-  $('gpick').innerHTML=G.pset?EXPS.map(function(x,k){var no=G.p>x.cap;return '<button type="button" class="btn'+(G.cur===k?'':' ghost')+' evpick" data-i="'+k+'"'+(no?' disabled':'')+' style="padding:6px 12px;font-size:14px">'+x.n+(no?' · hasta '+x.cap:'')+'</button>'}).join(''):'';
-  var i=G.cur,peq=G.pset&&G.p<15,h='',aviso=false,hay=false,dias=[];
-  dI.parentNode.style.display=(G.pset&&i!==null&&!peq)?'':'none';
+  $('gpick').innerHTML=G.pset?EXPS.map(function(x,k){var no=G.p>x.cap;return '<button type="button" class="btn'+(G.cur===k?'':' ghost')+' evpick" data-i="'+k+'"'+(no?' disabled':'')+'><span>'+x.n+(no?'<small>hasta '+x.cap+'</small>':'')+'</span></button>'}).join(''):'';
+  var i=G.cur,peq=G.pset&&G.p<15,h='',aviso=false,hay=false,dias=[],vd=G.pset&&i!==null&&G.ver;
+  if(i===null)G.ver=false;
+  $('gdet').innerHTML=(G.pset&&i!==null)?(function(x){return '<div class="gdet"><img src="'+(x.afiche||x.img)+'" alt="'+x.n+'"><div><h4>'+x.n+'</h4><div class="price">'+CLP(x.p)+' <small>por persona</small></div><small>Hasta '+x.cap+' personas</small>'+(x.nota?'<div class="note">'+x.nota+'</div>':'')+'<ul>'+x.inc.map(function(t){return '<li>'+t+'</li>'}).join('')+'</ul>'+(G.ver?'':'<button type="button" class="btn" id="gver">Ver disponibilidad</button>')+'</div></div>'})(EXPS[i]):'';
+  dI.parentNode.style.display=(vd&&!peq)?'':'none';
   dI.value=G.day||'';
-  if(G.pset&&i!==null){var x=EXPS[i];
+  if(vd){var x=EXPS[i];
     if(peq){dias=evDiasUnir(min,max,i);
       h=dias.length?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">'+dias.map(function(q){return '<button type="button" class="btn'+(G.day===q.d?'':' ghost')+' evdia" data-d="'+q.d+'" style="padding:4px 10px;font-size:13px">'+fmt(q.d)+' · '+q.t.join(', ')+'</button>'}).join('')+'</div>'
         :'<div class="warn">Por ahora no hay fechas disponibles para esta experiencia con tu grupo. Escríbenos por WhatsApp y vemos una alternativa: <a href="'+wa('Hola, somos un grupo de '+G.p+' personas y queremos '+x.n+'. ¿Qué fechas tienen?')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.</div>'}
@@ -995,7 +1005,8 @@ function gdispDraw(){
         return '<button type="button" class="evb'+(sel?' on':'')+'" data-i="'+i+'" data-b="'+b[0]+'"'+(!sel&&(!cabe||us)?' disabled':'')+'><b>'+b[1]+' h</b><small>'+b[2]+' · '+st+'</small><small>Capacidad '+x.cap+' · quedan '+Math.max(0,libre)+'</small></button>'}).join('')+'</div></div>';
         if(!peq&&!hay&&!(G.ev[i]&&G.ev[i].d===G.day))h='<div class="warn">Ese día no tenemos cupo para un grupo de '+G.p+' personas en esta experiencia. Escríbenos por WhatsApp y vemos una alternativa: <a href="'+wa('Hola, somos un grupo de '+G.p+' personas y queremos '+x.n+' el '+G.day+'. ¿Tienen alternativa?')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.</div>'+h}}}
   $('gdisp').innerHTML=h;
-  $('gpick').querySelectorAll('.evpick').forEach(function(b){b.onclick=function(){G.cur=+b.getAttribute('data-i');if(G.p<15)G.day='';gdraw()}});
+  $('gpick').querySelectorAll('.evpick').forEach(function(b){b.onclick=function(){G.cur=+b.getAttribute('data-i');G.ver=false;G.day='';gdraw()}});
+  var gv=$('gver');if(gv)gv.onclick=function(){G.ver=true;gdraw();var e=$('gdisp');if(e&&e.scrollIntoView)e.scrollIntoView({block:'nearest',behavior:'smooth'})};
   $('gdisp').querySelectorAll('.evdia').forEach(function(b){b.onclick=function(){G.day=b.getAttribute('data-d');gdraw()}});
   $('gdisp').querySelectorAll('.evb').forEach(function(b){b.onclick=function(){var k=+b.getAttribute('data-i'),bl=b.getAttribute('data-b');
     if(G.ev[k]&&G.ev[k].d===G.day&&G.ev[k].b===bl){G.e[k]=false;delete G.ev[k]}else{G.e[k]=true;G.ev[k]={d:G.day,b:bl}}gdraw()}});
@@ -1070,7 +1081,7 @@ $('gpv').oninput=function(){var v=parseInt(this.value,10);
 $('gpv').onchange=function(){var v=parseInt(this.value,10);
   if(v>gTope()){$('gtope').innerHTML=gMsgTope();this.value=G.pset?G.p:'';return}
   if(this.value!==''&&!(v>=gMin())){$('gtope').textContent=G.modo==='exp'?'':'Atendemos grupos desde 15 personas.';this.value=G.pset?G.p:'';return}
-  if(v>=gMin()){G.p=v;G.pset=true;this.value=G.p;gFix();gcalDraw();gdraw()}};
+  if(v>=gMin()){if(G.pset&&G.p===v){this.value=G.p;return}G.p=v;G.pset=true;this.value=G.p;gFix();gcalDraw();gdraw()}};
 $('gtour').href=wa('Hola, soy tour operador y quiero cotizar varios grupos para el mismo horario. Somos ___ grupos, ___ personas en total.');
 $('gday').onchange=function(){G.day=this.value;gdraw()};
 var GCNT={m:5,t:1,r:4};
