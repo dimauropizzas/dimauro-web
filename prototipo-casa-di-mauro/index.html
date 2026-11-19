@@ -633,10 +633,16 @@ var ACT=[{id:'a0',n:'Ascenso al volcán',p:null},{id:'a1',n:'Stand-up paddle',p:
 /* ===== Conexión en vivo con Atiende (reservas y pago por Khipu). Con CDM_CONFIG.key vacío el sitio funciona en modo demostración, como siempre. ===== */
 window.CDM_CONFIG=window.CDM_CONFIG||{base:'https://atiende-bot-production-4757.up.railway.app',key:''};
 var LIVE={on:function(){return !!(window.CDM_CONFIG&&CDM_CONFIG.key)},cache:{},pend:{},
-  api:function(m,path,body,clave){var h={'Authorization':'Bearer '+CDM_CONFIG.key};if(body)h['Content-Type']='application/json';if(clave)h['Idempotency-Key']=clave;
+  api:function(m,path,body,clave,extra){var h={'Authorization':'Bearer '+CDM_CONFIG.key};if(extra)for(var k in extra)h[k]=extra[k];if(body)h['Content-Type']='application/json';if(clave)h['Idempotency-Key']=clave;
     return fetch(CDM_CONFIG.base+'/api/alojamiento/v1'+path,{method:m,headers:h,body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return {ok:false,codigo:'respuesta_invalida'}}).then(function(j){j._http=r.status;return j})}).catch(function(){return {ok:false,codigo:'sin_conexion'}})},
+  // Anti-robots (Cloudflare Turnstile): solo si CDM_CONFIG.turnstile trae la clave pública del sitio. Devuelve un token o null.
+  token:function(){var sk=window.CDM_CONFIG&&CDM_CONFIG.turnstile;if(!sk)return Promise.resolve(null);
+    return new Promise(function(ok){function run(){var el=document.createElement('div');el.style.cssText='position:fixed;bottom:10px;left:10px;z-index:99';document.body.appendChild(el);
+        var t=setTimeout(function(){ok(null)},20000);
+        window.turnstile.render(el,{sitekey:sk,execution:'execute',appearance:'interaction-only',callback:function(tk){clearTimeout(t);ok(tk)},'error-callback':function(){clearTimeout(t);ok(null)}});window.turnstile.execute(el)}
+      if(window.turnstile)return run();var sc=document.createElement('script');sc.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';sc.async=true;sc.onload=run;sc.onerror=function(){ok(null)};document.head.appendChild(sc)})},
   tipo:{m:'matrimonial',t:'twin',r:'triple'},
-  msg:function(c){return ({sin_disponibilidad:'Ya no quedan habitaciones de ese tipo para esas fechas. Prueba con otras fechas u otra habitación.',fechas_de_paquete:'Esas fechas son de una escapada: reserva la escapada completa.',fecha_pasada:'Esa fecha ya pasó.',contacto_invalido:'Falta tu nombre o tu WhatsApp.',clave_en_uso:'Esa reserva ya existe con otras fechas.',reserva_no_vigente:'Esa reserva ya no está vigente.',sin_conexion:'No pudimos conectarnos. Revisa tu internet e inténtalo de nuevo.',pagos_no_disponibles:'El pago en línea no está disponible por ahora.',cobro_no_creado:'No pudimos crear el link de pago. Inténtalo de nuevo en un momento.'})[c]||'No pudimos completar la reserva. Inténtalo de nuevo.'}};
+  msg:function(c){return ({sin_disponibilidad:'Ya no quedan habitaciones de ese tipo para esas fechas. Prueba con otras fechas u otra habitación.',fechas_de_paquete:'Esas fechas son de una escapada: reserva la escapada completa.',fecha_pasada:'Esa fecha ya pasó.',contacto_invalido:'Falta tu nombre o tu WhatsApp.',clave_en_uso:'Esa reserva ya existe con otras fechas.',reserva_no_vigente:'Esa reserva ya no está vigente.',verificacion_fallida:'No pudimos comprobar que eres una persona. Recarga la página e inténtalo de nuevo.',demasiados_pedidos:'Tienes muchas reservas pendientes con ese teléfono. Paga o espera unos minutos antes de reservar otra vez.',sin_conexion:'No pudimos conectarnos. Revisa tu internet e inténtalo de nuevo.',pagos_no_disponibles:'El pago en línea no está disponible por ahora.',cobro_no_creado:'No pudimos crear el link de pago. Inténtalo de nuevo en un momento.'})[c]||'No pudimos completar la reserva. Inténtalo de nuevo.'}};
 function renderRooms(C){
   C=(C&&C.rooms)?C:MAINC;S.ctx=C;
   var ci=$(C.ci).value,co=$(C.co).value,pp=+$(C.pp).value,al=$(C.alert),box=$(C.rooms);
@@ -754,7 +760,7 @@ function openCheckout(){
         var clave='web-'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
         var body={contacto:{nombre:nom,telefono:tel},habitaciones:hab};
         if(pack)body.paquete=pack==='ny'?'ano_nuevo':'navidad';else{body.entrada=ci;body.salida=co}
-        LIVE.api('POST','/reservas',body,clave).then(function(j){
+        LIVE.token().then(function(tk){return LIVE.api('POST','/reservas',body,clave,tk?{'X-Turnstile-Token':tk}:null)}).then(function(j){
           if(!j.ok){var m=mb.querySelector('.livemsg')||document.createElement('div');m.className='warn livemsg';m.textContent=LIVE.msg(j.codigo);if(!m.parentNode)$('go').parentNode.insertBefore(m,$('go'));$('go').disabled=false;$('go').textContent='Pagar abono con Khipu';return}
           try{sessionStorage.setItem('cdm_clave',clave)}catch(e){}
           $('go').textContent='Abriendo el pago…';
