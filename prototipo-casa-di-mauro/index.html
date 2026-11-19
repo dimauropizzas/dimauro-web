@@ -534,7 +534,10 @@ h1,h2,h3,.tile b,.et b,.mealbox h4,.mealc h3,.sug .st{font-family:var(--serif);f
 <section class="view" id="v-grupos">
   <h2>Grupos y delegaciones</h2>
   <p class="lead">Contamos con alternativas de alojamiento, alimentación y actividades adecuadas a tu grupo. Para grupos desde 15 personas.</p>
-  <div class="card sec cap"><h3>Capacidad del hostal</h3>
+  <div class="card sec" id="gmodoc"><h3>¿Qué necesita tu grupo?</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap" id="gmodo"><button type="button" class="btn" data-m="aloj">Alojamiento y experiencias</button><button type="button" class="btn ghost" data-m="exp">Solo experiencias, sin alojamiento</button></div>
+    <p class="note" id="gmodon" style="margin-top:8px"></p></div>
+  <div class="card sec cap" id="gcap"><h3>Capacidad del hostal</h3>
     <div class="capst"><div><b>10</b><span>habitaciones con baño privado</span></div><div><b>24</b><span>personas, capacidad máxima</span></div></div>
     <div class="caph">
       <div class="capc"><img src="img/hab-matrimonial.jpg" alt="Habitación matrimonial" loading="lazy"><div class="capl"><i>5</i><span>Habitaciones matrimoniales<small>Máximo 2 personas · 1 cama de 2 plazas</small></span></div><div class="capf"><span>3 en el primer piso</span><span>2 en el segundo piso</span></div></div>
@@ -543,12 +546,12 @@ h1,h2,h3,.tile b,.et b,.mealbox h4,.mealc h3,.sug .st{font-family:var(--serif);f
     </div></div>
   <div class="card sec"><h3>1. Tu grupo</h3>
     <div class="gq"><span>Personas del grupo</span><div class="gstep"><button type="button" id="gpm" aria-label="Menos personas">−</button><b id="gpv">15</b><button type="button" id="gpp" aria-label="Más personas">+</button></div></div>
-    <p class="note">Se libera una persona por cada 10 pagados.</p></div>
-  <div class="card sec"><h3>2. Alojamiento y comidas</h3>
+    <p class="note" id="gtope"></p><p class="note">Se libera una persona por cada 10 pagados.</p></div>
+  <div class="card sec" id="gstep2"><h3>2. Alojamiento y comidas</h3>
     <div id="gsm" class="note" style="margin-top:8px"></div><div id="gcal"></div>
     <div class="gplan" id="gplan"></div></div>
-  <div class="sec"><h3>3. Suma experiencias</h3><div class="exps" id="exps"></div><p class="note">Eventos de 3 horas, por persona. Toca una para ver el detalle. También puedes reservarlas sin alojarte: de 15 a 60 personas.</p></div>
-  <div class="card sec" id="gev" hidden><h3>4. Fecha y horario de cada experiencia</h3>
+  <div class="sec"><h3 id="gh3">3. Suma experiencias</h3><div class="exps" id="exps"></div><p class="note">Eventos de 3 horas, por persona. Toca una para ver el detalle. También puedes reservarlas sin alojarte: desde 15 personas hasta el máximo de cada experiencia.</p></div>
+  <div class="card sec" id="gev" hidden><h3 id="gh4">4. Fecha y horario de cada experiencia</h3>
     <div id="gevb"></div>
     <p class="note" id="gevn"></p></div>
   <div class="sbar" id="gbar"></div>
@@ -978,7 +981,7 @@ function gdraw(){
   $('gpv').textContent=G.p;
   $('gplan').innerHTML=G.n?PLANES.map(function(x){return '<label class="gpl"><input type="radio" name="gpl" value="'+x[0]+'"'+(G.pl===x[0]?' checked':'')+'><span><b>'+x[1]+'</b><small>'+x[2]+'</small></span><em>'+CLP(x[3])+(G.n&&gnn(x).na?'<small> · alta '+CLP(x[4])+'</small>':'')+'</em></label>'}).join('')+'<div class="note" style="margin-top:6px"><b>Box lunch para salidas:</b> si tu grupo quiere recorrer la zona, puede pedirlo en lugar del almuerzo, al mismo valor, y llevarlo listo. Se gestiona el día previo.</div>':'';
   $('gplan').querySelectorAll('input').forEach(function(r){r.onchange=function(){G.pl=r.value;gdraw()}});
-  EXPS.forEach(function(x,i){var bt=$('exa'+i);if(!bt)return;bt.textContent=G.e[i]?'Quitar':'Agregar';bt.parentNode.classList.toggle('sel',!!G.e[i])});
+  EXPS.forEach(function(x,i){var bt=$('exa'+i);if(!bt)return;var no=G.p>x.cap;if(no)G.e[i]=false;bt.disabled=no;bt.textContent=no?'Hasta '+x.cap:(G.e[i]?'Quitar':'Agregar');bt.parentNode.classList.toggle('sel',!!G.e[i])});
   gevDraw();var t=gtot(),okEv=!t.nm.length||evOk();
   $('gbar').innerHTML='<div class="sg"><span>Tu paquete · '+G.p+' personas'+(G.n?' · '+G.n+' noche'+(G.n>1?'s':''):'')+(t.nm.length?' · '+t.nm.length+' experiencia'+(t.nm.length>1?'s':''):'')+'</span><span class="tt">'+CLP(t.total)+'</span></div><div class="sr"><button class="btn" id="gcot" type="button"'+(t.total&&okEv?'':' disabled')+'>Reservar</button></div>';
   $('gcot').onclick=gsum;syncBar()}
@@ -1006,17 +1009,30 @@ function gsum(){
   draw();openModal()}
 EXPS.forEach(function(x,i){
   var d=document.createElement('div');d.className='exp';
-  d.innerHTML='<button type="button" class="exo"><img src="'+x.img+'" alt="" loading="lazy"><span class="ext"><b>'+x.n+'</b><span>'+CLP(x.p)+' por persona</span></span></button><button type="button" class="exa" id="exa'+i+'">Agregar</button>';
-  d.querySelector('.exa').onclick=function(){G.e[i]=!G.e[i];gdraw()};
+  d.innerHTML='<button type="button" class="exo"><img src="'+x.img+'" alt="" loading="lazy"><span class="ext"><b>'+x.n+'</b><span>'+CLP(x.p)+' por persona · hasta '+x.cap+' personas</span></span></button><button type="button" class="exa" id="exa'+i+'">Agregar</button>';
+  d.querySelector('.exa').onclick=function(){if(G.p<=x.cap)G.e[i]=!G.e[i];gdraw()};
   d.querySelector('.exo').onclick=function(){
     var mb=$('mbox');
     mb.innerHTML='<img class="big" src="'+(x.afiche||x.img)+'" alt="'+x.n+'"><h3 style="font-family:var(--serif)">'+x.n+'</h3><div class="price">'+CLP(x.p)+' <small>por persona</small></div>'+(x.nota?'<div class="note">'+x.nota+'</div>':'')+'<ul class="inc">'+x.inc.map(function(t){return '<li>'+t+'</li>'}).join('')+'</ul>'+(x.dj?'<div class="note">DJ adicional opcional: +$100.000 por evento.</div>':'')+'<div class="note">Dura 3 horas · grupos desde 15 personas.</div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="cl6" type="button">'+(G.e[i]?'Quitar del paquete':'Agregar al paquete')+'</button><button class="btn ghost" id="cl4" type="button">Cerrar</button></div>';
-    openModal();$('cl4').onclick=closeModal;$('cl6').onclick=function(){G.e[i]=!G.e[i];closeModal();gdraw()};
+    openModal();$('cl4').onclick=closeModal;$('cl6').onclick=function(){if(G.p<=x.cap)G.e[i]=!G.e[i];closeModal();gdraw()};
   };
   $('exps').appendChild(d);
 });
 $('gpm').onclick=function(){G.p=Math.max(15,G.p-1);gFix();gcalDraw();gdraw()};
-$('gpp').onclick=function(){G.p=Math.min(60,G.p+1);gFix();gcalDraw();gdraw()};
+$('gpp').onclick=function(){G.p=Math.min(gTope(),G.p+1);gFix();gcalDraw();gdraw()};
+G.modo='aloj';
+function gTope(){return G.modo==='exp'?Math.max.apply(null,EXPS.map(function(x){return x.cap})):24}
+function gModo(m){
+  G.modo=m;var ex=m==='exp';
+  document.querySelectorAll('#gmodo button').forEach(function(b){b.className='btn'+(b.getAttribute('data-m')===m?'':' ghost')});
+  $('gcap').hidden=ex;$('gstep2').hidden=ex;
+  if(ex){G.f='';G.o='';G.n=0}else if(G.p>24)G.p=24;
+  $('gh3').textContent=ex?'2. Elige tus experiencias':'3. Suma experiencias';
+  $('gh4').textContent=(ex?'3':'4')+'. Fecha y horario de cada experiencia';
+  $('gmodon').textContent=ex?'Fiesta para tu grupo sin alojarte en la casa: desde 15 personas hasta el máximo de cada experiencia.':'Alojamiento en la casa para grupos de 15 a 24 personas, y puedes sumar experiencias dentro de tu estadía.';
+  $('gtope').textContent=ex?'Máximo por experiencia: '+EXPS.map(function(x){return x.n+' '+x.cap}).join(' · ')+' personas.':'En la casa se alojan hasta 24 personas.';
+  gFix();gcalDraw();gdraw()}
+document.querySelectorAll('#gmodo button').forEach(function(b){b.onclick=function(){gModo(b.getAttribute('data-m'))}});
 var GCNT={m:5,t:1,r:4};
 function gCap(d){var c=0;ROOMS.forEach(function(r){if((BLOQ[d]||[]).indexOf(r.id)<0)c+=GCNT[r.id]*r.cap});return c}
 function gNight(d){var t=tipoNoche(d);return (t==='baja'||t==='alta')&&gCap(d)>=G.p}
@@ -1044,7 +1060,7 @@ function gcalDraw(){
   c.querySelector('.nx').onclick=function(){go(idx()+1)};
   c.querySelector('.pv').onclick=function(){var i=idx();if(i<=0){jump(n*w());i=n}go(i-1)};
   t.addEventListener('scroll',function(){var i=idx();ds.forEach(function(d,k){d.classList.toggle('on',k===i%n)});clearTimeout(tm);tm=setTimeout(function(){if(idx()>=n)jump(0)},120)},{passive:true})})();
-gcalDraw();gdraw();
+gcalDraw();gdraw();gModo('aloj');
 
 function bindWa(btn,form,build){
   $(btn).addEventListener('click',function(e){

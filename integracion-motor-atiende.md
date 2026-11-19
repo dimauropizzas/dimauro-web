@@ -81,3 +81,6 @@ Una delegación puede comprar 2 o más experiencias en días distintos dentro de
 
 ## Capacidad de las experiencias (Mauro, 19-nov)
 Casino Party 80, Pizza Libre 100, Pizza Party 100, Parrillada Party 50, Pizza Libre + Casino 80 (confirmado), todo por bloque. Varios grupos comparten el bloque mientras no superen la capacidad; la disponibilidad del sitio depende de cuántas personas ya hay y de si cabe el grupo. Un grupo sin alojamiento también puede reservar. Aplicado en producción como configuración.
+
+## Entrada «solo experiencias» en Grupos y delegaciones (Mauro, 19-nov)
+La pantalla de Grupos tiene un selector al inicio: «Alojamiento y experiencias» (grupos de 15 a 24, la capacidad de la casa) o «Solo experiencias, sin alojamiento» (de 15 hasta el máximo de cada experiencia: Casino 80, Pizza Libre 100, Pizza Party 100, Pizza Libre + Casino 80, Parrillada 50). Cada experiencia se apaga si el grupo la supera. Sin alojamiento el día puede ser cualquiera de la temporada (4-dic al 31-mar, salvo 24/25-dic, 31-dic y 1-ene). Pendiente: conectar esta pantalla a la API real de experiencias y a su cobro.
