@@ -87,3 +87,6 @@ La pantalla de Grupos tiene un selector al inicio: «Alojamiento y experiencias�
 
 ## Orden del flujo de experiencias (Mauro, 19-nov)
 Cantidad de personas (se puede escribir a mano, de 15 al tope) -> día -> disponibilidad de cada experiencia y bloque para ESE grupo -> elegir. Si el bloque no alcanza para el grupo, el sitio dice «Hay lugar para hasta N personas» (si N >= 15) o «Sin cupo para tu grupo», y siempre ofrece escribir por WhatsApp (a veces se puede acomodar un grupo más pequeño). Varias experiencias en días distintos: se cambia el día y se elige otra. Nota: el sitio muestra cuántas personas caben cuando el bloque está parcialmente lleno; la API real oculta los cupos (`mostrar_cupos` = false), así que al conectar hay que decidir si se muestran.
+
+## Cantidad primero (Mauro, 19-nov)
+El campo «Personas del grupo» parte vacío y sin texto debajo. Si escriben una cifra mayor a lo que recibimos, el sitio muestra las capacidades por evento (y la de alojamiento) con enlace a WhatsApp; menos de 15: «Atendemos grupos desde 15 personas». Sin número no se ve el calendario de alojamiento ni la disponibilidad de experiencias ni se puede reservar. Si ese día ningún bloque alcanza para el grupo: «No tenemos cupo… escríbenos por WhatsApp».

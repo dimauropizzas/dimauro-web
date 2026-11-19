@@ -548,7 +548,7 @@ h1,h2,h3,.tile b,.et b,.mealbox h4,.mealc h3,.sug .st{font-family:var(--serif);f
       <div class="capc"><img src="img/hab-triple.jpg" alt="Habitación triple" loading="lazy"><div class="capl"><i>4</i><span>Habitaciones triples<small>Máximo 3 personas · 1 cama de 2 plazas + 1 de plaza y media</small></span></div><div class="capf"><span>En el segundo piso</span></div></div>
     </div></div>
   <div class="card sec"><h3>1. Tu grupo</h3>
-    <div class="gq"><span>Personas del grupo</span><div class="gstep"><button type="button" id="gpm" aria-label="Menos personas">−</button><input id="gpv" class="gnum" type="number" inputmode="numeric" min="15" max="24" value="15" aria-label="Personas del grupo"><button type="button" id="gpp" aria-label="Más personas">+</button></div></div>
+    <div class="gq"><span>Personas del grupo</span><div class="gstep"><button type="button" id="gpm" aria-label="Menos personas">−</button><input id="gpv" class="gnum" type="number" inputmode="numeric" min="15" max="24" value="" placeholder="¿Cuántos?" aria-label="Personas del grupo"><button type="button" id="gpp" aria-label="Más personas">+</button></div></div>
     <p class="note" id="gtope"></p><p class="note">Se libera una persona por cada 10 pagados.</p></div>
   <div class="card sec" id="gstep2"><h3>2. Alojamiento y comidas</h3>
     <div id="gsm" class="note" style="margin-top:8px"></div><div id="gcal"></div>
@@ -972,7 +972,9 @@ function gdispDraw(){
   if(G.day&&(G.day<min||G.day>max))G.day='';
   d.value=G.day||'';
   var h='';
-  if(!G.day)h='<div class="note">Elige el día para ver qué hay disponible para tu grupo de '+G.p+' personas.'+(G.n?' Puede ser cualquier día de tu estadía, incluido el de salida.':'')+'</div>';
+  var hay=false;
+  if(!G.pset)h='<div class="note">Primero escribe cuántas personas son. Después elige el día.</div>';
+  else if(!G.day)h='<div class="note">Elige el día para ver qué hay disponible para tu grupo de '+G.p+' personas.'+(G.n?' Puede ser cualquier día de tu estadía, incluido el de salida.':'')+'</div>';
   else if(EVCERR.indexOf(G.day)>-1)h='<div class="note">Ese día no tomamos eventos. Elige otra fecha.</div>';
   else h=EXPS.map(function(x,i){
     var r='<div class="dx"><b>'+x.n+'</b><small>'+CLP(x.p)+' por persona · hasta '+x.cap+' personas</small>';
@@ -980,7 +982,9 @@ function gdispDraw(){
     return r+'<div class="evbs">'+EVB.map(function(b){
       var libre=x.cap-evTom(G.day,b[0],i),sel=G.ev[i]&&G.ev[i].d===G.day&&G.ev[i].b===b[0],us=evUsado(i,G.day,b[0]),cabe=G.p<=libre;
       var st=sel?'Elegida':us?'Ya la usas en otra experiencia':cabe?'Disponible':libre<=0?'Completo':libre>=15?'Hay lugar para hasta '+libre+' personas':'Sin cupo para tu grupo';
+      if(cabe&&!us)hay=true;
       return '<button type="button" class="evb'+(sel?' on':'')+'" data-i="'+i+'" data-b="'+b[0]+'"'+(!sel&&(!cabe||us)?' disabled':'')+'><b>'+b[1]+' h</b><small>'+b[2]+' · '+st+'</small><small>Capacidad '+x.cap+' · quedan '+Math.max(0,libre)+'</small></button>'}).join('')+'</div></div>'}).join('');
+  if(G.pset&&G.day&&EVCERR.indexOf(G.day)<0&&!hay&&!Object.keys(G.ev).length)h='<div class="warn">Ese día no tenemos cupo para un grupo de '+G.p+' personas. Escríbenos por WhatsApp y vemos una alternativa: <a href="'+wa('Hola, somos un grupo de '+G.p+' personas y queremos una experiencia el '+G.day+'. ¿Tienen alternativa?')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.</div>'+h;
   $('gdisp').innerHTML=h;
   $('gdisp').querySelectorAll('.evb').forEach(function(x){x.onclick=function(){var i=+x.getAttribute('data-i'),b=x.getAttribute('data-b');
     if(G.ev[i]&&G.ev[i].d===G.day&&G.ev[i].b===b){G.e[i]=false;delete G.ev[i]}else{G.e[i]=true;G.ev[i]={d:G.day,b:b}}gdraw()}});
@@ -992,12 +996,12 @@ function gevDraw(){
     return '<div class="dx" style="display:flex;justify-content:space-between;gap:10px;align-items:center"><span><b>'+x.n+'</b><small>'+fmt(G.ev[i].d)+' · '+b[1]+' h</small></span><button type="button" class="btn ghost evq" data-i="'+i+'" style="padding:4px 12px">Quitar</button></div>'}).join('');
   $('gevb').querySelectorAll('.evq').forEach(function(x){x.onclick=function(){var i=+x.getAttribute('data-i');G.e[i]=false;delete G.ev[i];gdraw()}})}
 function gdraw(){
-  if(document.activeElement!==$('gpv'))$('gpv').value=G.p;
+  if(document.activeElement!==$('gpv'))$('gpv').value=G.pset?G.p:'';
   $('gplan').innerHTML=G.n?PLANES.map(function(x){return '<label class="gpl"><input type="radio" name="gpl" value="'+x[0]+'"'+(G.pl===x[0]?' checked':'')+'><span><b>'+x[1]+'</b><small>'+x[2]+'</small></span><em>'+CLP(x[3])+(G.n&&gnn(x).na?'<small> · alta '+CLP(x[4])+'</small>':'')+'</em></label>'}).join('')+'<div class="note" style="margin-top:6px"><b>Box lunch para salidas:</b> si tu grupo quiere recorrer la zona, puede pedirlo en lugar del almuerzo, al mismo valor, y llevarlo listo. Se gestiona el día previo.</div>':'';
   $('gplan').querySelectorAll('input').forEach(function(r){r.onchange=function(){G.pl=r.value;gdraw()}});
   EXPS.forEach(function(x,i){if(G.e[i]&&(G.p>x.cap||(G.ev[i]&&evFull(G.ev[i].d,G.ev[i].b,i)))){G.e[i]=false;delete G.ev[i]}});
   gdispDraw();gevDraw();var t=gtot(),okEv=!t.nm.length||evOk();
-  $('gbar').innerHTML='<div class="sg"><span>Tu paquete · '+G.p+' personas'+(G.n?' · '+G.n+' noche'+(G.n>1?'s':''):'')+(t.nm.length?' · '+t.nm.length+' experiencia'+(t.nm.length>1?'s':''):'')+'</span><span class="tt">'+CLP(t.total)+'</span></div><div class="sr"><button class="btn" id="gcot" type="button"'+(t.total&&okEv?'':' disabled')+'>Reservar</button></div>';
+  $('gbar').innerHTML='<div class="sg"><span>Tu paquete · '+G.p+' personas'+(G.n?' · '+G.n+' noche'+(G.n>1?'s':''):'')+(t.nm.length?' · '+t.nm.length+' experiencia'+(t.nm.length>1?'s':''):'')+'</span><span class="tt">'+CLP(t.total)+'</span></div><div class="sr"><button class="btn" id="gcot" type="button"'+(t.total&&okEv&&G.pset?'':' disabled')+'>Reservar</button></div>';
   $('gcot').onclick=gsum;syncBar()}
 function gsum(){
   var t=gtot(),f=t.fr,pn=PLANES.filter(function(x){return x[0]===G.pl})[0];
@@ -1031,9 +1035,9 @@ EXPS.forEach(function(x,i){
   };
   $('exps').appendChild(d);
 });
-$('gpm').onclick=function(){G.p=Math.max(15,G.p-1);gFix();gcalDraw();gdraw()};
-$('gpp').onclick=function(){G.p=Math.min(gTope(),G.p+1);gFix();gcalDraw();gdraw()};
-G.modo='aloj';
+$('gpm').onclick=function(){G.pset=true;$('gtope').textContent='';G.p=Math.max(15,G.p-1);gFix();gcalDraw();gdraw()};
+$('gpp').onclick=function(){G.pset=true;$('gtope').textContent='';G.p=Math.min(gTope(),G.p+1);gFix();gcalDraw();gdraw()};
+G.modo='aloj';G.pset=false;
 function gTope(){return G.modo==='exp'?Math.max.apply(null,EXPS.map(function(x){return x.cap})):24}
 function gModo(m){
   G.modo=m;var ex=m==='exp';
@@ -1043,11 +1047,18 @@ function gModo(m){
   $('gh3').textContent=(ex?'2':'3')+'. Elige el día y ve la disponibilidad';
   $('gh4').textContent=(ex?'3':'4')+'. Tu selección';
   $('gmodon').textContent=ex?'Fiesta para tu grupo sin alojarte en la casa: desde 15 personas hasta el máximo de cada experiencia.':'Alojamiento en la casa para grupos de 15 a 24 personas, y puedes sumar experiencias dentro de tu estadía.';
-  $('gtope').textContent=ex?'Máximo por experiencia: '+EXPS.map(function(x){return x.n+' '+x.cap}).join(' · ')+' personas.':'En la casa se alojan hasta 24 personas.';
+  $('gtope').textContent='';
   gFix();gcalDraw();gdraw()}
 document.querySelectorAll('#gmodo button').forEach(function(b){b.onclick=function(){gModo(b.getAttribute('data-m'))}});
-$('gpv').oninput=function(){var v=parseInt(this.value,10);if(v>=15&&v<=gTope()){G.p=v;gFix();gcalDraw();gdraw()}};
-$('gpv').onchange=function(){var v=parseInt(this.value,10);if(!(v>=15))v=15;G.p=Math.min(gTope(),v);this.value=G.p;gFix();gcalDraw();gdraw()};
+function gMsgTope(){var ex=G.modo==='exp';return 'Nuestras capacidades por evento: '+EXPS.map(function(x){return x.n+' '+x.cap}).join(' · ')+' personas.'+(ex?'':' Para alojarte en la casa, hasta 24 personas: si tu grupo es más grande, elige «Solo experiencias».')+' Si necesitas más, <a href="'+wa('Hola, somos un grupo de ___ personas y queremos consultar por el evento.')+'" target="_blank" rel="noopener">escríbenos por WhatsApp</a>.'}
+$('gpv').oninput=function(){var v=parseInt(this.value,10);
+  if(v>gTope()){$('gtope').innerHTML=gMsgTope();return}
+  $('gtope').innerHTML='';
+  if(v>=15){G.p=v;G.pset=true;gFix();gcalDraw();gdraw()}};
+$('gpv').onchange=function(){var v=parseInt(this.value,10);
+  if(v>gTope()){$('gtope').innerHTML=gMsgTope();this.value=G.pset?G.p:'';return}
+  if(this.value!==''&&!(v>=15)){$('gtope').textContent='Atendemos grupos desde 15 personas.';this.value=G.pset?G.p:'';return}
+  if(v>=15){G.p=v;G.pset=true;this.value=G.p;gFix();gcalDraw();gdraw()}};
 $('gtour').href=wa('Hola, soy tour operador y quiero cotizar varios grupos para el mismo horario. Somos ___ grupos, ___ personas en total.');
 $('gday').onchange=function(){G.day=this.value;gdraw()};
 var GCNT={m:5,t:1,r:4};
@@ -1060,7 +1071,8 @@ function gcalDraw(){
   $('gcal').innerHTML=calH(G.m,gCls,gOk,'g');
   G.n=G.o?noches(G.f,G.o).length:0;
   $('gsm').innerHTML=!G.f?'Toca tu día de llegada.':(!G.o?'Llegada el <b>'+fmt(G.f)+'</b>. Ahora toca tu día de salida (puedes cambiarla las veces que quieras).':'Llegada <b>'+fmt(G.f)+'</b> · salida <b>'+fmt(G.o)+'</b> · '+G.n+' noche'+(G.n>1?'s':'')+'.')+(G.f?' <button type="button" class="btn ghost" id="gclr" style="padding:4px 12px;margin-left:6px">Borrar fechas</button>':'');
-  if(G.p>24)$('gsm').innerHTML='Para más de 24 personas no tenemos alojamiento para todo el grupo. Puedes reservar solo experiencias, de 15 a 60 personas.';
+  if(!G.pset)$('gsm').innerHTML='Primero escribe cuántas personas son.';
+  $('gcal').style.display=G.pset?'':'none';
   if($('gclr'))$('gclr').onclick=function(){G.f='';G.o='';gcalDraw();gdraw()};
   $('gcal').querySelectorAll('.cg button[data-d]').forEach(function(x){x.onclick=function(){
     var d=x.getAttribute('data-d');
