@@ -401,7 +401,7 @@ body.hasbar .chat-b{bottom:calc(var(--barh,90px) + 26px + env(safe-area-inset-bo
 .evb.on{background:#17402b;color:#fff;border-color:#17402b}.evb.on small{color:#e4dcc4}
 .evb:disabled{background:#eee8d6;color:#8a8a80;cursor:not-allowed;border-color:#d8ccae}
 .evbs .note,#gevn{grid-column:1/-1}
-.gnum{width:70px;text-align:center;font:inherit;font-size:20px;font-weight:700;border:0;background:transparent;color:inherit;-moz-appearance:textfield}.gnum::-webkit-outer-spin-button,.gnum::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.gnum:focus{outline:2px solid #b98f2f;border-radius:8px}
+.gnum{width:104px;text-align:center;font:inherit;font-size:20px;font-weight:700;border:0;background:transparent;color:inherit;-moz-appearance:textfield}.gnum::-webkit-outer-spin-button,.gnum::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.gnum:focus{outline:2px solid #b98f2f;border-radius:8px}
 .dx{margin-top:12px;padding-top:10px;border-top:1px solid #d8ccae}.dx small{display:block;color:#5a665d;margin-bottom:6px}
 /* Tipografía: títulos con la letra de la cabecera (Playfair Display 600, mayúsculas espaciadas), números alineados */
 body{font-variant-numeric:lining-nums}
@@ -538,7 +538,7 @@ h1,h2,h3,.tile b,.et b,.mealbox h4,.mealc h3,.sug .st{font-family:var(--serif);f
   <p class="lead">Contamos con alternativas de alojamiento, alimentación y actividades adecuadas a tu grupo. Para grupos desde 15 personas.</p>
   <div class="good" style="margin-bottom:12px"><b>Gran capacidad para tu evento:</b> recibimos hasta 100 personas por evento (80 en Casino Party y en Pizza Libre + Casino Party). Varios grupos pueden compartir el mismo horario mientras sumen la capacidad: ideal para tour operadores y delegaciones. <a id="gtour" href="#" target="_blank" rel="noopener">Cotiza varios grupos por WhatsApp</a></div>
   <div class="card sec" id="gmodoc"><h3 style="margin-bottom:14px">¿Qué necesita tu grupo?</h3>
-    <div style="display:flex;gap:12px;flex-wrap:wrap" id="gmodo"><button type="button" class="btn" data-m="aloj">Alojamiento y experiencias</button><button type="button" class="btn ghost" data-m="exp">Solo experiencias, sin alojamiento</button></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap" id="gmodo"><button type="button" class="btn" data-m="aloj">Alojamiento y experiencias</button><button type="button" class="btn ghost" data-m="exp">Solo experiencias</button></div>
     <p class="note" id="gmodon" style="margin-top:14px"></p></div>
   <div class="card sec cap" id="gcap"><h3>Capacidad del hostal</h3>
     <div class="capst"><div><b>10</b><span>habitaciones con baño privado</span></div><div><b>24</b><span>personas, capacidad máxima</span></div></div>
@@ -548,7 +548,7 @@ h1,h2,h3,.tile b,.et b,.mealbox h4,.mealc h3,.sug .st{font-family:var(--serif);f
       <div class="capc"><img src="img/hab-triple.jpg" alt="Habitación triple" loading="lazy"><div class="capl"><i>4</i><span>Habitaciones triples<small>Máximo 3 personas · 1 cama de 2 plazas + 1 de plaza y media</small></span></div><div class="capf"><span>En el segundo piso</span></div></div>
     </div></div>
   <div class="card sec"><h3>1. Tu grupo</h3>
-    <div class="gq"><span>Personas del grupo</span><div class="gstep"><button type="button" id="gpm" aria-label="Menos personas">−</button><input id="gpv" class="gnum" type="number" inputmode="numeric" min="15" max="24" value="" placeholder="¿Cuántos?" aria-label="Personas del grupo"><button type="button" id="gpp" aria-label="Más personas">+</button></div></div>
+    <div class="gq"><span>Personas del grupo</span><div class="gstep"><button type="button" id="gpm" aria-label="Menos personas">−</button><input id="gpv" class="gnum" type="number" inputmode="numeric" min="15" max="24" value="" placeholder="Cuántos" aria-label="Personas del grupo"><button type="button" id="gpp" aria-label="Más personas">+</button></div></div>
     <p class="note" id="gtope"></p><p class="note">Se libera una persona por cada 10 pagados.</p></div>
   <div class="card sec" id="gstep2"><h3>2. Alojamiento y comidas</h3>
     <div id="gsm" class="note" style="margin-top:8px"></div><div id="gcal"></div>
@@ -973,22 +973,23 @@ function gdispDraw(){
   d.value=G.day||'';
   var h='';
   var hay=false;
-  if(!G.pset)h='<div class="note">Primero escribe cuántas personas son. Después elige el día.</div>';
-  else if(!G.day)h='<div class="note">Elige el día para ver qué hay disponible para tu grupo de '+G.p+' personas.'+(G.n?' Puede ser cualquier día de tu estadía, incluido el de salida.':'')+'</div>';
+  d.disabled=!G.pset;var aviso=false;
+  if(!G.pset||!G.day)h='';
   else if(EVCERR.indexOf(G.day)>-1)h='<div class="note">Ese día no tomamos eventos. Elige otra fecha.</div>';
   else h=EXPS.map(function(x,i){
     var r='<div class="dx"><b>'+x.n+'</b><small>'+CLP(x.p)+' por persona · hasta '+x.cap+' personas</small>';
     if(G.p>x.cap)return r+'<div class="note">Tu grupo supera el máximo de esta experiencia ('+x.cap+' personas).</div></div>';
     return r+'<div class="evbs">'+EVB.map(function(b){
-      var libre=x.cap-evTom(G.day,b[0],i),sel=G.ev[i]&&G.ev[i].d===G.day&&G.ev[i].b===b[0],us=evUsado(i,G.day,b[0]),cabe=G.p<=libre;
-      var st=sel?'Elegida':us?'Ya la usas en otra experiencia':cabe?'Disponible':libre<=0?'Completo':libre>=15?'Hay lugar para hasta '+libre+' personas':'Sin cupo para tu grupo';
+      var tom=evTom(G.day,b[0],i),libre=x.cap-tom,sel=G.ev[i]&&G.ev[i].d===G.day&&G.ev[i].b===b[0],us=evUsado(i,G.day,b[0]),cabe=G.p<=libre&&(G.p>=15||tom>=15);
+      var st=sel?'Elegida':us?'Ya la usas en otra experiencia':cabe?'Disponible':(G.p<15&&tom<15&&G.p<=libre)?'Desde 15 personas, o sumándote a otro grupo':libre<=0?'Completo':G.p>libre&&libre>=15?'Hay lugar para hasta '+libre+' personas':'Sin cupo para tu grupo';
+      if(!sel&&!cabe&&!us)aviso=true;
       if(cabe&&!us)hay=true;
       return '<button type="button" class="evb'+(sel?' on':'')+'" data-i="'+i+'" data-b="'+b[0]+'"'+(!sel&&(!cabe||us)?' disabled':'')+'><b>'+b[1]+' h</b><small>'+b[2]+' · '+st+'</small><small>Capacidad '+x.cap+' · quedan '+Math.max(0,libre)+'</small></button>'}).join('')+'</div></div>'}).join('');
-  if(G.pset&&G.day&&EVCERR.indexOf(G.day)<0&&!hay&&!Object.keys(G.ev).length)h='<div class="warn">Ese día no tenemos cupo para un grupo de '+G.p+' personas. Escríbenos por WhatsApp y vemos una alternativa: <a href="'+wa('Hola, somos un grupo de '+G.p+' personas y queremos una experiencia el '+G.day+'. ¿Tienen alternativa?')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.</div>'+h;
+  if(G.pset&&G.day&&EVCERR.indexOf(G.day)<0&&!hay&&!Object.keys(G.ev).length)h='<div class="warn">'+(G.p<15?'Con menos de 15 personas solo puedes sumarte a un horario donde ya haya otro grupo de la misma experiencia, y ese día no hay. ':'Ese día no tenemos cupo para un grupo de '+G.p+' personas. ')+'Escríbenos por WhatsApp y vemos una alternativa: <a href="'+wa('Hola, somos un grupo de '+G.p+' personas y queremos una experiencia el '+G.day+'. ¿Tienen alternativa?')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.</div>'+h;
   $('gdisp').innerHTML=h;
   $('gdisp').querySelectorAll('.evb').forEach(function(x){x.onclick=function(){var i=+x.getAttribute('data-i'),b=x.getAttribute('data-b');
     if(G.ev[i]&&G.ev[i].d===G.day&&G.ev[i].b===b){G.e[i]=false;delete G.ev[i]}else{G.e[i]=true;G.ev[i]={d:G.day,b:b}}gdraw()}});
-  $('gdispn').innerHTML='¿No hay cupo para tu grupo, o prefieres otro día u horario? Escríbenos por WhatsApp: muchas veces podemos acomodar un grupo más pequeño si ya hay otro grupo ese día. <a href="'+wa('Hola, quiero consultar disponibilidad para una experiencia de grupo. Somos ___ personas y el día sería ___.')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.'}
+  $('gdispn').innerHTML=!aviso?'':'¿No hay cupo para tu grupo, o prefieres otro día u horario? Escríbenos por WhatsApp: muchas veces podemos acomodar un grupo más pequeño si ya hay otro grupo ese día. <a href="'+wa('Hola, quiero consultar disponibilidad para una experiencia de grupo. Somos ___ personas y el día sería ___.')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.'}
 function gevDraw(){
   var t=gtot(),box=$('gev');box.hidden=!t.nm.length;
   if(box.hidden){return}
@@ -1035,15 +1036,16 @@ EXPS.forEach(function(x,i){
   };
   $('exps').appendChild(d);
 });
-$('gpm').onclick=function(){G.pset=true;$('gtope').textContent='';G.p=Math.max(15,G.p-1);gFix();gcalDraw();gdraw()};
+$('gpm').onclick=function(){G.pset=true;$('gtope').textContent='';G.p=Math.max(gMin(),G.p-1);gFix();gcalDraw();gdraw()};
 $('gpp').onclick=function(){G.pset=true;$('gtope').textContent='';G.p=Math.min(gTope(),G.p+1);gFix();gcalDraw();gdraw()};
 G.modo='aloj';G.pset=false;
+function gMin(){return G.modo==='exp'?1:15}
 function gTope(){return G.modo==='exp'?Math.max.apply(null,EXPS.map(function(x){return x.cap})):24}
 function gModo(m){
   G.modo=m;var ex=m==='exp';
   document.querySelectorAll('#gmodo button').forEach(function(b){b.className='btn'+(b.getAttribute('data-m')===m?'':' ghost')});$('gpv').max=gTope();
   $('gcap').hidden=ex;$('gstep2').hidden=ex;
-  if(ex){G.f='';G.o='';G.n=0}else if(G.p>24)G.p=24;
+  if(ex){G.f='';G.o='';G.n=0}else{if(G.p>24)G.p=24;if(G.p<15)G.p=15}
   $('gh3').textContent=(ex?'2':'3')+'. Elige el día y ve la disponibilidad';
   $('gh4').textContent=(ex?'3':'4')+'. Tu selección';
   $('gmodon').textContent=ex?'Fiesta para tu grupo sin alojarte en la casa: desde 15 personas hasta el máximo de cada experiencia.':'Alojamiento en la casa para grupos de 15 a 24 personas, y puedes sumar experiencias dentro de tu estadía.';
@@ -1054,11 +1056,11 @@ function gMsgTope(){var ex=G.modo==='exp';return 'Nuestras capacidades por event
 $('gpv').oninput=function(){var v=parseInt(this.value,10);
   if(v>gTope()){$('gtope').innerHTML=gMsgTope();return}
   $('gtope').innerHTML='';
-  if(v>=15){G.p=v;G.pset=true;gFix();gcalDraw();gdraw()}};
+  if(v>=gMin()){G.p=v;G.pset=true;gFix();gcalDraw();gdraw()}};
 $('gpv').onchange=function(){var v=parseInt(this.value,10);
   if(v>gTope()){$('gtope').innerHTML=gMsgTope();this.value=G.pset?G.p:'';return}
-  if(this.value!==''&&!(v>=15)){$('gtope').textContent='Atendemos grupos desde 15 personas.';this.value=G.pset?G.p:'';return}
-  if(v>=15){G.p=v;G.pset=true;this.value=G.p;gFix();gcalDraw();gdraw()}};
+  if(this.value!==''&&!(v>=gMin())){$('gtope').textContent=G.modo==='exp'?'':'Atendemos grupos desde 15 personas.';this.value=G.pset?G.p:'';return}
+  if(v>=gMin()){G.p=v;G.pset=true;this.value=G.p;gFix();gcalDraw();gdraw()}};
 $('gtour').href=wa('Hola, soy tour operador y quiero cotizar varios grupos para el mismo horario. Somos ___ grupos, ___ personas en total.');
 $('gday').onchange=function(){G.day=this.value;gdraw()};
 var GCNT={m:5,t:1,r:4};
@@ -1071,7 +1073,7 @@ function gcalDraw(){
   $('gcal').innerHTML=calH(G.m,gCls,gOk,'g');
   G.n=G.o?noches(G.f,G.o).length:0;
   $('gsm').innerHTML=!G.f?'Toca tu día de llegada.':(!G.o?'Llegada el <b>'+fmt(G.f)+'</b>. Ahora toca tu día de salida (puedes cambiarla las veces que quieras).':'Llegada <b>'+fmt(G.f)+'</b> · salida <b>'+fmt(G.o)+'</b> · '+G.n+' noche'+(G.n>1?'s':'')+'.')+(G.f?' <button type="button" class="btn ghost" id="gclr" style="padding:4px 12px;margin-left:6px">Borrar fechas</button>':'');
-  if(!G.pset)$('gsm').innerHTML='Primero escribe cuántas personas son.';
+  if(!G.pset)$('gsm').innerHTML='';
   $('gcal').style.display=G.pset?'':'none';
   if($('gclr'))$('gclr').onclick=function(){G.f='';G.o='';gcalDraw();gdraw()};
   $('gcal').querySelectorAll('.cg button[data-d]').forEach(function(x){x.onclick=function(){

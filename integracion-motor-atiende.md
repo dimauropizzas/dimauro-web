@@ -90,3 +90,6 @@ Cantidad de personas (se puede escribir a mano, de 15 al tope) -> día -> dispon
 
 ## Cantidad primero (Mauro, 19-nov)
 El campo «Personas del grupo» parte vacío y sin texto debajo. Si escriben una cifra mayor a lo que recibimos, el sitio muestra las capacidades por evento (y la de alojamiento) con enlace a WhatsApp; menos de 15: «Atendemos grupos desde 15 personas». Sin número no se ve el calendario de alojamiento ni la disponibilidad de experiencias ni se puede reservar. Si ese día ningún bloque alcanza para el grupo: «No tenemos cupo… escríbenos por WhatsApp».
+
+## Menos de 15 y textos mínimos (Mauro, 19-nov)
+Botón «Solo experiencias». Un grupo de menos de 15 solo puede reservar en un día y horario donde ya haya otro grupo confirmado de la MISMA experiencia (regla aplicada en el motor). El sitio muestra texto solo cuando hace falta: el campo del día está apagado hasta escribir el número, y los avisos (cupo parcial, sin cupo, WhatsApp) aparecen solo si corresponden.
