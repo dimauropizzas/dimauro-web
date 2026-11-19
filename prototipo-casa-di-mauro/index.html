@@ -1042,10 +1042,14 @@ function gdispDraw(){
     if(G.ev[k]&&G.ev[k].d===G.day&&G.ev[k].b===bl){G.e[k]=false;delete G.ev[k]}else{G.e[k]=true;G.ev[k]={d:G.day,b:bl,sid:evCell(G.day,bl,k).sid}}gdraw()}});
   $('gdispn').innerHTML=!aviso?'':'¿No hay cupo para tu grupo, o prefieres otro día u horario? Escríbenos por WhatsApp. <a href="'+wa('Hola, quiero consultar disponibilidad para una experiencia de grupo. Somos ___ personas y el día sería ___.')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.'}
 function gevDraw(){
-  var t=gtot(),box=$('gev');box.hidden=!t.nm.length;
+  var t=gtot(),box=$('gev'),pn=PLANES.filter(function(x){return x[0]===G.pl})[0];box.hidden=!(t.nm.length||(G.n&&G.pset));
   if(box.hidden){return}
-  $('gevb').innerHTML=EXPS.map(function(x,i){if(!G.e[i]||!G.ev[i])return '';var b=EVB.filter(function(q){return q[0]===G.ev[i].b})[0];
-    return '<div class="dx" style="display:flex;justify-content:space-between;gap:10px;align-items:center"><span><b>'+x.n+'</b><small>'+fmt(G.ev[i].d)+' · '+b[1]+' h</small></span><button type="button" class="btn ghost evq" data-i="'+i+'" style="padding:4px 12px">Quitar</button></div>'}).join('');
+  var h='';
+  if(G.n)h+='<div class="dx" style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><span><b>Alojamiento · '+pn[1]+'</b><small>'+pn[2]+' · '+fmt(G.f)+' al '+fmt(G.o)+' · '+G.n+' noche'+(G.n>1?'s':'')+' × '+t.py+' personas</small></span><b>'+CLP(t.py*t.lod)+'</b></div>';
+  h+=EXPS.map(function(x,i){if(!G.e[i]||!G.ev[i])return '';var b=EVB.filter(function(q){return q[0]===G.ev[i].b})[0];
+    return '<div class="dx" style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><span><b>'+x.n+'</b><small>'+fmt(G.ev[i].d)+' · '+b[1]+' h · '+t.py+' personas × '+CLP(x.p)+'</small><button type="button" class="btn ghost evq" data-i="'+i+'" style="padding:3px 12px;margin-top:4px">Quitar</button></span><b>'+CLP(t.py*x.p)+'</b></div>'}).join('');
+  h+='<div class="dx" style="display:flex;justify-content:space-between;gap:10px;align-items:center"><b>Total</b><b style="font-size:20px">'+CLP(t.total)+'</b></div>';
+  $('gevb').innerHTML=h;
   $('gevb').querySelectorAll('.evq').forEach(function(x){x.onclick=function(){var i=+x.getAttribute('data-i');G.e[i]=false;delete G.ev[i];gdraw()}})}
 function gdraw(){
   if(document.activeElement!==$('gpv'))$('gpv').value=G.pset?G.p:'';
