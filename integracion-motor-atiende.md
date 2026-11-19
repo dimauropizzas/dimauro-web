@@ -64,7 +64,8 @@ No modifiqué `atiende-app`. Solo lo clone para leerlo. Tampoco conecté la web 
 - **Personas liberadas (1 por cada 10 pagados):** no entran al motor. Se cobra a todo el grupo y se descuentan del saldo al recibir a la delegación, en el local. En el prototipo ya figura como acotación con el monto.
 - **Experiencias:** abono 50 % online y 50 % el día del evento en el local; bloques 13:00-16:00 y 18:00-21:00; 2 grupos por bloque; sin eventos 24, 25 y 31 dic y 1 ene.
 - **Orden de construcción:** experiencias primero, luego API pública de alojamiento, paquetes de noches fijas, calendario unificado y prueba real de Flow antes del 2 de diciembre.
-- **Conflicto por resolver:** la regla de cancelación de referencia que Atiende tiene para Casa Di Mauro (anticipo de una noche, devolución con 15 días) no coincide con la de Mauro (anticipo 50 %, devolución por tramos de 72, 48 y 24 horas).
+- **Regla de devolución (resuelto 19-nov):** se adopta la que Atiende ya tiene programada para Casa Di Mauro: abono de una noche; con 15 días o más de aviso se devuelve el 100 % del abono; con menos, o si no llega, no se devuelve; la dueña puede hacer una excepción si la fecha se revende. La web ya dice esto. Queda pendiente definir la devolución de las experiencias (hoy muestran la misma regla).
+- **Pasarela de pago:** se probará con Flow o con Kipu, según lo que Mauro decida; Mauro tiene Kipu funcionando en otra página.
 
 ## Corrección
 La primera versión de este informe decía que el tenant 45 era Casa Di Mauro alojamiento. Es la pizzería. Corregido arriba.

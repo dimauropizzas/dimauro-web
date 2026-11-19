@@ -463,12 +463,10 @@ h1,h2,h3,.tile b,.et b,.mealbox h4,.mealc h3,.sug .st{font-family:var(--serif);f
   <details class="pol"><summary>Política de cancelación y devoluciones</summary>
     <p class="note" style="margin:8px 0">Para reservar se abona el valor de la primera noche de alojamiento; el resto y las comidas se pagan al llegar. Devolución del abono según el aviso:</p>
     <div class="scroll"><table><tr><th>Aviso antes de llegar</th><th>Se devuelve</th></tr>
-    <tr><td>Más de 72 horas</td><td>100 % del abono</td></tr>
-    <tr><td>Entre 72 y 48 horas</td><td>50 % del abono</td></tr>
-    <tr><td>Entre 48 y 24 horas</td><td>25 % del abono</td></tr>
-    <tr><td>Menos de 24 horas o no se presenta (no show)</td><td>Sin devolución</td></tr>
-    <tr><td>Llega, conoce la habitación y decide no quedarse</td><td>Sin devolución: la habitación quedó reservada para usted</td></tr>
-    <tr><td>Escapadas de Navidad y Año Nuevo</td><td>Sin devolución desde 7 días antes</td></tr></table></div>
+    <tr><td>15 días o más</td><td>100 % del abono</td></tr>
+    <tr><td>Menos de 15 días o no se presenta (no show)</td><td>Sin devolución</td></tr>
+    <tr><td>Llega, conoce la habitación y decide no quedarse</td><td>Sin devolución: la habitación quedó reservada para usted</td></tr></table></div>
+    <p class="note" style="margin:8px 0">Si la fecha se logra revender, la casa puede hacer una excepción.</p>
   </details>
   </div>
   <div class="pt" id="pt-alojamiento-esc">
@@ -703,7 +701,7 @@ function calc(sel,ns,tipos,opt){
 function openModal(){$('modal').hidden=false}
 function closeModal(){$('modal').hidden=true}
 $('modal').addEventListener('click',function(e){if(e.target===$('modal'))closeModal()});
-function POLDEV(pack){return '<details class="pol2"><summary>Política de devolución</summary><div class="note">'+(pack?'Escapadas de fiestas: sin devolución desde 7 días antes de la llegada. ':'')+'Devolución del abono por aviso: 100 % con más de 72 h; 50 % entre 72 y 48 h; 25 % entre 48 y 24 h; sin devolución con menos de 24 h. Sin devolución si no se presenta o decide irse después de llegar.</div></details>'}
+function POLDEV(pack){return '<details class="pol2"><summary>Política de devolución</summary><div class="note">'+'Devolución del abono: 100 % si avisas con 15 días o más de anticipación; con menos aviso, o si no llegas, no se devuelve. Si la fecha se logra revender, la casa puede hacer una excepción. Sin devolución si decides irte después de llegar.</div></details>'}
 function openCheckout(){
   var K=S.ctx||MAINC,sel=JSON.parse(JSON.stringify(S.sel)),ci=$(K.ci).value,co=$(K.co).value,pp0=K.esc?0:+$(K.pp).value;
   var ns=noches(ci,co),tipos=ns.map(tipoNoche),pack=S.pack,mb=$('mbox'),nr=0,cap=0;
@@ -947,7 +945,7 @@ function gsum(){
     mb.innerHTML='<h3 style="font-family:var(--serif)">Tu paquete</h3><div class="scroll"><table>'+rows.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+CLP(r[1])+'</td></tr>'}).join('')+'</table></div>'+
     '<div class="good"><div>Valor total: <b>'+CLP(t.total)+'</b></div><div>Abono hoy ('+(G.n?'primera noche de alojamiento':'50 % de las experiencias')+'): <b>'+CLP(ab)+'</b></div><div>Saldo '+(G.n?'al llegar':'el día del evento')+': <b>'+CLP(t.total-ab)+'</b></div></div>'+
     (t.nm.length?'<div class="note">Evento: <b>'+fmt(G.ed)+'</b> · '+EVB.filter(function(b){return b[0]===G.eb})[0][1]+' h</div>':'')+
-    (f?'<div class="note">Se libera una persona por cada 10 pagados: en tu grupo '+(f>1?'son '+f:'es 1')+'. Se descuentan '+CLP(f*(t.lod+t.ex))+' del saldo al recibir al grupo, en el local.</div>':'')+
+    (f?'<div class="note">Se libera una persona por cada 10 pagados. El descuento se hará al momento de pagar el '+(G.n?'saldo restante':'50 % restante')+'.</div>':'')+
     '<div class="field"><label for="gn">Nombre o institución</label><input id="gn"></div><div class="field"><label for="gm">Correo</label><input id="gm" type="email"></div><div class="field"><label for="gw">WhatsApp</label><input id="gw"></div>'+
     POLDEV(0)+
     '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="ggo" type="button">Pagar abono con Flow</button><button class="btn ghost" id="cl4" type="button">Cerrar</button></div>';
@@ -1081,8 +1079,8 @@ hero();heroPz();setInterval(heroPz,1000);setInterval(hero,1000);
 
 var FAQ=[
  ['¿Cuántas habitaciones hay?','Son 10 habitaciones, todas con baño privado: 5 matrimoniales, 1 doble twin y 4 triples. Capacidad máxima, 24 personas. Abajo hay 3 matrimoniales; arriba, las otras 7.'],
- ['¿El desayuno está incluido?','Sí. Todas las habitaciones incluyen desayuno sureño semibuffet. Si no lo quieres, se descuentan $5.000 por noche.'],
- ['¿Cómo se paga y se cancela?','Para reservar se abona con Flow el valor de la primera noche; el resto y las comidas se pagan al llegar. Con más de 72 horas de aviso, se devuelve el 100 % del abono. Si no se presenta o decide irse después de llegar, no hay devolución.'],
+ ['¿El desayuno está incluido?','Sí. Todas las habitaciones incluyen desayuno sureño semibuffet.'],
+ ['¿Cómo se paga y se cancela?','Para reservar se abona con Flow el valor de la primera noche; el resto y las comidas se pagan al llegar. Con 15 días o más de aviso, se devuelve el 100 % del abono. Con menos aviso, si no se presenta o decide irse después de llegar, no hay devolución.'],
  ['¿Dónde queda?','En Camino a Coñaripe #100, Licán Ray. Playa Ensenada está a 15 minutos caminando y las termas a menos de 40 minutos.'],
  ['¿Aceptan grupos?','Sí, desde 15 personas, con una persona liberada por cada 10 que pagan. Pide tu cotización en Grupos y delegaciones.']
 ];
