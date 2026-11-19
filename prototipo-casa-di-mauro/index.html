@@ -941,9 +941,9 @@ function packTables(){
 var EXPS=[
  {n:'Casino Party',cap:80,p:10000,img:'img/exp-casino.jpg',afiche:'img/afiche-casino.jpg',inc:['Mesas de juego','Fichas recreativas','Bebidas ilimitadas','Ambiente de fiesta']},
  {n:'Pizza Libre',cap:100,p:15000,img:'img/exp-pizzalibre.jpg',afiche:'img/afiche-pizzalibre.jpg',inc:['Pizza libre','Bebidas ilimitadas (gaseosas y jugos)']},
- {n:'Pizza Party',cap:60,p:20000,img:'img/exp-pizzaparty.jpg',inc:['Pizza libre','Bebidas ilimitadas','Espacio para celebrar','Luces tipo fiesta'],dj:true},
+ {n:'Pizza Party',cap:100,p:20000,img:'img/exp-pizzaparty.jpg',inc:['Pizza libre','Bebidas ilimitadas','Espacio para celebrar','Luces tipo fiesta'],dj:true},
  {n:'Pizza Libre + Casino Party',cap:80,p:22000,img:'img/exp-pizzacasino.jpg',afiche:'img/afiche-pizzacasino.jpg',inc:['Pizza libre','Bebidas ilimitadas','Mesas de juego','Fichas recreativas','Luces tipo fiesta y ambiente party'],dj:true,nota:'Valor individual: $25.000'},
- {n:'Parrillada Party',cap:60,p:25000,img:'img/exp-parrillada-party.jpg',afiche:'img/afiche-parrillada-party.jpg',inc:['Bebidas ilimitadas','Choripán de bienvenida','Variedad de carnes a la parrilla','Buffet de ensaladas y guarniciones','Pan de la casa y sopaipillas']}
+ {n:'Parrillada Party',cap:50,p:25000,img:'img/exp-parrillada-party.jpg',afiche:'img/afiche-parrillada-party.jpg',inc:['Bebidas ilimitadas','Choripán de bienvenida','Variedad de carnes a la parrilla','Buffet de ensaladas y guarniciones','Pan de la casa y sopaipillas']}
 ];
 var G={p:15,n:0,f:'',o:'',m:'2026-12',pl:'a',e:{}},PLANES=[['a','Alojamiento','con desayuno',28000,42000],['m','Media pensión','desayuno + almuerzo o cena',43000,65000],['c','Pensión completa','desayuno + almuerzo + cena',56000,84000]];
 function gnn(pn){var nb=0,na=0;if(G.n&&G.f&&G.o)noches(G.f,G.o).forEach(function(d){if(tipoNoche(d)==='alta')na++;else nb++});return {nb:nb,na:na,lod:nb*pn[3]+na*pn[4]}}
