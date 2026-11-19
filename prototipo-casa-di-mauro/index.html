@@ -702,7 +702,7 @@ function openModal(){$('modal').hidden=false}
 function closeModal(){$('modal').hidden=true}
 $('modal').addEventListener('click',function(e){if(e.target===$('modal'))closeModal()});
 function POLDEV(pack){return '<details class="pol2"><summary>Política de devolución</summary><div class="note">'+'Devolución del abono: 100 % si avisas con 15 días o más de anticipación; con menos aviso, o si no llegas, no se devuelve. Si la fecha se logra revender, la casa puede hacer una excepción. Sin devolución si decides irte después de llegar.</div></details>'}
-function POLEXP(){return '<details class="pol2"><summary>Política de devolución de las experiencias</summary><div class="note">Devolución del abono: con 72 horas o más de aviso se devuelve el 50 %; con menos de 72 horas de aviso se devuelve el 25 %. Si no avisas (menos de 1 hora antes del evento) o no llegas, no se devuelve.</div></details>'}
+function POLEXP(){return '<details class="pol2"><summary>Política de devolución de las experiencias</summary><div class="note">Devolución del abono: con 72 horas o más de aviso se devuelve el 50 %; con menos de 72 horas de aviso se devuelve el 25 %, hasta 30 minutos después de la hora de inicio (por si hay algún retraso). Pasado ese plazo, o si no llegas (no show), no se devuelve.</div></details>'}
 function openCheckout(){
   var K=S.ctx||MAINC,sel=JSON.parse(JSON.stringify(S.sel)),ci=$(K.ci).value,co=$(K.co).value,pp0=K.esc?0:+$(K.pp).value;
   var ns=noches(ci,co),tipos=ns.map(tipoNoche),pack=S.pack,mb=$('mbox'),nr=0,cap=0;

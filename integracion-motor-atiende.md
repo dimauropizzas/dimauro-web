@@ -72,3 +72,6 @@ La primera versión de este informe decía que el tenant 45 era Casa Di Mauro al
 
 ## Devolución de las experiencias (Mauro, 19-nov)
 Con 72 horas o más de aviso se devuelve el 50 % del abono; con menos de 72 horas, el 25 %; sin aviso (menos de 1 hora antes) o si no llega, nada. Configurado en producción (negocio 50) y staging con `cupo_bo_politica_tramos_guardar` (tramos 72 h y 1 h). La web ya lo muestra. Interpretación mía: «hasta el día del evento» = hasta 1 hora antes del evento.
+
+## Holgura (Mauro, 19-nov)
+El 25 % de las experiencias rige hasta 30 minutos después de la hora de inicio; después, no show: no se devuelve. Aplicado en producción solo para el negocio 50 (columna `cancelacion_holgura_min`). Probado en staging: 80 h antes 50 %, 5 h antes 25 %, 20 min después 25 %, 40 min después 0.
