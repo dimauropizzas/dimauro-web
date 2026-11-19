@@ -530,10 +530,10 @@ body.hasbar .chat-b{bottom:calc(var(--barh,90px) + 26px + env(safe-area-inset-bo
       <div class="capc"><img src="img/hab-twin.jpg" alt="Habitación doble twin" loading="lazy"><div class="capl"><i>1</i><span>Habitación doble twin<small>Máximo 2 personas · 2 camas de plaza y media</small></span></div><div class="capf"><span>En el segundo piso</span></div></div>
       <div class="capc"><img src="img/hab-triple.jpg" alt="Habitación triple" loading="lazy"><div class="capl"><i>4</i><span>Habitaciones triples<small>Máximo 3 personas · 1 cama de 2 plazas + 1 de plaza y media</small></span></div><div class="capf"><span>En el segundo piso</span></div></div>
     </div>
-    <p class="note" style="margin-top:10px">Por cada 10 personas que pagan, 1 queda liberada (la tripulación).</p></div>
+    <p class="note" style="margin-top:10px">Se libera una persona por cada 10 pagadas.</p></div>
   <div class="card sec"><h3>1. Tu grupo</h3>
     <div class="gq"><span>Personas del grupo</span><div class="gstep"><button type="button" id="gpm" aria-label="Menos personas">−</button><b id="gpv">15</b><button type="button" id="gpp" aria-label="Más personas">+</button></div></div>
-    <div id="gfree" class="good" style="margin-top:10px"></div><p class="note">Entre 15 y 24 personas en total. Por cada 10 personas del grupo, 1 va liberada (la tripulación) y ya está descontada del total.</p></div>
+    <div id="gfree" class="good" style="margin-top:10px"></div><p class="note">Entre 15 y 24 personas en total. Se libera una persona por cada 10 pagadas, y ya está descontada del total.</p></div>
   <div class="card sec"><h3>2. Alojamiento y comidas</h3>
     <div id="gsm" class="note" style="margin-top:8px"></div><div id="gcal"></div>
     <div class="gplan" id="gplan"></div>
@@ -902,7 +902,7 @@ var G={p:15,n:0,f:'',o:'',m:'2026-12',pl:'a',e:{}},PLANES=[['a','Alojamiento','c
 function gnn(pn){var nb=0,na=0;if(G.n&&G.f&&G.o)noches(G.f,G.o).forEach(function(d){if(tipoNoche(d)==='alta')na++;else nb++});return {nb:nb,na:na,lod:nb*pn[3]+na*pn[4]}}
 function gtot(){var pn=PLANES.filter(function(x){return x[0]===G.pl})[0],pl=pn[3],gl=gnn(pn),ex=0,nm=[];EXPS.forEach(function(x,i){if(G.e[i]){ex+=x.p;nm.push(x)}});var fr=Math.floor(G.p/10),py=G.p-fr;return {pl:pl,lod:gl.lod,gl:gl,ex:ex,nm:nm,fr:fr,py:py,total:py*(gl.lod+ex)}}
 function gdraw(){
-  $('gpv').textContent=G.p;var t0=gtot();$('gfree').innerHTML='Grupo de <b>'+G.p+'</b>: <b>'+t0.py+'</b> pagan · <b>'+t0.fr+'</b> liberada'+(t0.fr>1?'s':'')+' (tripulación)';
+  $('gpv').textContent=G.p;var t0=gtot();$('gfree').innerHTML='Grupo de <b>'+G.p+'</b>: <b>'+t0.py+'</b> pagan · <b>'+t0.fr+'</b> liberada'+(t0.fr>1?'s':'');
   $('gplan').innerHTML=G.n?PLANES.map(function(x){return '<label class="gpl"><input type="radio" name="gpl" value="'+x[0]+'"'+(G.pl===x[0]?' checked':'')+'><span><b>'+x[1]+'</b><small>'+x[2]+'</small></span><em>'+CLP(x[3])+(G.n&&gnn(x).na?'<small> · alta '+CLP(x[4])+'</small>':'')+'</em></label>'}).join(''):'';
   $('gplan').querySelectorAll('input').forEach(function(r){r.onchange=function(){G.pl=r.value;gdraw()}});
   EXPS.forEach(function(x,i){var bt=$('exa'+i);if(!bt)return;bt.textContent=G.e[i]?'Quitar':'Agregar';bt.parentNode.classList.toggle('sel',!!G.e[i])});
@@ -917,7 +917,7 @@ function gsum(){
   function draw(){
     mb.innerHTML='<h3 style="font-family:var(--serif)">Tu paquete</h3><div class="scroll"><table>'+rows.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+CLP(r[1])+'</td></tr>'}).join('')+'</table></div>'+
     '<div class="good"><div>Valor total: <b>'+CLP(t.total)+'</b></div><div>Abono hoy ('+(G.n?'primera noche de alojamiento':'experiencias')+'): <b>'+CLP(ab)+'</b></div><div>Saldo al llegar: <b>'+CLP(t.total-ab)+'</b></div></div>'+
-    (f?'<div class="note">Grupo de '+G.p+' personas: pagan '+t.py+' y '+f+' va'+(f>1?'n':'')+' liberada'+(f>1?'s':'')+' (la tripulación). Ya está descontado.</div>':'')+
+    (f?'<div class="note">Grupo de '+G.p+' personas: pagan '+t.py+' y '+f+' va'+(f>1?'n':'')+' liberada'+(f>1?'s':'')+' Ya está descontado.</div>':'')+
     '<div class="field"><label for="gn">Nombre o institución</label><input id="gn"></div><div class="field"><label for="gm">Correo</label><input id="gm" type="email"></div><div class="field"><label for="gw">WhatsApp</label><input id="gw"></div>'+
     POLDEV(0)+
     '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="ggo" type="button">Pagar abono con Flow</button><button class="btn ghost" id="cl4" type="button">Cerrar</button></div>';
