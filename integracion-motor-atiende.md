@@ -75,3 +75,6 @@ Con 72 horas o más de aviso se devuelve el 50 % del abono; con menos de 72 hora
 
 ## Holgura (Mauro, 19-nov)
 El 25 % de las experiencias rige hasta 30 minutos después de la hora de inicio; después, no show: no se devuelve. Aplicado en producción solo para el negocio 50 (columna `cancelacion_holgura_min`). Probado en staging: 80 h antes 50 %, 5 h antes 25 %, 20 min después 25 %, 40 min después 0.
+
+## Experiencias en días distintos (Mauro, 19-nov)
+Una delegación puede comprar 2 o más experiencias en días distintos dentro de su estadía: cada experiencia pide su propio día y horario (13:00-16:00 o 18:00-21:00). Dos experiencias del mismo grupo no pueden compartir día y horario. El día de salida está permitido (pendiente de confirmar con Mauro). La API combinada ya acepta una fecha y hora por experiencia.
