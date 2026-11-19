@@ -477,7 +477,7 @@ body.hasbar .chat-b{bottom:calc(var(--barh,90px) + 26px + env(safe-area-inset-bo
       <div class="eh"><img src="img/hab-matrimonial.jpg" alt=""><div><h3>Escapada romántica</h3></div></div>
       <div class="itin">
         <div class="day"><b>Primera noche</b><span>Aperitivo de bienvenida</span><span>Cena de bienvenida</span><span>1.ª noche de alojamiento</span></div>
-        <div class="day"><b>Segunda noche</b><span>Brunch</span><span>Acceso a Termas Coñaripe (no incluye traslado)</span><span>Picnic para dos: sándwich, agua, fruta fresca y snack de frutos secos</span><span>Cena en la casa y 2.ª noche de alojamiento</span></div>
+        <div class="day"><b>Segunda noche</b><span>Brunch</span><span>Acceso a Termas Coñaripe (no incluye traslado)</span><span>Box lunch para dos: sándwich en pan de la casa o bowl de ensalada, agua, fruta fresca y snack de frutos secos</span><span>Cena en la casa y 2.ª noche de alojamiento</span></div>
         <div class="day"><b>Despedida (check-out)</b><span>Desayuno de despedida</span><span>Almuerzo de despedida</span></div>
       </div>
     </div>
@@ -759,7 +759,7 @@ function rdraw(){
   var h='<h3>Reserva tu escapada</h3><div class="field"><label>Elige tu día de llegada</label>'+romCal()+'<div class="note">Los días tachados no están disponibles. Temporada baja: viernes y sábado $180.000 por habitación; de domingo a jueves $170.000. En temporada alta (desde el 3 de enero) suma $18.000 por habitación.</div></div>'+
   '<div class="stp" id="rst" style="justify-content:space-between;padding:10px 14px"><span>Habitaciones matrimoniales<br><small>2 personas por habitación</small></span><div style="display:flex;align-items:center;gap:14px"><button type="button" class="mn" aria-label="Quitar una">−</button><b class="q">'+R.n+'</b><button type="button" class="mas" aria-label="Agregar una">+</button></div></div>';
   if(I&&I.err)h+='<div class="warn" style="margin-top:10px">'+I.err+'</div>';
-  if(c){h+='<div class="scroll"><table class="sum"><tr><td>Escapada romántica: llegada '+c.F.dia+' '+fmt(c.F.i)+', salida '+fmt(c.F.k)+' ('+(c.F.fin?'fin de semana':'entre semana')+(c.alta?', temporada alta':'')+') · '+c.n+' habitaci'+(c.n>1?'ones':'ón')+' × '+CLP(c.pr)+'</td><td>'+CLP(c.total)+'</td></tr><tr class="t"><td>Total</td><td>'+CLP(c.total)+'</td></tr></table></div><div class="note">Por habitación: 2 noches con desayuno, aperitivo y cena de bienvenida, brunch, 2 entradas a Termas Coñaripe con picnic (sándwich, agua, fruta fresca y snack de frutos secos), cena en la casa y almuerzo de despedida.</div>'}
+  if(c){h+='<div class="scroll"><table class="sum"><tr><td>Escapada romántica: llegada '+c.F.dia+' '+fmt(c.F.i)+', salida '+fmt(c.F.k)+' ('+(c.F.fin?'fin de semana':'entre semana')+(c.alta?', temporada alta':'')+') · '+c.n+' habitaci'+(c.n>1?'ones':'ón')+' × '+CLP(c.pr)+'</td><td>'+CLP(c.total)+'</td></tr><tr class="t"><td>Total</td><td>'+CLP(c.total)+'</td></tr></table></div><div class="note">Por habitación: 2 noches con desayuno, aperitivo y cena de bienvenida, brunch, 2 entradas a Termas Coñaripe con box lunch (sándwich en pan de la casa o bowl de ensalada, agua, fruta fresca y snack de frutos secos), cena en la casa y almuerzo de despedida.</div>'}
   $('rcalc').innerHTML=h;
   $('rcalc').querySelectorAll('.cg button[data-d]').forEach(function(x){x.onclick=function(){R.f=x.getAttribute('data-d');rdraw()}});
   $('cprev').onclick=function(){R.m=R.m==='2027-03'?'2027-02':R.m==='2027-02'?'2027-01':'2026-12';rdraw()};
