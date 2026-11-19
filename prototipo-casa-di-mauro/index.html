@@ -967,6 +967,11 @@ function evFull(d,b,i){return evTom(d,b,i)+G.p>EXPS[i].cap}
 function evUsado(i,d,b){return EXPS.some(function(x,k){return k!==i&&G.e[k]&&G.ev[k]&&G.ev[k].d===d&&G.ev[k].b===b})}
 function evOk(){return EXPS.every(function(x,i){return !G.e[i]||(G.ev[i]&&G.ev[i].d&&G.ev[i].b)})}
 function evResumen(){return EXPS.map(function(x,i){if(!G.e[i]||!G.ev[i]||!G.ev[i].d)return '';var b=EVB.filter(function(q){return q[0]===G.ev[i].b})[0];return '<div class="note">'+x.n+': <b>'+fmt(G.ev[i].d)+'</b>'+(b?' · '+b[1]+' h':'')+'</div>'}).join('')}
+function evDiasUnir(min,max){var m={};
+  Object.keys(EVTOM).forEach(function(k){var a=k.split('|'),d=a[0],b=a[1],i=+a[2],tom=EVTOM[k];
+    if(d<min||d>max||EVCERR.indexOf(d)>-1||tom<15||G.p>EXPS[i].cap-tom)return;
+    (m[d]=m[d]||[]).push(EXPS[i].n+' '+(EVB.filter(function(q){return q[0]===b})[0][1]).slice(0,5))});
+  return Object.keys(m).sort().slice(0,8).map(function(d){return {d:d,t:m[d]}})}
 function gdispDraw(){
   var min=G.n?G.f:'2026-12-04',max=G.n?G.o:'2027-03-31',d=$('gday');d.min=min;d.max=max;
   if(G.day&&(G.day<min||G.day>max))G.day='';
@@ -985,8 +990,13 @@ function gdispDraw(){
       if(!sel&&!cabe&&!us)aviso=true;
       if(cabe&&!us)hay=true;
       return '<button type="button" class="evb'+(sel?' on':'')+'" data-i="'+i+'" data-b="'+b[0]+'"'+(!sel&&(!cabe||us)?' disabled':'')+'><b>'+b[1]+' h</b><small>'+b[2]+' · '+st+'</small><small>Capacidad '+x.cap+' · quedan '+Math.max(0,libre)+'</small></button>'}).join('')+'</div></div>'}).join('');
-  if(G.pset&&G.day&&EVCERR.indexOf(G.day)<0&&!hay&&!Object.keys(G.ev).length)h='<div class="warn">'+(G.p<15?'Con menos de 15 personas solo puedes sumarte a un horario donde ya haya otro grupo de la misma experiencia, y ese día no hay. ':'Ese día no tenemos cupo para un grupo de '+G.p+' personas. ')+'Escríbenos por WhatsApp y vemos una alternativa: <a href="'+wa('Hola, somos un grupo de '+G.p+' personas y queremos una experiencia el '+G.day+'. ¿Tienen alternativa?')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.</div>'+h;
-  $('gdisp').innerHTML=h;
+  var dU='';
+  if(G.pset&&G.p<15){var dias=evDiasUnir(min,max);
+    dU=dias.length?'<div class="good" style="margin-bottom:10px">Con menos de 15 personas solo podemos reservar los días en que ya hay otro grupo en esa experiencia. Si vienes varios días, puedes adaptarte a alguno de estos: <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">'+dias.map(function(x){return '<button type="button" class="btn ghost evdia" data-d="'+x.d+'" style="padding:4px 10px;font-size:13px">'+fmt(x.d)+' · '+x.t.join(', ')+'</button>'}).join('')+'</div></div>'
+    :'<div class="warn" style="margin-bottom:10px">Con menos de 15 personas solo podemos reservar los días en que ya hay otro grupo en esa experiencia, y por ahora no hay ninguno. Escríbenos por WhatsApp y vemos una alternativa: <a href="'+wa('Hola, somos un grupo de '+G.p+' personas y queremos sumarnos a una experiencia. ¿Qué días tienen otro grupo?')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.</div>'}
+  if(G.pset&&G.day&&EVCERR.indexOf(G.day)<0&&!hay&&G.p>=15&&!Object.keys(G.ev).length)h='<div class="warn">'+(G.p<15?'Con menos de 15 personas solo puedes sumarte a un horario donde ya haya otro grupo de la misma experiencia, y ese día no hay. ':'Ese día no tenemos cupo para un grupo de '+G.p+' personas. ')+'Escríbenos por WhatsApp y vemos una alternativa: <a href="'+wa('Hola, somos un grupo de '+G.p+' personas y queremos una experiencia el '+G.day+'. ¿Tienen alternativa?')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.</div>'+h;
+  $('gdisp').innerHTML=dU+h;
+  $('gdisp').querySelectorAll('.evdia').forEach(function(x){x.onclick=function(){G.day=x.getAttribute('data-d');gdraw()}});
   $('gdisp').querySelectorAll('.evb').forEach(function(x){x.onclick=function(){var i=+x.getAttribute('data-i'),b=x.getAttribute('data-b');
     if(G.ev[i]&&G.ev[i].d===G.day&&G.ev[i].b===b){G.e[i]=false;delete G.ev[i]}else{G.e[i]=true;G.ev[i]={d:G.day,b:b}}gdraw()}});
   $('gdispn').innerHTML=!aviso?'':'¿No hay cupo para tu grupo, o prefieres otro día u horario? Escríbenos por WhatsApp: muchas veces podemos acomodar un grupo más pequeño si ya hay otro grupo ese día. <a href="'+wa('Hola, quiero consultar disponibilidad para una experiencia de grupo. Somos ___ personas y el día sería ___.')+'" target="_blank" rel="noopener">Escribir por WhatsApp</a>.'}

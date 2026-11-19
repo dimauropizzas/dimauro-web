@@ -93,3 +93,6 @@ El campo «Personas del grupo» parte vacío y sin texto debajo. Si escriben una
 
 ## Menos de 15 y textos mínimos (Mauro, 19-nov)
 Botón «Solo experiencias». Un grupo de menos de 15 solo puede reservar en un día y horario donde ya haya otro grupo confirmado de la MISMA experiencia (regla aplicada en el motor). El sitio muestra texto solo cuando hace falta: el campo del día está apagado hasta escribir el número, y los avisos (cupo parcial, sin cupo, WhatsApp) aparecen solo si corresponden.
+
+## Días para grupos de menos de 15 (Mauro, 19-nov)
+Con menos de 15 personas el sitio dice que solo se puede reservar los días en que ya hay otro grupo de esa experiencia, y lista esos días (con experiencia y horario) como botones tocables; muchas veces vienen 4 o 5 días y se pueden adaptar. Si no hay ninguno, manda a WhatsApp. Al conectar con la base real, esos días salen de las sesiones con reservas confirmadas que suman 15 o más y a las que el grupo todavía le cabe.
