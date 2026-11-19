@@ -939,18 +939,21 @@ function packTables(){
 }
 
 var EXPS=[
- {n:'Casino Party',p:10000,img:'img/exp-casino.jpg',afiche:'img/afiche-casino.jpg',inc:['Mesas de juego','Fichas recreativas','Bebidas ilimitadas','Ambiente de fiesta']},
- {n:'Pizza Libre',p:15000,img:'img/exp-pizzalibre.jpg',afiche:'img/afiche-pizzalibre.jpg',inc:['Pizza libre','Bebidas ilimitadas (gaseosas y jugos)']},
- {n:'Pizza Party',p:20000,img:'img/exp-pizzaparty.jpg',inc:['Pizza libre','Bebidas ilimitadas','Espacio para celebrar','Luces tipo fiesta'],dj:true},
- {n:'Pizza Libre + Casino Party',p:22000,img:'img/exp-pizzacasino.jpg',afiche:'img/afiche-pizzacasino.jpg',inc:['Pizza libre','Bebidas ilimitadas','Mesas de juego','Fichas recreativas','Luces tipo fiesta y ambiente party'],dj:true,nota:'Valor individual: $25.000'},
- {n:'Parrillada Party',p:25000,img:'img/exp-parrillada-party.jpg',afiche:'img/afiche-parrillada-party.jpg',inc:['Bebidas ilimitadas','Choripán de bienvenida','Variedad de carnes a la parrilla','Buffet de ensaladas y guarniciones','Pan de la casa y sopaipillas']}
+ {n:'Casino Party',cap:80,p:10000,img:'img/exp-casino.jpg',afiche:'img/afiche-casino.jpg',inc:['Mesas de juego','Fichas recreativas','Bebidas ilimitadas','Ambiente de fiesta']},
+ {n:'Pizza Libre',cap:100,p:15000,img:'img/exp-pizzalibre.jpg',afiche:'img/afiche-pizzalibre.jpg',inc:['Pizza libre','Bebidas ilimitadas (gaseosas y jugos)']},
+ {n:'Pizza Party',cap:60,p:20000,img:'img/exp-pizzaparty.jpg',inc:['Pizza libre','Bebidas ilimitadas','Espacio para celebrar','Luces tipo fiesta'],dj:true},
+ {n:'Pizza Libre + Casino Party',cap:80,p:22000,img:'img/exp-pizzacasino.jpg',afiche:'img/afiche-pizzacasino.jpg',inc:['Pizza libre','Bebidas ilimitadas','Mesas de juego','Fichas recreativas','Luces tipo fiesta y ambiente party'],dj:true,nota:'Valor individual: $25.000'},
+ {n:'Parrillada Party',cap:60,p:25000,img:'img/exp-parrillada-party.jpg',afiche:'img/afiche-parrillada-party.jpg',inc:['Bebidas ilimitadas','Choripán de bienvenida','Variedad de carnes a la parrilla','Buffet de ensaladas y guarniciones','Pan de la casa y sopaipillas']}
 ];
 var G={p:15,n:0,f:'',o:'',m:'2026-12',pl:'a',e:{}},PLANES=[['a','Alojamiento','con desayuno',28000,42000],['m','Media pensión','desayuno + almuerzo o cena',43000,65000],['c','Pensión completa','desayuno + almuerzo + cena',56000,84000]];
 function gnn(pn){var nb=0,na=0;if(G.n&&G.f&&G.o)noches(G.f,G.o).forEach(function(d){if(tipoNoche(d)==='alta')na++;else nb++});return {nb:nb,na:na,lod:nb*pn[3]+na*pn[4]}}
 function gtot(){var pn=PLANES.filter(function(x){return x[0]===G.pl})[0],pl=pn[3],gl=gnn(pn),ex=0,nm=[];EXPS.forEach(function(x,i){if(G.e[i]){ex+=x.p;nm.push(x)}});var fr=Math.floor(G.p/10),py=G.p;return {pl:pl,lod:gl.lod,gl:gl,ex:ex,nm:nm,fr:fr,py:py,total:py*(gl.lod+ex)}}
-var EVB=[['a','13:00 a 16:00','Almuerzo'],['b','18:00 a 21:00','Tarde']],EVMAX=2,EVCERR=['2026-12-24','2026-12-25','2026-12-31','2027-01-01'],EVRES={'2026-12-05':{a:2,b:2},'2026-12-11':{a:1,b:0},'2026-12-12':{a:2,b:1},'2026-12-19':{a:2,b:2}};
+var EVB=[['a','13:00 a 16:00','Almuerzo'],['b','18:00 a 21:00','Tarde']],EVCERR=['2026-12-24','2026-12-25','2026-12-31','2027-01-01'],EVTOM={'2026-12-11|a|0':50,'2026-12-12|b|1':80,'2026-12-12|a|4':45};
+// Ejemplo de ocupación (personas ya reservadas por día|bloque|experiencia). El 5 y el 19 de dic las dos pueden estar llenas.
+['a','b'].forEach(function(b){[0,1,2,3,4].forEach(function(k){['2026-12-05','2026-12-19'].forEach(function(d){EVTOM[d+'|'+b+'|'+k]=EXPS[k].cap})})});
 G.ev={};
-function evFull(d,b){return ((EVRES[d]||{})[b]||0)>=EVMAX}
+function evTom(d,b,i){return EVTOM[d+'|'+b+'|'+i]||0}
+function evFull(d,b,i){return evTom(d,b,i)+G.p>EXPS[i].cap}
 function evUsado(i,d,b){return EXPS.some(function(x,k){return k!==i&&G.e[k]&&G.ev[k]&&G.ev[k].d===d&&G.ev[k].b===b})}
 function evOk(){return EXPS.every(function(x,i){return !G.e[i]||(G.ev[i]&&G.ev[i].d&&G.ev[i].b)})}
 function evResumen(){return EXPS.map(function(x,i){if(!G.e[i]||!G.ev[i]||!G.ev[i].d)return '';var b=EVB.filter(function(q){return q[0]===G.ev[i].b})[0];return '<div class="note">'+x.n+': <b>'+fmt(G.ev[i].d)+'</b>'+(b?' · '+b[1]+' h':'')+'</div>'}).join('')}
@@ -962,10 +965,10 @@ function gevDraw(){
     if(!G.e[i]){delete G.ev[i];return}
     var e=G.ev[i]=G.ev[i]||{d:'',b:''};
     if(e.d&&(e.d<min||e.d>max)){e.d='';e.b=''}
-    if(e.b&&e.d&&(evFull(e.d,e.b)||evUsado(i,e.d,e.b)))e.b='';
+    if(e.b&&e.d&&(evFull(e.d,e.b,i)||evUsado(i,e.d,e.b)))e.b='';
     h+='<div class="evx" data-i="'+i+'" style="margin-top:12px;padding-top:10px;border-top:1px solid #d8ccae"><b>'+x.n+'</b><div class="field"><label>Día de esta experiencia'+(G.n?' (dentro de tu estadía)':'')+'</label><input type="date" class="evd" min="'+min+'" max="'+max+'" value="'+e.d+'"></div>'
       +(!e.d?'<div class="note">Elige primero el día.</div>':EVCERR.indexOf(e.d)>-1?'<div class="note">Ese día no tomamos eventos. Elige otra fecha.</div>'
-      :'<div class="evbs">'+EVB.map(function(b){var fu=evFull(e.d,b[0]),us=evUsado(i,e.d,b[0]);return '<button type="button" class="evb'+(e.b===b[0]?' on':'')+'" data-b="'+b[0]+'"'+(fu||us?' disabled':'')+'><b>'+b[1]+' h</b><small>'+b[2]+' · '+(fu?'Completo':us?'Ya la usas en otra experiencia':'Disponible')+'</small></button>'}).join('')+'</div>')+'</div>'});
+      :'<div class="evbs">'+EVB.map(function(b){var fu=evFull(e.d,b[0],i),us=evUsado(i,e.d,b[0]);return '<button type="button" class="evb'+(e.b===b[0]?' on':'')+'" data-b="'+b[0]+'"'+(fu||us?' disabled':'')+'><b>'+b[1]+' h</b><small>'+b[2]+' · '+(fu?(evTom(e.d,b[0],i)>=EXPS[i].cap?'Completo':'Sin cupo para tu grupo'):us?'Ya la usas en otra experiencia':'Disponible')+'</small></button>'}).join('')+'</div>')+'</div>'});
   $('gevb').innerHTML=h;
   $('gevb').querySelectorAll('.evx').forEach(function(w){var i=+w.getAttribute('data-i');
     w.querySelector('.evd').onchange=function(){G.ev[i].d=this.value;G.ev[i].b='';gdraw()};

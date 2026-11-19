@@ -78,3 +78,6 @@ El 25 % de las experiencias rige hasta 30 minutos después de la hora de inicio;
 
 ## Experiencias en días distintos (Mauro, 19-nov)
 Una delegación puede comprar 2 o más experiencias en días distintos dentro de su estadía: cada experiencia pide su propio día y horario (13:00-16:00 o 18:00-21:00). Dos experiencias del mismo grupo no pueden compartir día y horario. El día de salida está permitido (pendiente de confirmar con Mauro). La API combinada ya acepta una fecha y hora por experiencia.
+
+## Capacidad de las experiencias (Mauro, 19-nov)
+Casino Party 80 personas por bloque, Pizza Libre 100 (y Pizza Libre + Casino 80, inferido). Varios grupos comparten el bloque mientras no superen la capacidad; la disponibilidad del sitio depende de cuántas personas ya hay y de si cabe el grupo. Un grupo sin alojamiento también puede reservar. Aplicado en producción como configuración.
