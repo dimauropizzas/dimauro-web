@@ -404,10 +404,10 @@ body.hasbar .chat-b{bottom:calc(var(--barh,90px) + 26px + env(safe-area-inset-bo
 .gnum{width:104px;text-align:center;font:inherit;font-size:20px;font-weight:700;border:0;background:transparent;color:inherit;-moz-appearance:textfield}.gnum::-webkit-outer-spin-button,.gnum::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.gnum:focus{outline:2px solid #b98f2f;border-radius:8px}
 #gmodo button{flex:1 1 220px;min-height:52px;padding:10px 12px;font-size:15px;line-height:1.2}
 #gmodo button,#gmodo button.ghost{background:#17402b;color:#fff;border:1.5px solid #17402b}
-#gmodo button:not(.ghost){box-shadow:inset 0 0 0 2px #c9a24a}
 .gpick .evpick.ghost{background:#fffaf0;color:#17402b;border:1.5px solid #17402b}
 #gmodo button,.gpick .evpick{transition:box-shadow .12s}
 #gmodo button:hover,.gpick .evpick:hover:not(:disabled),#gmodo button:focus-visible,.gpick .evpick:focus-visible,#gmodo button:active,.gpick .evpick:active:not(:disabled){box-shadow:inset 0 0 0 2px #c9a24a;outline:none}
+.card.sec{scroll-margin-top:150px}
 .gpick{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:8px}
 .gpick .evpick{grid-column:span 2;padding:10px 8px!important;font-size:15px!important;line-height:1.2;min-height:52px;display:flex;align-items:center;justify-content:center;text-align:center}
 .gpick .evpick:nth-child(n+4){grid-column:span 3}
@@ -1078,7 +1078,7 @@ function gModo(m){
   $('gmodon').textContent=ex?'Fiesta para tu grupo sin alojarte en la casa: desde 15 personas hasta el máximo de cada experiencia.':'Alojamiento en la casa para grupos de 15 a 24 personas, y puedes sumar experiencias dentro de tu estadía.';
   $('gtope').textContent='';
   gFix();gcalDraw();gdraw()}
-document.querySelectorAll('#gmodo button').forEach(function(b){b.onclick=function(){gModo(b.getAttribute('data-m'))}});
+document.querySelectorAll('#gmodo button').forEach(function(b){b.onclick=function(){gModo(b.getAttribute('data-m'));var t=$('gpv').closest('.card');if(t&&t.scrollIntoView)t.scrollIntoView({behavior:'smooth',block:'start'});b.blur()}});
 function gMsgTope(){var ex=G.modo==='exp';return 'Nuestras capacidades por evento: '+EXPS.map(function(x){return x.n+' '+x.cap}).join(' · ')+' personas.'+(ex?'':' Para alojarte en la casa, hasta 24 personas: si tu grupo es más grande, elige «Solo experiencias».')+' Si necesitas más, <a href="'+wa('Hola, somos un grupo de ___ personas y queremos consultar por el evento.')+'" target="_blank" rel="noopener">escríbenos por WhatsApp</a>.'}
 $('gpv').oninput=function(){var v=parseInt(this.value,10);
   if(v>gTope()){$('gtope').innerHTML=gMsgTope();return}
