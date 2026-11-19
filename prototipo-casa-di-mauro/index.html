@@ -916,7 +916,7 @@ var EXPS=[
 var G={p:15,n:0,f:'',o:'',m:'2026-12',pl:'a',e:{}},PLANES=[['a','Alojamiento','con desayuno',28000,42000],['m','Media pensión','desayuno + almuerzo o cena',43000,65000],['c','Pensión completa','desayuno + almuerzo + cena',56000,84000]];
 function gnn(pn){var nb=0,na=0;if(G.n&&G.f&&G.o)noches(G.f,G.o).forEach(function(d){if(tipoNoche(d)==='alta')na++;else nb++});return {nb:nb,na:na,lod:nb*pn[3]+na*pn[4]}}
 function gtot(){var pn=PLANES.filter(function(x){return x[0]===G.pl})[0],pl=pn[3],gl=gnn(pn),ex=0,nm=[];EXPS.forEach(function(x,i){if(G.e[i]){ex+=x.p;nm.push(x)}});var fr=Math.floor(G.p/10),py=G.p-fr;return {pl:pl,lod:gl.lod,gl:gl,ex:ex,nm:nm,fr:fr,py:py,total:py*(gl.lod+ex)}}
-var EVB=[['a','13:00 a 16:00','Almuerzo'],['b','18:00 a 21:00','Tarde']],EVMAX=2,EVRES={'2026-12-05':{a:2,b:2},'2026-12-11':{a:1,b:0},'2026-12-12':{a:2,b:1},'2026-12-19':{a:2,b:2}};
+var EVB=[['a','13:00 a 16:00','Almuerzo'],['b','18:00 a 21:00','Tarde']],EVMAX=2,EVCERR=['2026-12-24','2026-12-25','2026-12-31','2027-01-01'],EVRES={'2026-12-05':{a:2,b:2},'2026-12-11':{a:1,b:0},'2026-12-12':{a:2,b:1},'2026-12-19':{a:2,b:2}};
 G.ed='';G.eb='';
 function evFull(d,b){return ((EVRES[d]||{})[b]||0)>=EVMAX}
 function gevDraw(){
@@ -926,7 +926,7 @@ function gevDraw(){
   if(G.ed&&(G.ed<d.min||G.ed>d.max)){G.ed='';G.eb=''}
   d.value=G.ed;
   if(G.eb&&G.ed&&evFull(G.ed,G.eb))G.eb='';
-  $('gevb').innerHTML=G.ed?EVB.map(function(b){var fu=evFull(G.ed,b[0]);return '<button type="button" class="evb'+(G.eb===b[0]?' on':'')+'" data-b="'+b[0]+'"'+(fu?' disabled':'')+'><b>'+b[1]+' h</b><small>'+b[2]+' · '+(fu?'Completo':'Disponible')+'</small></button>'}).join(''):'<div class="note">Elige primero el día.</div>';
+  $('gevb').innerHTML=G.ed&&EVCERR.indexOf(G.ed)>-1?'<div class="note">Ese día no tomamos eventos. Elige otra fecha.</div>':G.ed?EVB.map(function(b){var fu=evFull(G.ed,b[0]);return '<button type="button" class="evb'+(G.eb===b[0]?' on':'')+'" data-b="'+b[0]+'"'+(fu?' disabled':'')+'><b>'+b[1]+' h</b><small>'+b[2]+' · '+(fu?'Completo':'Disponible')+'</small></button>'}).join(''):'<div class="note">Elige primero el día.</div>';
   $('gevb').querySelectorAll('.evb').forEach(function(x){x.onclick=function(){G.eb=x.getAttribute('data-b');gdraw()}});
   $('gevn').innerHTML='¿Prefieres otro horario? <a href="'+wa('Hola, quiero consultar otro horario para una experiencia de grupo. Somos ___ personas y el día sería ___.')+'" target="_blank" rel="noopener">Consúltalo por WhatsApp</a>.'}
 $('gevd').onchange=function(){G.ed=$('gevd').value;G.eb='';gdraw()};
@@ -942,10 +942,10 @@ function gsum(){
   var t=gtot(),f=t.fr,pn=PLANES.filter(function(x){return x[0]===G.pl})[0];
   var rows=[];if(G.n)rows.push([pn[1]+' · '+fmt(G.f)+' al '+fmt(G.o)+' ('+G.n+' noche'+(G.n>1?'s':'')+') × '+t.py+' personas que pagan',t.py*t.lod]);
   t.nm.forEach(function(x){rows.push([x.n+' × '+t.py+' personas que pagan',t.py*x.p])});
-  var ab=G.n?t.py*(tipoNoche(G.f)==='alta'?PLANES[0][4]:PLANES[0][3]):t.total,mb=$('mbox');
+  var ab=G.n?t.py*(tipoNoche(G.f)==='alta'?PLANES[0][4]:PLANES[0][3]):Math.round(t.total*0.5),mb=$('mbox');
   function draw(){
     mb.innerHTML='<h3 style="font-family:var(--serif)">Tu paquete</h3><div class="scroll"><table>'+rows.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+CLP(r[1])+'</td></tr>'}).join('')+'</table></div>'+
-    '<div class="good"><div>Valor total: <b>'+CLP(t.total)+'</b></div><div>Abono hoy ('+(G.n?'primera noche de alojamiento':'experiencias')+'): <b>'+CLP(ab)+'</b></div><div>Saldo al llegar: <b>'+CLP(t.total-ab)+'</b></div></div>'+
+    '<div class="good"><div>Valor total: <b>'+CLP(t.total)+'</b></div><div>Abono hoy ('+(G.n?'primera noche de alojamiento':'50 % de las experiencias')+'): <b>'+CLP(ab)+'</b></div><div>Saldo '+(G.n?'al llegar':'el día del evento')+': <b>'+CLP(t.total-ab)+'</b></div></div>'+
     (t.nm.length?'<div class="note">Evento: <b>'+fmt(G.ed)+'</b> · '+EVB.filter(function(b){return b[0]===G.eb})[0][1]+' h</div>':'')+
     (f?'<div class="note">Grupo de '+G.p+' personas: pagan '+t.py+' y '+f+' va'+(f>1?'n':'')+' liberada'+(f>1?'s':'')+' Ya está descontado.</div>':'')+
     '<div class="field"><label for="gn">Nombre o institución</label><input id="gn"></div><div class="field"><label for="gm">Correo</label><input id="gm" type="email"></div><div class="field"><label for="gw">WhatsApp</label><input id="gw"></div>'+
@@ -956,7 +956,7 @@ function gsum(){
       var cod='CDM-'+Math.random().toString(36).slice(2,7).toUpperCase();
       mb.innerHTML='<div class="flowbar">Flow · modo de prueba</div><p><b>Pago de '+CLP(ab)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Flow y la reserva se confirma solo cuando Flow lo avisa.</p><button class="btn" id="gok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="gv" type="button">Volver</button>';
       $('gv').onclick=draw;
-      $('gok').onclick=function(){mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva confirmada (demo)</h3><div class="good">Código '+cod+'. Valor total '+CLP(t.total)+'. Abono '+CLP(ab)+'. Saldo al llegar: '+CLP(t.total-ab)+'.</div><p class="note">Recibirías la confirmación por correo y WhatsApp. No se cobró ni se envió nada.</p><button class="btn" id="gc3" type="button">Cerrar</button>';$('gc3').onclick=closeModal};
+      $('gok').onclick=function(){mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva confirmada (demo)</h3><div class="good">Código '+cod+'. Valor total '+CLP(t.total)+'. Abono '+CLP(ab)+'. Saldo '+(G.n?'al llegar':'el día del evento')+': '+CLP(t.total-ab)+'.</div><p class="note">Recibirías la confirmación por correo y WhatsApp. No se cobró ni se envió nada.</p><button class="btn" id="gc3" type="button">Cerrar</button>';$('gc3').onclick=closeModal};
     };
   }
   draw();openModal()}
