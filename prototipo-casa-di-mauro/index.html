@@ -915,7 +915,7 @@ var EXPS=[
 ];
 var G={p:15,n:0,f:'',o:'',m:'2026-12',pl:'a',e:{}},PLANES=[['a','Alojamiento','con desayuno',28000,42000],['m','Media pensión','desayuno + almuerzo o cena',43000,65000],['c','Pensión completa','desayuno + almuerzo + cena',56000,84000]];
 function gnn(pn){var nb=0,na=0;if(G.n&&G.f&&G.o)noches(G.f,G.o).forEach(function(d){if(tipoNoche(d)==='alta')na++;else nb++});return {nb:nb,na:na,lod:nb*pn[3]+na*pn[4]}}
-function gtot(){var pn=PLANES.filter(function(x){return x[0]===G.pl})[0],pl=pn[3],gl=gnn(pn),ex=0,nm=[];EXPS.forEach(function(x,i){if(G.e[i]){ex+=x.p;nm.push(x)}});var fr=Math.floor(G.p/10),py=G.p-fr;return {pl:pl,lod:gl.lod,gl:gl,ex:ex,nm:nm,fr:fr,py:py,total:py*(gl.lod+ex)}}
+function gtot(){var pn=PLANES.filter(function(x){return x[0]===G.pl})[0],pl=pn[3],gl=gnn(pn),ex=0,nm=[];EXPS.forEach(function(x,i){if(G.e[i]){ex+=x.p;nm.push(x)}});var fr=Math.floor(G.p/10),py=G.p;return {pl:pl,lod:gl.lod,gl:gl,ex:ex,nm:nm,fr:fr,py:py,total:py*(gl.lod+ex)}}
 var EVB=[['a','13:00 a 16:00','Almuerzo'],['b','18:00 a 21:00','Tarde']],EVMAX=2,EVCERR=['2026-12-24','2026-12-25','2026-12-31','2027-01-01'],EVRES={'2026-12-05':{a:2,b:2},'2026-12-11':{a:1,b:0},'2026-12-12':{a:2,b:1},'2026-12-19':{a:2,b:2}};
 G.ed='';G.eb='';
 function evFull(d,b){return ((EVRES[d]||{})[b]||0)>=EVMAX}
@@ -936,18 +936,18 @@ function gdraw(){
   $('gplan').querySelectorAll('input').forEach(function(r){r.onchange=function(){G.pl=r.value;gdraw()}});
   EXPS.forEach(function(x,i){var bt=$('exa'+i);if(!bt)return;bt.textContent=G.e[i]?'Quitar':'Agregar';bt.parentNode.classList.toggle('sel',!!G.e[i])});
   gevDraw();var t=gtot(),okEv=!t.nm.length||(G.ed&&G.eb);
-  $('gbar').innerHTML='<div class="sg"><span>Tu paquete · '+G.p+' personas'+(t.fr?' ('+t.fr+' liberada'+(t.fr>1?'s':'')+')':'')+(G.n?' · '+G.n+' noche'+(G.n>1?'s':''):'')+(t.nm.length?' · '+t.nm.length+' experiencia'+(t.nm.length>1?'s':''):'')+'</span><span class="tt">'+CLP(t.total)+'</span></div><div class="sr"><button class="btn" id="gcot" type="button"'+(t.total&&okEv?'':' disabled')+'>Reservar</button></div>';
+  $('gbar').innerHTML='<div class="sg"><span>Tu paquete · '+G.p+' personas'+(G.n?' · '+G.n+' noche'+(G.n>1?'s':''):'')+(t.nm.length?' · '+t.nm.length+' experiencia'+(t.nm.length>1?'s':''):'')+'</span><span class="tt">'+CLP(t.total)+'</span></div><div class="sr"><button class="btn" id="gcot" type="button"'+(t.total&&okEv?'':' disabled')+'>Reservar</button></div>';
   $('gcot').onclick=gsum;syncBar()}
 function gsum(){
   var t=gtot(),f=t.fr,pn=PLANES.filter(function(x){return x[0]===G.pl})[0];
-  var rows=[];if(G.n)rows.push([pn[1]+' · '+fmt(G.f)+' al '+fmt(G.o)+' ('+G.n+' noche'+(G.n>1?'s':'')+') × '+t.py+' personas que pagan',t.py*t.lod]);
-  t.nm.forEach(function(x){rows.push([x.n+' × '+t.py+' personas que pagan',t.py*x.p])});
+  var rows=[];if(G.n)rows.push([pn[1]+' · '+fmt(G.f)+' al '+fmt(G.o)+' ('+G.n+' noche'+(G.n>1?'s':'')+') × '+t.py+' personas',t.py*t.lod]);
+  t.nm.forEach(function(x){rows.push([x.n+' × '+t.py+' personas',t.py*x.p])});
   var ab=G.n?t.py*(tipoNoche(G.f)==='alta'?PLANES[0][4]:PLANES[0][3]):Math.round(t.total*0.5),mb=$('mbox');
   function draw(){
     mb.innerHTML='<h3 style="font-family:var(--serif)">Tu paquete</h3><div class="scroll"><table>'+rows.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+CLP(r[1])+'</td></tr>'}).join('')+'</table></div>'+
     '<div class="good"><div>Valor total: <b>'+CLP(t.total)+'</b></div><div>Abono hoy ('+(G.n?'primera noche de alojamiento':'50 % de las experiencias')+'): <b>'+CLP(ab)+'</b></div><div>Saldo '+(G.n?'al llegar':'el día del evento')+': <b>'+CLP(t.total-ab)+'</b></div></div>'+
     (t.nm.length?'<div class="note">Evento: <b>'+fmt(G.ed)+'</b> · '+EVB.filter(function(b){return b[0]===G.eb})[0][1]+' h</div>':'')+
-    (f?'<div class="note">Grupo de '+G.p+' personas: pagan '+t.py+' y '+f+' va'+(f>1?'n':'')+' liberada'+(f>1?'s':'')+' Ya está descontado.</div>':'')+
+    (f?'<div class="note">Se libera una persona por cada 10 pagados: en tu grupo '+(f>1?'son '+f:'es 1')+'. Se descuentan '+CLP(f*(t.lod+t.ex))+' del saldo al recibir al grupo, en el local.</div>':'')+
     '<div class="field"><label for="gn">Nombre o institución</label><input id="gn"></div><div class="field"><label for="gm">Correo</label><input id="gm" type="email"></div><div class="field"><label for="gw">WhatsApp</label><input id="gw"></div>'+
     POLDEV(0)+
     '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="ggo" type="button">Pagar abono con Flow</button><button class="btn ghost" id="cl4" type="button">Cerrar</button></div>';

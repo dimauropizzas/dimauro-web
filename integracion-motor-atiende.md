@@ -43,7 +43,7 @@ Atiende ya tiene dos motores que no se hablan entre sí: **alojamiento por unida
 6. API pública de alojamiento: no existe.
 
 ## Propuesta en pasos
-1. **Confirmar con Mauro y Rayén** qué usa hoy Casa Di Mauro (tenant 45): unidades, cupos o ambos, y si el interruptor de alojamiento está encendido. El repo no muestra el estado real; es producción.
+1. **Dar de alta Casa Di Mauro como negocio** en Atiende. Hoy no hay motor conectado: el tenant 45 es la pizzería y el alojamiento de prueba es el tenant 4. Existen además dos tenants de Casa Di Mauro (uno inactivo) sin auditar (`docs/PENDIENTES_ATIENDE.md`, TEN-01): no reutilizarlos ni tocarlos sin esa auditoría. Primero en staging.
 2. **Experiencias primero** (camino más corto): dar de alta el negocio en cupos con 2 sectores como recursos, los 4 productos, el abono del 50 % y las fechas cerradas. La web llama a la API desde su servidor.
 3. **Alojamiento:** construir una API pública equivalente (cotizar, disponibilidad, reservar, link de pago) sobre las funciones que ya existen, copiando el patrón de cupos.
 4. **Paquetes y liberados:** tabla de paquetes y regla de liberados en la cotización de grupos.
@@ -54,7 +54,17 @@ Atiende ya tiene dos motores que no se hablan entre sí: **alojamiento por unida
 - Es producción de un cliente real sin prueba de punta a punta.
 - Dos sistemas de pago y estados en paralelo.
 - Queda abierto un hallazgo de seguridad documentado como S02 (lectura sin filtro con la credencial de servicio).
-- La reapertura es el 2 de diciembre; lo más realista para esa fecha es la parte de experiencias y mantener el resto como consulta por WhatsApp.
+- La reapertura es el 2 de diciembre. **Decisión de Mauro: no se usa WhatsApp como respaldo del alojamiento; todo debe funcionar en la web.** Eso exige la API de alojamiento, los paquetes y la prueba real de Flow antes de esa fecha.
 
 ## Qué no hice
 No modifiqué `atiende-app`. Solo lo clone para leerlo. Tampoco conecté la web con ninguna API.
+
+## Decisiones de Mauro (19-nov)
+- **Choques de fechas:** una estadía no puede cruzar las fechas de las escapadas de Navidad (noches 23 a 26 dic) ni de Año Nuevo (30 dic a 2 ene) salvo comprando la escapada. Ya funciona así en el prototipo.
+- **Personas liberadas (1 por cada 10 pagados):** no entran al motor. Se cobra a todo el grupo y se descuentan del saldo al recibir a la delegación, en el local. En el prototipo ya figura como acotación con el monto.
+- **Experiencias:** abono 50 % online y 50 % el día del evento en el local; bloques 13:00-16:00 y 18:00-21:00; 2 grupos por bloque; sin eventos 24, 25 y 31 dic y 1 ene.
+- **Orden de construcción:** experiencias primero, luego API pública de alojamiento, paquetes de noches fijas, calendario unificado y prueba real de Flow antes del 2 de diciembre.
+- **Conflicto por resolver:** la regla de cancelación de referencia que Atiende tiene para Casa Di Mauro (anticipo de una noche, devolución con 15 días) no coincide con la de Mauro (anticipo 50 %, devolución por tramos de 72, 48 y 24 horas).
+
+## Corrección
+La primera versión de este informe decía que el tenant 45 era Casa Di Mauro alojamiento. Es la pizzería. Corregido arriba.
