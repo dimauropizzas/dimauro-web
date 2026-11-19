@@ -282,8 +282,8 @@ body.hasbar .chat-b{bottom:calc(var(--barh,90px) + 26px + env(safe-area-inset-bo
 .sbar .sg select{padding:8px;border:1.5px solid #b8923a;border-radius:10px;background:#fff;font:inherit;min-width:140px}
 
 .mealbox{border:1px solid #d9cfae;border-radius:12px;padding:12px;margin:12px 0;background:#fffdf6}
-.dayrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid #eee}.dayrow>b{min-width:96px;font-size:15px}.dayrow select{flex:1 1 150px;padding:9px;border:1.5px solid #9dbba3;border-radius:10px;background:#fff;font:inherit;font-size:14px;min-width:0}.dayrow .dnum{flex:0 0 92px}
-@media(max-width:560px){.dayrow>b{flex:0 0 100%;min-width:0}.dayrow select{flex:2 1 0;font-size:13px;padding:9px 6px}.dayrow .dnum{flex:0 0 86px}}
+.dayrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid #eee}.dayrow>b{min-width:96px;font-size:15px}.dayrow select{flex:1 1 150px;padding:9px;border:1.5px solid #9dbba3;border-radius:10px;background:#fff;font:inherit;font-size:14px;min-width:0}.dayrow .mrowd{flex:0 0 100%;display:flex;align-items:center;gap:8px}.dayrow .mrowd .ml{flex:0 0 74px;font-size:14px;color:#17402b}.dayrow .mrowd select{flex:1 1 0;min-width:0;width:0}.dayrow .mrowd select.dln,.dayrow .mrowd select.dcn{flex:0 0 92px;width:92px}
+@media(max-width:560px){.dayrow>b{flex:0 0 100%;min-width:0}.dayrow select{font-size:13px;padding:9px 6px}.dayrow .mrowd select.dln,.dayrow .mrowd select.dcn{flex:0 0 86px;width:86px}.dayrow .mrowd .ml{flex:0 0 64px}}
 .nch{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 2px}
 .nc{padding:5px 10px;border-radius:999px;border:1.5px solid #17402b;background:#fffaf0;color:#17402b;font:inherit;font-size:13px;cursor:pointer}
 .nc.on{background:#17402b;color:#fff}
@@ -639,7 +639,8 @@ var ROOMS=[
 ];
 var PACKS={nav:{nombre:'Escapada Navidad',desde:'2026-12-23',hasta:'2026-12-27',cena:false},ny:{nombre:'Escapada Año Nuevo',desde:'2026-12-30',hasta:'2027-01-03',cena:true}};
 var CENA=50000, MP=15000, PC=28000, BL=15000;
-var PTIPO={mp:['Media pensión',MP],pc:['Pensión completa',PC],bl:['Box lunch para salir',BL]};
+function cdmDia(q){var L=(q&&q.l&&q.l!=='n')?(q.ln||0):0,C=(q&&q.c==='c')?(q.cn||0):0,pr=Math.min(L,C);return {L:L,C:C,v:pr*PC+(L+C-2*pr)*MP}}
+function cdmTxt(q){var x=cdmDia(q),t=[];if(x.L)t.push((q.l==='b'?'box lunch':'almuerzo')+' '+x.L);if(x.C)t.push('cena '+x.C);return t.join(' + ')}
 var LIB={nav:{m:false,t:true,r:true},ny:{m:false,t:false,r:false}};
 var BLOQ={'2026-12-12':['t'],'2026-12-13':['t']};
 function tipoNoche(iso){
@@ -742,10 +743,8 @@ function calc(sel,ns,tipos,opt){
   var items=[],tot=0,nn=ns.length;
   ROOMS.forEach(function(r){var k=sel[r.id]||0;if(!k)return;var a=estadia(r,tipos)*k;items.push([(k>1?k+' × ':'')+r.nombre+' ('+nn+' noche'+(nn>1?'s':'')+', desayuno incluido)',a]);tot+=a});
   var habs=tot;
-  var diasP=ns.concat([ISO(new Date(FEC(ns[ns.length-1]).getTime()+864e5))]),gr={};
-  diasP.forEach(function(d){var q=opt.plan&&opt.plan[d];if(!q||!q.t||q.t==='n'||!q.n)return;var k=q.t+'|'+q.n;(gr[k]=gr[k]||[]).push(d)});
-  ['mp','pc','bl'].forEach(function(t){Object.keys(gr).filter(function(k){return k.split('|')[0]===t}).forEach(function(k){var n=+k.split('|')[1],ds=gr[k],v=PTIPO[t][1]*n*ds.length;
-    items.push([PTIPO[t][0]+' ('+n+' pers. × '+ds.length+' día'+(ds.length>1?'s':'')+': '+ds.map(function(d){return fmt(d)}).join(', ')+')',v]);tot+=v})});
+  var diasP=ns.concat([ISO(new Date(FEC(ns[ns.length-1]).getTime()+864e5))]);
+  diasP.forEach(function(d){var q=opt.plan&&opt.plan[d],x=cdmDia(q);if(!x.v)return;items.push(['Comidas '+fmt(d)+': '+cdmTxt(q)+' (pers.)',x.v]);tot+=x.v});
   if(opt.nye){var v4=CENA*opt.nye;items.push(['Cena de Año Nuevo ('+opt.nye+' pers.)',v4]);tot+=v4}
   var pend=0;ACT.forEach(function(a){var k=opt[a.id]||0;if(!k)return;if(a.p){var va=a.p*k;items.push([a.n+' ('+k+' pers.)',va]);tot+=va}else{items.push([a.n+' ('+k+' pers.)','Valor por confirmar']);pend++}});
   var prim=0;ROOMS.forEach(function(r){prim+=(sel[r.id]||0)*precioNoche(r,tipos[0])});
@@ -764,11 +763,15 @@ function openCheckout(){
   openModal();
   function stp(k,t,sub,mx){return '<div class="mrow2"><div><b>'+t+'</b><div class="note">'+sub+'</div></div><div class="mstp" data-k="'+k+'" data-max="'+mx+'"><button type="button" class="mn" aria-label="Quitar">−</button><b class="q">'+opt[k]+'</b><button type="button" class="mas" aria-label="Agregar">+</button></div></div>'}
   var dias=ns.concat([ISO(new Date(FEC(ns[ns.length-1]).getTime()+864e5))]);
-  function optT(d,sal,v){var o=[['n','Sin comidas'],['mp',sal?'Almuerzo (media pensión)':'Media pensión'],['bl','Box lunch para salir']];if(!sal)o.splice(2,0,['pc','Pensión completa']);return o.map(function(x){return '<option value="'+x[0]+'"'+(v===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join('')}
-  function planHtml(g){var h='<div class="note" style="margin:8px 0">Desde Casa Di Mauro puedes recorrer la zona. Para cada día elige si comes en la casa, si te llevas un box lunch para salir o si no necesitas comidas; así lo dejamos listo. El box lunch se gestiona el día previo.</div>';
-    if(dias.length>2)h+='<div class="dayrow"><b>Mismo plan todos los días</b><select id="dall"><option value="">Elegir…</option><option value="n">Sin comidas</option><option value="mp">Media pensión</option><option value="pc">Pensión completa</option><option value="bl">Box lunch para salir</option></select></div>';
-    dias.forEach(function(d,ix){var sal=ix===dias.length-1,q=opt.plan[d]||{t:'n',n:g};
-      h+='<div class="dayrow"><b>'+fmt(d)+(sal?' · salida':'')+'</b><select class="dsel" data-d="'+d+'" aria-label="Comidas '+fmt(d)+'">'+optT(d,sal,q.t)+'</select>'+(q.t!=='n'?'<select class="dnum" data-d="'+d+'" aria-label="Personas '+fmt(d)+'">'+Array.apply(null,Array(g)).map(function(_,i){return '<option value="'+(i+1)+'"'+(q.n===i+1?' selected':'')+'>'+(i+1)+' pers.</option>'}).join('')+'</select><div class="note" style="flex:0 0 100%;margin:0">'+CLP(PTIPO[q.t][1])+' por persona · '+q.n+' pers. = <b>'+CLP(PTIPO[q.t][1]*q.n)+'</b>'+(q.t==='bl'?' · se gestiona el día previo':'')+'</div>':'')+'</div>'});
+  function oh(list,v){return list.map(function(x){return '<option value="'+x[0]+'"'+(v===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join('')}
+  function nh(cls,d,g,v){return '<select class="'+cls+'" data-d="'+d+'" aria-label="Personas">'+Array.apply(null,Array(g)).map(function(_,i){return '<option value="'+(i+1)+'"'+(v===i+1?' selected':'')+'>'+(i+1)+' pers.</option>'}).join('')+'</select>'}
+  function planHtml(g){var h='<div class="note" style="margin:8px 0">Desde Casa Di Mauro puedes recorrer la zona. Para cada día elige tu almuerzo (en la casa o box lunch para salir) y tu cena; puedes pedir las dos cosas el mismo día. Almuerzo o cena: $15.000 por persona; almuerzo y cena el mismo día: $28.000. El box lunch se gestiona el día previo.</div>';
+    h+='<div class="dayrow"><b>Mismo plan todos los días</b><select id="dall"><option value="">Elegir…</option><option value="n">Sin comidas</option><option value="cc">Almuerzo en la casa + cena</option><option value="bc">Box lunch + cena</option><option value="c0">Solo almuerzo en la casa</option><option value="b0">Solo box lunch</option><option value="0c">Solo cena</option></select></div>';
+    dias.forEach(function(d,ix){var sal=ix===dias.length-1,q=opt.plan[d]||{l:'n',c:'n'},x=cdmDia(q);
+      h+='<div class="dayrow"><b>'+fmt(d)+(sal?' · salida':'')+'</b>'+
+        '<div class="mrowd"><span class="ml">Almuerzo</span><select class="dl" data-d="'+d+'" aria-label="Almuerzo '+fmt(d)+'">'+oh([['n','Sin almuerzo'],['c','En la casa'],['b','Box lunch']],q.l||'n')+'</select>'+(q.l&&q.l!=='n'?nh('dln',d,g,q.ln||g):'')+'</div>'+
+        (sal?'':'<div class="mrowd"><span class="ml">Cena</span><select class="dc" data-d="'+d+'" aria-label="Cena '+fmt(d)+'">'+oh([['n','Sin cena'],['c','En la casa']],q.c||'n')+'</select>'+(q.c==='c'?nh('dcn',d,g,q.cn||g):'')+'</div>')+
+        (x.v?'<div class="note" style="flex:0 0 100%;margin:0">'+cdmTxt(q)+' = <b>'+CLP(x.v)+'</b>'+(q.l==='b'?' · el box lunch se gestiona el día previo':'')+'</div>':'')+'</div>'});
     return h}
   function keep(){['gn','gm','gw'].forEach(function(i){if($(i))opt.f[i]=$(i).value})}
   function draw(){
@@ -787,10 +790,14 @@ function openCheckout(){
     POLDEV(pack)+
     '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="go" type="button"'+(g?'':' disabled')+'>'+(LIVE.on()?'Pagar abono con Khipu':'Pagar abono con Khipu')+'</button><button class="btn ghost" id="cl" type="button">Cerrar</button></div>';
     ['gn','gm','gw'].forEach(function(i){if($(i)&&opt.f[i])$(i).value=opt.f[i]});
-    $('gq').onchange=function(){keep();opt.g=+$('gq').value||0;Object.keys(opt.plan).forEach(function(d){if(opt.plan[d].n>opt.g)opt.plan[d].n=opt.g});if(opt.nye>opt.g)opt.nye=0;ACT.forEach(function(a){if(opt[a.id]>opt.g)opt[a.id]=0});draw()};
-    mb.querySelectorAll('.dsel').forEach(function(e){e.onchange=function(){keep();var d=e.getAttribute('data-d');opt.plan[d]={t:e.value,n:(opt.plan[d]&&opt.plan[d].n)||opt.g};draw()}});
-    mb.querySelectorAll('.dnum').forEach(function(e){e.onchange=function(){keep();var d=e.getAttribute('data-d');opt.plan[d].n=+e.value;draw()}});
-    var da=$('dall');if(da)da.onchange=function(){keep();if(!da.value)return;dias.forEach(function(d,ix){var sal=ix===dias.length-1,t=da.value;if(sal&&t==='pc')t='mp';opt.plan[d]={t:t,n:opt.g}});draw()};
+    $('gq').onchange=function(){keep();opt.g=+$('gq').value||0;Object.keys(opt.plan).forEach(function(d){var q=opt.plan[d];if(q.ln>opt.g)q.ln=opt.g;if(q.cn>opt.g)q.cn=opt.g});if(opt.nye>opt.g)opt.nye=0;ACT.forEach(function(a){if(opt[a.id]>opt.g)opt[a.id]=0});draw()};
+    function pl(d){return opt.plan[d]||(opt.plan[d]={l:'n',c:'n'})}
+    mb.querySelectorAll('.dl').forEach(function(e){e.onchange=function(){keep();var q=pl(e.getAttribute('data-d'));q.l=e.value;if(e.value!=='n'&&!q.ln)q.ln=opt.g;draw()}});
+    mb.querySelectorAll('.dc').forEach(function(e){e.onchange=function(){keep();var q=pl(e.getAttribute('data-d'));q.c=e.value;if(e.value!=='n'&&!q.cn)q.cn=opt.g;draw()}});
+    mb.querySelectorAll('.dln').forEach(function(e){e.onchange=function(){keep();pl(e.getAttribute('data-d')).ln=+e.value;draw()}});
+    mb.querySelectorAll('.dcn').forEach(function(e){e.onchange=function(){keep();pl(e.getAttribute('data-d')).cn=+e.value;draw()}});
+    var da=$('dall');if(da)da.onchange=function(){keep();var v=da.value;if(!v)return;dias.forEach(function(d,ix){var sal=ix===dias.length-1,q={l:'n',c:'n'};
+      if(v!=='n'){if(v[0]==='c')q.l='c';if(v[0]==='b')q.l='b';if(v[1]==='c'&&!sal)q.c='c';if(q.l!=='n')q.ln=opt.g;if(q.c==='c')q.cn=opt.g}opt.plan[d]=q});draw()};
     mb.querySelectorAll('.mstp').forEach(function(e){var k=e.getAttribute('data-k'),mx=+e.getAttribute('data-max');
       e.querySelector('.mas').onclick=function(){if(opt[k]<mx){keep();opt[k]++;draw()}};
       e.querySelector('.mn').onclick=function(){if(opt[k]>0){keep();opt[k]--;draw()}}});
@@ -805,7 +812,7 @@ function openCheckout(){
         hab.forEach(function(h,ix){var left=hab.length-ix-1,p=Math.max(1,Math.min(h.cap,rest-left));h.personas=p;rest-=p;delete h.cap});
         var clave='web-'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
         var body={contacto:{nombre:nom,telefono:tel},habitaciones:hab};
-        if(window.CDM_CONFIG&&CDM_CONFIG.comidasApi){var cm=[];Object.keys(opt.plan||{}).sort().forEach(function(d){var q=opt.plan[d];if(q&&q.t&&q.t!=='n'&&q.n)cm.push({fecha:d,tipo:({mp:'media_pension',pc:'pension_completa',bl:'box_lunch'})[q.t],personas:q.n})});if(cm.length)body.comidas=cm}
+        if(window.CDM_CONFIG&&CDM_CONFIG.comidasApi){var cm=[];Object.keys(opt.plan||{}).sort().forEach(function(d){var q=opt.plan[d];if(!q)return;if(q.l&&q.l!=='n'&&q.ln)cm.push({fecha:d,comida:'almuerzo',modalidad:q.l==='b'?'box_lunch':'casa',personas:q.ln});if(q.c==='c'&&q.cn)cm.push({fecha:d,comida:'cena',modalidad:'casa',personas:q.cn})});if(cm.length)body.comidas=cm}
         if(pack)body.paquete=pack==='ny'?'ano_nuevo':'navidad';else{body.entrada=ci;body.salida=co}
         LIVE.token().then(function(tk){return LIVE.api('POST','/reservas',body,clave,tk?{'X-Turnstile-Token':tk}:null)}).then(function(j){
           if(!j.ok){var m=mb.querySelector('.livemsg')||document.createElement('div');m.className='warn livemsg';m.textContent=LIVE.msg(j.codigo);if(!m.parentNode)$('go').parentNode.insertBefore(m,$('go'));$('go').disabled=false;$('go').textContent='Pagar abono con Khipu';return}
