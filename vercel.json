@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/mesas/:path*", "destination": "https://atiende-bot-production-4757.up.railway.app/mesas/:path*" }
+  ]
+}
