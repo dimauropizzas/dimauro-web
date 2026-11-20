@@ -1,0 +1,153 @@
+<title>App del equipo Casa Di Mauro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap">
+<style>
+/* Concepto: app de bolsillo con dos capas. «Hoy» para planificar, «Sala» para reaccionar en segundos, «Equipo» para hablarse. */
+:root{--bg:#f2f0ea;--surface:#fffefb;--surface2:#f6f3ea;--fg:#16231c;--muted:#5d6a62;--line:#ddd6c3;--brand:#17402b;--brand-fg:#fff;--gold:#a8832f;--gold-bg:#f3e8c9;
+--ok:#1d7a46;--ok-bg:#dcefe2;--warn:#9a5b00;--warn-bg:#fbe8c4;--bad:#a52c2c;--bad-bg:#f8dcdc;--info:#245a9a;--info-bg:#dce8f6;--serif:'Playfair Display',Georgia,serif;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1713;--surface:#17211b;--surface2:#1d2923;--fg:#eef1ec;--muted:#a3b0a8;--line:#2d3b33;--brand:#2f8a5b;--brand-fg:#06130c;--gold:#d8b45a;--gold-bg:#3a3118;--ok:#6fd096;--ok-bg:#173524;--warn:#f0b455;--warn-bg:#3d2c10;--bad:#f08a8a;--bad-bg:#3d1b1b;--info:#8db9ee;--info-bg:#1a2c42;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1713;--surface:#17211b;--surface2:#1d2923;--fg:#eef1ec;--muted:#a3b0a8;--line:#2d3b33;--brand:#2f8a5b;--brand-fg:#06130c;--gold:#d8b45a;--gold-bg:#3a3118;--ok:#6fd096;--ok-bg:#173524;--warn:#f0b455;--warn-bg:#3d2c10;--bad:#f08a8a;--bad-bg:#3d1b1b;--info:#8db9ee;--info-bg:#1a2c42;color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:15px/1.45 var(--sans);padding-block:0 92px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.app{max-width:560px;margin:0 auto}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.demo{margin:0 -16px;padding:5px 16px;background:var(--gold-bg);font-size:12px;text-align:center}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 0 8px}
+h1{font-family:var(--serif);font-size:22px;margin:0}
+.who{font-size:13px;color:var(--muted);text-align:right}.who b{color:var(--fg)}
+.turno{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 10px}
+.av{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 4px;font-size:13px}
+.av i{width:22px;height:22px;border-radius:50%;background:var(--brand);color:var(--brand-fg);font-style:normal;font-size:11px;font-weight:700;display:grid;place-items:center}
+.av.off{opacity:.45}
+nav.bn{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:center;padding:6px max(8px,env(safe-area-inset-right,0px)) max(8px,env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));z-index:10}
+nav.bn .in{display:flex;gap:6px;width:100%;max-width:560px}
+.nb{flex:1;border:0;background:none;border-radius:14px;padding:8px 4px;font-weight:600;font-size:13px;color:var(--muted);position:relative;display:flex;flex-direction:column;align-items:center;gap:2px}
+.nb b{font-size:20px;line-height:1}
+.nb[aria-selected="true"]{background:var(--brand);color:var(--brand-fg)}
+.bd{position:absolute;top:2px;right:18%;min-width:18px;height:18px;border-radius:9px;background:var(--bad);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;padding:0 5px}
+.pin{background:var(--gold-bg);border-left:5px solid var(--gold);border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.pin small{color:var(--muted);display:block}.pin .row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:6px}
+.seg{display:flex;gap:6px;margin:6px 0 12px}
+.seg button{flex:1;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:8px;font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-fg)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.card h2{font-family:var(--serif);font-size:18px;margin:0 0 6px}
+.it{border-radius:9px;padding:7px 9px;margin-top:6px;font-size:14px;background:var(--surface2);border-left:4px solid var(--line)}
+.it small{display:block;color:var(--muted);font-size:12px}
+.it.ll{border-left-color:var(--ok)}.it.sa{border-left-color:var(--info)}.it.ex{border-left-color:var(--gold)}.it.co{border-left-color:var(--warn);background:var(--warn-bg)}
+.dia{display:flex;justify-content:space-between;align-items:baseline}.dia b{font-family:var(--serif);font-size:20px}
+.pill{display:inline-block;border-radius:999px;font-size:12px;font-weight:700;padding:2px 9px}
+.p-bad{background:var(--bad-bg);color:var(--bad)}.p-warn{background:var(--warn-bg);color:var(--warn)}.p-ok{background:var(--ok-bg);color:var(--ok)}.p-info{background:var(--info-bg);color:var(--info)}
+.llam{border:2px solid var(--line);border-radius:16px;background:var(--surface);padding:12px;margin-bottom:10px}
+.llam.n0{border-color:var(--warn)}.llam.n1{border-color:var(--bad)}.llam.n2{border-color:var(--bad);background:var(--bad-bg)}.llam.aten{border-color:var(--ok)}
+.llam .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.llam .mesa{font-family:var(--serif);font-size:30px;line-height:1}
+.llam .t{font-variant-numeric:tabular-nums;font-weight:700;font-size:20px}
+.llam .sub{color:var(--muted);font-size:13px;margin:4px 0 8px}
+.acc{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px}
+.btn{border:0;border-radius:12px;padding:13px 10px;font-weight:700;background:var(--brand);color:var(--brand-fg)}
+.btn.g{background:var(--surface2);color:var(--fg);border:1.5px solid var(--line)}
+.btn.w{width:100%}
+.mesas{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ms{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 4px;text-align:center;font-size:12px;color:var(--muted)}
+.ms b{display:block;font-family:var(--serif);font-size:20px;color:var(--fg)}
+.ms.ll{border-color:var(--bad);background:var(--bad-bg)}.ms.at{border-color:var(--ok);background:var(--ok-bg)}
+.chat{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.msg{max-width:88%;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px 11px}
+.msg small{display:block;color:var(--muted);font-size:11px}
+.msg.yo{align-self:flex-end;background:var(--brand);color:var(--brand-fg);border-color:var(--brand)}.msg.yo small{color:inherit;opacity:.8}
+.msg.sis{align-self:center;background:none;border:0;color:var(--muted);font-size:12px;text-align:center}
+.msg.ind{border-left:5px solid var(--gold);background:var(--gold-bg)}
+.rapidos{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.rapidos button{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600}
+.send{display:flex;gap:6px}.send input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:12px;padding:11px;background:var(--surface)}
+.note{color:var(--muted);font-size:12px}
+@media (prefers-reduced-motion:no-preference){.llam.n2{animation:pul 1.4s ease-in-out infinite}@keyframes pul{50%{box-shadow:0 0 0 5px rgba(165,44,44,.18)}}}
+</style>
+<div class="app">
+<div class="demo">Maqueta con datos de ejemplo. Los llamados se simulan.</div>
+<header><div><h1>Casa Di Mauro</h1><div class="note">Equipo</div></div><div class="who">Entraste como<br><b id="yo">Noe</b> · <button type="button" id="cambiar" style="border:0;background:none;color:var(--info);text-decoration:underline;padding:0">cambiar</button></div></header>
+<div class="turno" id="turno"></div>
+
+<section id="v-hoy">
+  <div class="pin"><b>Indicación de Mauro</b><small>Para todo el equipo · hoy</small>
+    Hoy llega la Delegación Club Andes a las 16:00. Mesa larga lista para las 20:30 y 14 box lunch listos a las 8:00 de mañana.
+    <div class="row"><span class="note" id="vistos">Visto por 3 de 6</span><button class="btn" type="button" id="visto" style="padding:8px 14px">Visto ✓</button></div></div>
+  <div class="seg" id="rango"><button type="button" aria-pressed="true" data-r="hoy">Hoy</button><button type="button" aria-pressed="false" data-r="man">Mañana</button><button type="button" aria-pressed="false" data-r="sem">Semana</button></div>
+  <div id="dias"></div>
+  <p class="note">Esta capa solo muestra lo que hay que hacer. No incluye precios ni cobros.</p>
+</section>
+
+<section id="v-sala" hidden>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h2 style="font-family:var(--serif);margin:0;font-size:20px">Llamados de mesa</h2><button class="btn g" type="button" id="sim" style="padding:8px 12px;font-size:13px">Simular llamado</button></div>
+  <div id="llamados"></div>
+  <div class="card"><h2>Mesas</h2><div class="mesas" id="mesas"></div><p class="note" style="margin:8px 0 0">El cliente toca «Llamar al garzón» en el QR de su mesa. Aviso al garzón asignado; a los 30 s a todo el turno; a los 60 s también a supervisores.</p></div>
+</section>
+
+<section id="v-eq" hidden>
+  <div class="chat" id="chat"></div>
+  <div class="rapidos" id="rap"></div>
+  <div class="send"><input id="txt" placeholder="Escribe al equipo…" aria-label="Mensaje al equipo"><button class="btn" type="button" id="env">Enviar</button></div>
+  <p class="note">Mensajes cortos para coordinarse en el turno. Las indicaciones de Mauro aparecen destacadas y piden «Visto».</p>
+</section>
+</div>
+
+<nav class="bn"><div class="in" role="tablist">
+  <button class="nb" role="tab" data-v="hoy" aria-selected="true"><b>▦</b>Hoy</button>
+  <button class="nb" role="tab" data-v="sala" aria-selected="false"><b>◔</b>Sala<span class="bd" id="bd-sala" hidden>0</span></button>
+  <button class="nb" role="tab" data-v="eq" aria-selected="false"><b>✎</b>Equipo<span class="bd" id="bd-eq">2</span></button>
+</div></nav>
+
+<script>
+var $=function(i){return document.getElementById(i)};
+var GENTE=[['Noe','garzón'],['Lucía','garzón'],['Camila','garzón'],['Mauro','supervisor'],['Carola','supervisor'],['Pía','cocina']];
+$('turno').innerHTML=GENTE.map(function(g,i){return '<span class="av'+(i===5?' off':'')+'"><i>'+g[0][0]+'</i>'+g[0]+'</span>'}).join('');
+var DIAS=[
+ {t:'Hoy · Mié 9',k:'hoy',x:[['ll','Delegación Club Andes','Llega 16:00 · 20 personas · 3 noches'],['ex','Casino Party · 18:00','Empresa Alfa · 25 personas'],['co','Cena en la casa','20 personas · 21:00'],['co','Box lunch para mañana','14 personas · dejar listos']]},
+ {t:'Mañana · Jue 10',k:'man',x:[['sa','Familia Rojas','Salida'],['co','Box lunch','14 personas · entregar 8:00']]},
+ {t:'Vie 11',k:'sem',x:[['ex','Casino Party · 13:00','Colegio Los Alerces + Empresa Alfa · 50 personas']]},
+ {t:'Sáb 12',k:'sem',x:[['ex','Parrillada Party · 13:00','45 personas'],['ex','Pizza Libre · 18:00','2 grupos · 80 personas']]},
+ {t:'Dom 13',k:'sem',x:[['sa','Delegación Club Andes','Salida'],['sa','Colegio San José','Salida']]}];
+var R='hoy';
+function dias(){var l=DIAS.filter(function(d){return R==='sem'?true:d.k===R});$('dias').innerHTML=l.map(function(d){return '<div class="card"><div class="dia"><b>'+d.t+'</b></div>'+d.x.map(function(i){return '<div class="it '+i[0]+'">'+i[1]+'<small>'+i[2]+'</small></div>'}).join('')+'</div>'}).join('')}
+dias();
+document.querySelectorAll('#rango button').forEach(function(b){b.onclick=function(){R=b.getAttribute('data-r');document.querySelectorAll('#rango button').forEach(function(o){o.setAttribute('aria-pressed',String(o===b))});dias()}});
+var v=3;$('visto').onclick=function(){if(this.disabled)return;this.disabled=true;this.textContent='Visto';$('vistos').textContent='Visto por '+(v+1)+' de 6'};
+// navegación
+var badSala=0;
+document.querySelectorAll('.nb').forEach(function(b){b.onclick=function(){var k=b.getAttribute('data-v');document.querySelectorAll('.nb').forEach(function(o){o.setAttribute('aria-selected',String(o===b))});['hoy','sala','eq'].forEach(function(s){$('v-'+s).hidden=s!==k});if(k==='eq'){$('bd-eq').hidden=true}}});
+// sala
+var L=[{id:1,mesa:5,seg:12,est:'p',nom:null,asig:'Noe'}];var NM=12,at={},nid=2;
+function fmt(s){return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2)}
+function nivel(l){return l.seg>=60?2:l.seg>=30?1:0}
+function pintar(){
+  $('llamados').innerHTML=L.length?L.map(function(l){var n=nivel(l),at=l.est==='a';
+    var sub=at?'<b>'+l.nom+'</b> va en camino':n===0?'Avisado a '+l.asig+' (garzón de la mesa)':n===1?'Sin respuesta: avisado a todo el turno':'Sin respuesta: avisados también los supervisores';
+    return '<div class="llam '+(at?'aten':'n'+n)+'"><div class="top"><span class="mesa">Mesa '+l.mesa+'</span><span class="t">'+fmt(l.seg)+'</span></div><div class="sub">'+sub+'</div>'+
+    (at?'<button class="btn w" data-a="listo" data-i="'+l.id+'" type="button">Listo, atendida</button>':'<div class="acc"><button class="btn" data-a="voy" data-i="'+l.id+'" type="button">Voy</button><button class="btn g" data-a="apoyo" data-i="'+l.id+'" type="button">Apoyo</button><button class="btn g" data-a="no" data-i="'+l.id+'" type="button">No puedo</button></div>')+'</div>'}).join(''):'<div class="card note">No hay llamados. Todo en calma.</div>';
+  $('llamados').querySelectorAll('button').forEach(function(b){b.onclick=function(){acc(+b.getAttribute('data-i'),b.getAttribute('data-a'))}});
+  var m='';for(var i=1;i<=NM;i++){var l=L.filter(function(x){return x.mesa===i})[0];m+='<div class="ms'+(l?(l.est==='a'?' at':' ll'):'')+'"><b>'+i+'</b>'+(l?(l.est==='a'?l.nom:'llama'):'libre')+'</div>'}
+  $('mesas').innerHTML=m;
+  var p=L.filter(function(x){return x.est==='p'}).length;$('bd-sala').hidden=!p;$('bd-sala').textContent=p;
+}
+function acc(id,a){var l=L.filter(function(x){return x.id===id})[0];if(!l)return;
+  if(a==='voy'){l.est='a';l.nom=$('yo').textContent;msg('sis','Mesa '+l.mesa+': '+l.nom+' va en camino');}
+  else if(a==='apoyo'){msg('ind0','Mesa '+l.mesa+': '+$('yo').textContent+' pide apoyo');l.seg=Math.max(l.seg,30)}
+  else if(a==='no'){msg('sis','Mesa '+l.mesa+': '+$('yo').textContent+' no puede; pasa al resto del turno');l.seg=Math.max(l.seg,30)}
+  else if(a==='listo'){L=L.filter(function(x){return x.id!==id});msg('sis','Mesa '+l.mesa+' atendida por '+l.nom+' en '+fmt(l.seg))}
+  pintar()}
+$('sim').onclick=function(){var libres=[];for(var i=1;i<=NM;i++)if(!L.some(function(x){return x.mesa===i}))libres.push(i);if(!libres.length)return;var m=libres[Math.floor(Math.random()*libres.length)];L.push({id:nid++,mesa:m,seg:0,est:'p',nom:null,asig:GENTE[Math.floor(Math.random()*3)][0]});msg('sis','Mesa '+m+' llama al garzón');pintar()};
+setInterval(function(){L.forEach(function(l){l.seg++});pintar()},1000);
+// equipo
+var CH=[['sis','Mesa 3 atendida por Lucía en 0:41'],['mau','Mauro','Hoy llega la delegación a las 16:00. Mesa larga lista para las 20:30.',1],['otro','Lucía','Voy a la mesa 8, ya vuelvo.'],['otro','Pía','Pollo desmenuzado listo para la noche.']];
+function chat(){$('chat').innerHTML=CH.map(function(c){if(c[0]==='sis')return '<div class="msg sis">'+c[1]+'</div>';if(c[0]==='ind0')return '<div class="msg ind"><small>Apoyo</small>'+c[1]+'</div>';
+  return '<div class="msg '+(c[0]==='yo'?'yo':c[3]?'ind':'')+'"><small>'+(c[0]==='yo'?'Tú':c[1])+(c[3]?' · indicación':'')+'</small>'+c[2]+'</div>'}).join('')}
+function msg(t,x){if(t==='sis')CH.push(['sis',x]);else if(t==='ind0')CH.push(['ind0',x]);else CH.push(['yo','Tú',x]);chat();if($('v-eq').hidden){$('bd-eq').hidden=false;$('bd-eq').textContent=(+$('bd-eq').textContent||0)+1}}
+chat();
+['Voy a la mesa','Necesito apoyo en cocina','Falta hielo','Mesa lista para limpiar','Pedido listo para llevar'].forEach(function(t){var b=document.createElement('button');b.type='button';b.textContent=t;b.onclick=function(){CH.push(['yo','Tú',t]);chat()};$('rap').appendChild(b)});
+$('env').onclick=function(){var t=$('txt').value.trim();if(!t)return;CH.push(['yo','Tú',t]);$('txt').value='';chat()};
+$('txt').onkeydown=function(e){if(e.key==='Enter')$('env').click()};
+$('cambiar').onclick=function(){var i=GENTE.findIndex(function(g){return g[0]===$('yo').textContent});$('yo').textContent=GENTE[(i+1)%5][0]};
+pintar();
+</script>
