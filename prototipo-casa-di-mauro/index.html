@@ -1153,7 +1153,7 @@ var WA='56956154280';
 var wa=function(txt){return 'https://wa.me/'+WA+'?text='+encodeURIComponent(txt)};
 var FEC=function(s){var p=s.split('-');return new Date(Date.UTC(+p[0],+p[1]-1,+p[2]))};
 var ISO=function(d){return d.toISOString().slice(0,10)};
-window.CDM_CONFIG=window.CDM_CONFIG||{base:'https://atiende-bot-production-4757.up.railway.app',key:'',keyExp:'',
+window.CDM_CONFIG=window.CDM_CONFIG||{base:'https://atiende-bot-production-4757.up.railway.app',key:'',keyExp:'',turnstile:'0x4AAAAAAGK8fNpvqNozqbJ_',
   /* Pago por transferencia (transitorio hasta activar Khipu): poner modo:'transferencia' y completar los datos bancarios (los entrega Mauro; nunca se inventan). */
   pago:{modo:'transferencia',holdTxt:'',banco:{titular:'Grupo Di Mauro SpA',rut:'77.789.767-5',banco:'BCI',tipo:'Cuenta corriente',cuenta:'13811525',email:'kine.carola@gmail.com'},whatsapp:''}};
 /* usdClp: tipo de cambio de referencia (CLP por US$ 1). Solo informativo: el cobro es siempre en CLP. Si hay red se actualiza desde mindicador.cl y se cachea 6 h. */
@@ -1527,7 +1527,7 @@ function openEsc(k){var P=PACKS[k];$('eci').value=P.desde;$('eco').value=P.hasta
 
 /* Experiencias en vivo (motor de cupos de Atiende). Con CDM_CONFIG.keyExp vacío, las fechas y cupos son de demostración. */
 var LX={on:function(){return !!(window.CDM_CONFIG&&CDM_CONFIG.keyExp)},st:{},
-  api:function(m,path,body,clave,tok){var h={'Authorization':'Bearer '+CDM_CONFIG.keyExp};if(tok)h['X-Reserva-Token']=tok;if(body)h['Content-Type']='application/json';if(clave)h['Idempotency-Key']=clave;
+  api:function(m,path,body,clave,tok,ts){var h={'Authorization':'Bearer '+CDM_CONFIG.keyExp};if(tok)h['X-Reserva-Token']=tok;if(ts)h['X-Turnstile-Token']=ts;if(body)h['Content-Type']='application/json';if(clave)h['Idempotency-Key']=clave;
     return fetch(CDM_CONFIG.base+'/api/turismo/v1'+path,{method:m,headers:h,body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return {ok:false,codigo:'respuesta_invalida'}}).then(function(j){j._http=r.status;return j})}).catch(function(){return {ok:false,codigo:'sin_conexion'}})},
   loc:function(iso){var s=new Date(iso).toLocaleString('sv-SE',{timeZone:'America/Santiago',hour12:false});return {d:s.slice(0,10),h:+s.slice(11,13)}},
   get:function(i){return LX.st[EXPS[i].code+'|'+G.p]},
@@ -1671,7 +1671,7 @@ function gsum(){
         if(!lineas.length||lineas.length!==T.nm.length){aviso(t('ck.again'));return}
         $('ggo').disabled=true;$('ggo').textContent=t('ck.creating');
         var cuerpoX={contacto:{nombre:nom,telefono:tel},lineas:lineas};if(window.CDM_CONFIG&&CDM_CONFIG.langApi&&window.CDM_LANG)cuerpoX.lang=window.CDM_LANG;var clave=cdmClave(cuerpoX);
-        LX.api('POST','/reservas',cuerpoX,clave).then(function(j){
+        LIVE.token().then(function(ts){return LX.api('POST','/reservas',cuerpoX,clave,null,ts)}).then(function(j){
           if(!j.ok){aviso(LX.msg(j.codigo));$('ggo').disabled=false;$('ggo').textContent=PAYL();LX.st={};return}
           try{sessionStorage.setItem('cdm_expres',String(j.reserva_id));if(j.token_reserva)sessionStorage.setItem('cdm_exptok',j.token_reserva)}catch(e){}
           if(window.CDM_CONFIG&&CDM_CONFIG.pago&&CDM_CONFIG.pago.modo==='transferencia'){mset(function(){cdmTransfer(mb,nom,'CDM-E'+j.reserva_id,j.anticipo||ab,closeModal,tel,EXPS.filter(function(x,k){return G.e[k]}).map(function(x){return x.n}).join(' + '))});return}
