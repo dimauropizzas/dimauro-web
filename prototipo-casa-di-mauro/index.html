@@ -658,7 +658,7 @@ K('tr.p','Tu reserva quedó retenida. Para confirmarla, transfiere el abono y en
 K('tr.amt','Monto a transferir','Amount to transfer','Valor a transferir');
 K('tr.code','Código de tu reserva','Your booking code','Código da sua reserva');
 K('tr.ref','Escribe este código en el comentario de la transferencia.','Write this code in the transfer comment.','Escreva este código no comentário da transferência.');
-K('tr.hold','Mantenemos tu reserva por 12 horas. Si no recibimos el comprobante en ese plazo, se libera.','We hold your booking for 12 hours. If we do not receive the receipt in that time, it is released.','Mantemos sua reserva por 12 horas. Se não recebermos o comprovante nesse prazo, ela é liberada.');
+K('tr.hold','Mantenemos tu reserva por 24 horas. Si no recibimos el comprobante en ese plazo, se libera.','We hold your booking for 24 hours. If we do not receive the receipt in that time, it is released.','Mantemos sua reserva por 24 horas. Se não recebermos o comprovante nesse prazo, ela é liberada.');
 K('tr.wa','Enviar comprobante por WhatsApp','Send receipt on WhatsApp','Enviar comprovante pelo WhatsApp');
 K('tr.copy','Copiar datos','Copy details','Copiar dados');
 K('tr.copied','Copiado','Copied','Copiado');
@@ -1148,7 +1148,7 @@ var FEC=function(s){var p=s.split('-');return new Date(Date.UTC(+p[0],+p[1]-1,+p
 var ISO=function(d){return d.toISOString().slice(0,10)};
 window.CDM_CONFIG=window.CDM_CONFIG||{base:'https://atiende-bot-production-4757.up.railway.app',key:'',keyExp:'',
   /* Pago por transferencia (transitorio hasta activar Khipu): poner modo:'transferencia' y completar los datos bancarios (los entrega Mauro; nunca se inventan). */
-  pago:{modo:'khipu',holdTxt:'',banco:{titular:'',rut:'',banco:'',tipo:'',cuenta:'',email:''},whatsapp:''}};
+  pago:{modo:'transferencia',holdTxt:'',banco:{titular:'Grupo Di Mauro SpA',rut:'77.789.767-5',banco:'BCI',tipo:'Cuenta corriente',cuenta:'13811525',email:'kine.carola@gmail.com'},whatsapp:''}};
 /* usdClp: tipo de cambio de referencia (CLP por US$ 1). Solo informativo: el cobro es siempre en CLP. Si hay red se actualiza desde mindicador.cl y se cachea 6 h. */
 if(CDM_CONFIG.usdClp==null)CDM_CONFIG.usdClp=950;
 LANG=langInicial();CUR=curInicial();fxInit();
