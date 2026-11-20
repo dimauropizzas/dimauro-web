@@ -63,6 +63,18 @@ nav.bn .in{display:flex;gap:6px;width:100%;max-width:560px}
 .rapidos button{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600}
 .send{display:flex;gap:6px}.send input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:12px;padding:11px;background:var(--surface)}
 .note{color:var(--muted);font-size:12px}
+.hc{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.hc .t{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.hc b{font-size:16px}.hc small{display:block;color:var(--muted);font-size:13px}
+.hc .btn{margin-top:10px;width:100%}
+.pasos{display:flex;gap:4px;margin:8px 0 12px}.pasos i{flex:1;height:5px;border-radius:3px;background:var(--line)}.pasos i.on{background:var(--brand)}
+.fld{display:flex;flex-direction:column;gap:4px;margin-top:10px}.fld label{font-size:13px;color:var(--muted)}
+.fld input,.fld select{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:12px;width:100%;min-width:0}
+.cnt{display:flex;align-items:center;gap:10px}.cnt button{width:40px;height:40px;border-radius:50%;border:0;background:var(--brand);color:var(--brand-fg);font-size:22px}.cnt b{min-width:26px;text-align:center;font-size:20px}
+canvas.firma{width:100%;height:130px;border:1.5px dashed var(--line);border-radius:12px;background:var(--surface2);touch-action:none}
+.chk{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}.chk input{width:22px;height:22px;accent-color:var(--brand)}
+.ok2{background:var(--ok-bg);color:var(--ok);border-radius:12px;padding:14px;text-align:center;font-weight:700;margin-top:8px}
+.prev{max-width:100%;max-height:150px;border-radius:10px;margin-top:8px;border:1px solid var(--line)}
+.reg{background:var(--surface2);border-radius:12px;padding:10px 12px;font-size:13px;margin-top:8px}.reg li{margin:3px 0}
 .hbig{font-family:var(--serif);font-size:44px;line-height:1.1;font-variant-numeric:tabular-nums;margin:6px 0}
 .hrow{display:grid;grid-template-columns:44px 1fr auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line);font-size:14px;font-variant-numeric:tabular-nums}
 .hrow:first-child{border-top:0}.hrow .ex{color:var(--warn);font-weight:700}
@@ -113,6 +125,17 @@ nav.bn .in{display:flex;gap:6px;width:100%;max-width:560px}
   <div class="send" style="margin-top:12px"><input id="sn" placeholder="Nota (opcional): sin hielo, 2 cuentas separadas…" aria-label="Nota"></div>
   <button class="btn w" type="button" id="se" style="margin-top:12px">Enviar</button>
 </div></div>
+<section id="v-hue" hidden>
+  <div class="seg" id="hseg"><button type="button" aria-pressed="true" data-h="ll">Llegan hoy</button><button type="button" aria-pressed="false" data-h="sa">Salen hoy</button><button type="button" aria-pressed="false" data-h="ca">En casa</button></div>
+  <div id="hlist"></div>
+  <p class="note">Haz el check-in y el check-out frente al huésped, sentada donde estés, desde tu celular. Sin papeles ni computador.</p>
+</section>
+<div class="sheet" id="wz" hidden role="dialog" aria-modal="true" aria-labelledby="wzt"><div>
+  <div style="display:flex;justify-content:space-between;align-items:center"><h3 id="wzt">Check-in</h3><button class="btn g" type="button" id="wzx" style="padding:6px 12px" aria-label="Cerrar">×</button></div>
+  <div class="note" id="wzs"></div><div class="pasos" id="wzp"></div>
+  <div id="wzb"></div>
+  <div style="display:flex;gap:8px;margin-top:14px"><button class="btn g" type="button" id="wza" style="flex:1">Atrás</button><button class="btn" type="button" id="wzn" style="flex:2">Siguiente</button></div>
+</div></div>
 <section id="v-hor" hidden>
   <div class="card" id="mi"><h2>Mi turno</h2>
     <div class="note" id="turnoPlan">Planificado hoy: 12:00 a 20:00 · colación 1 h</div>
@@ -139,6 +162,7 @@ nav.bn .in{display:flex;gap:6px;width:100%;max-width:560px}
   <button class="nb" role="tab" data-v="hoy" aria-selected="true"><b>▦</b>Hoy</button>
   <button class="nb" role="tab" data-v="sala" aria-selected="false"><b>◔</b>Sala<span class="bd" id="bd-sala" hidden>0</span></button>
   <button class="nb" role="tab" data-v="eq" aria-selected="false"><b>✎</b>Equipo<span class="bd" id="bd-eq">2</span></button>
+  <button class="nb" role="tab" data-v="hue" aria-selected="false"><b>⌂</b>Huéspedes<span class="bd" id="bd-hue">2</span></button>
   <button class="nb" role="tab" data-v="hor" aria-selected="false"><b>◷</b>Horas</button>
 </div></nav>
 
@@ -159,7 +183,7 @@ document.querySelectorAll('#rango button').forEach(function(b){b.onclick=functio
 var v=3;$('visto').onclick=function(){if(this.disabled)return;this.disabled=true;this.textContent='Visto';$('vistos').textContent='Visto por '+(v+1)+' de 6'};
 // navegación
 var badSala=0;
-document.querySelectorAll('.nb').forEach(function(b){b.onclick=function(){var k=b.getAttribute('data-v');document.querySelectorAll('.nb').forEach(function(o){o.setAttribute('aria-selected',String(o===b))});['hoy','sala','eq','hor'].forEach(function(s){$('v-'+s).hidden=s!==k});if(k==='eq'){$('bd-eq').hidden=true}$('fab').hidden=k!=='sala'}});
+document.querySelectorAll('.nb').forEach(function(b){b.onclick=function(){var k=b.getAttribute('data-v');document.querySelectorAll('.nb').forEach(function(o){o.setAttribute('aria-selected',String(o===b))});['hoy','sala','eq','hor','hue'].forEach(function(s){$('v-'+s).hidden=s!==k});if(k==='eq'){$('bd-eq').hidden=true}$('fab').hidden=k!=='sala'}});
 // sala
 var TIPOS={llamado:['Llama al garzón','Voy'],cuenta:['Pide la cuenta','La llevo'],pedido:['Pedido listo para llevar','Lo llevo'],limpiar:['Limpiar la mesa','Limpio'],apoyo:['Necesita apoyo','Voy'],falta:['Falta algo en la mesa','Lo llevo']};
 var L=[{id:1,mesa:5,seg:12,est:'p',nom:null,asig:'Noe',tipo:'cuenta',de:'Cliente (QR)',dest:'Quien tenga POS libre'}];var NM=12,at={},nid=2;
@@ -206,6 +230,52 @@ $('sheet').addEventListener('click',function(e){if(e.target===$('sheet'))$('shee
 $('se').onclick=function(){if(!SEL.m){$('se').textContent='Elige la mesa';setTimeout(function(){$('se').textContent='Enviar'},1200);return}
   var ya=L.filter(function(x){return x.mesa===SEL.m&&x.tipo===SEL.t})[0];if(!ya){L.push({id:nid++,mesa:SEL.m,seg:0,est:'p',nom:null,asig:SEL.d,tipo:SEL.t,de:$('yo').textContent,dest:SEL.d})}
   msg('yo',TIPOS[SEL.t][0]+' · mesa '+SEL.m+' → '+SEL.d+($('sn').value?' ('+$('sn').value+')':''));$('sn').value='';$('sheet').hidden=true;pintar()};
+// huéspedes
+var HU={ll:[{n:'Familia Rojas',d:'Matrimonial · 2 personas · 3 noches',h:'Llega 15:30',pre:3,hab:'101',tipo:'Matrimonial',saldo:288000},{n:'Delegación Club Andes',d:'20 personas · 5 habitaciones · paquete 3 noches',h:'Llega 16:00',pre:1,hab:'102, 103, 104, 105, 106',tipo:'Paquete',saldo:950000}],
+ sa:[{n:'Colegio San José',d:'Habitación 107 · 2 noches',h:'Sale antes de las 12:00',hab:'107',saldo:0},{n:'Anne Dubois',d:'Habitación 101 · 3 noches',h:'Sale 11:30',hab:'101',saldo:35000}],
+ ca:[{n:'Familia Soto Vera',d:'Hab. 106 · Doble twin',h:'Sale el 17',hab:'106'},{n:'Anne Dubois',d:'Hab. 101 · Matrimonial',h:'Sale hoy',hab:'101'},{n:'Colegio San José',d:'Hab. 107',h:'Sale hoy',hab:'107'}]};
+var HM='ll',WZ=null,paso=0;
+function hlist(){$('hlist').innerHTML=HU[HM].map(function(g,i){var tag=HM==='ll'?'<span class="pill '+(g.pre===4?'p-ok':'p-warn')+'">Check-in previo '+g.pre+'/4</span>':HM==='sa'?'<span class="pill p-info">'+(g.saldo?'Saldo pendiente':'Al día')+'</span>':'<span class="pill p-ok">En casa</span>';
+  return '<div class="hc"><div class="t"><div><b>'+g.n+'</b><small>'+g.d+'</small><small>'+g.h+'</small></div>'+tag+'</div>'+(HM==='ca'?'':'<button class="btn" type="button" data-i="'+i+'">'+(HM==='ll'?'Hacer check-in':'Hacer check-out')+'</button>')+'</div>'}).join('');
+  $('hlist').querySelectorAll('button[data-i]').forEach(function(b){b.onclick=function(){abrirWz(+b.getAttribute('data-i'))}})}
+document.querySelectorAll('#hseg button').forEach(function(b){b.onclick=function(){HM=b.getAttribute('data-h');document.querySelectorAll('#hseg button').forEach(function(o){o.setAttribute('aria-pressed',String(o===b))});hlist()}});
+var CI=['Huésped','Habitación','Documento','Reglamento y firma','Cobro y llave'],CO=['Revisión','Saldo','Cierre'];
+function clp(n){return '$'+n.toLocaleString('es-CL')}
+function abrirWz(i){WZ={g:HU[HM][i],m:HM,ad:2,ni:0,doc:'RUT',foto:false,firm:false,llave:false,wifi:true,cobro:null};paso=0;$('wz').hidden=false;wz()}
+function wz(){var g=WZ.g,ci=WZ.m==='ll',P=ci?CI:CO,h='';
+  $('wzt').textContent=(ci?'Check-in · ':'Check-out · ')+g.n;$('wzs').textContent='Paso '+(paso+1)+' de '+P.length+' · '+P[paso];
+  $('wzp').innerHTML=P.map(function(_,k){return '<i class="'+(k<=paso?'on':'')+'"></i>'}).join('');
+  if(ci){
+    if(paso===0)h='<div class="fld"><label>Nombre del titular</label><input id="f1" value="'+g.n+'"></div><div class="fld"><label>Documento</label><select id="f2"><option'+(WZ.doc==='RUT'?' selected':'')+'>RUT</option><option'+(WZ.doc==='Pasaporte'?' selected':'')+'>Pasaporte</option></select></div><div class="fld"><label>Número</label><input id="f3" placeholder="12.345.678-9" inputmode="text"></div><div class="fld"><label>Teléfono de contacto</label><input id="f4" value="+56 9 1111 2222" inputmode="tel"></div><div class="note" style="margin-top:8px">Con pasaporte se pide también el país de residencia.</div>';
+    if(paso===1)h='<div class="fld"><label>Personas</label><div class="cnt"><span>Adultos</span><button type="button" data-c="ad-">−</button><b>'+WZ.ad+'</b><button type="button" data-c="ad+">+</button><span>Niños</span><button type="button" data-c="ni-">−</button><b>'+WZ.ni+'</b><button type="button" data-c="ni+">+</button></div></div><div class="fld"><label>Habitación asignada</label><select id="f5"><option>'+g.hab+' · lista y limpia</option><option>102 · lista y limpia</option><option>104 · en limpieza</option></select></div><div class="note" style="margin-top:8px">Solo aparecen habitaciones del tipo reservado que estén libres.</div>';
+    if(paso===2)h='<p style="margin:6px 0">Toma una foto del carnet o del pasaporte, de frente y con buena luz.</p><div class="fld"><input id="f6" type="file" accept="image/*" capture="environment"></div><img id="pv" class="prev" alt="Vista previa del documento" '+(WZ.foto?'':'hidden')+'><div class="note" style="margin-top:8px">La foto se guarda cifrada y solo la ven supervisores.</div>';
+    if(paso===3)h='<div class="reg"><b>Reglamento de la casa</b><ul style="margin:6px 0 0;padding-left:18px"><li>Check-in desde las 15:00 y check-out hasta las 12:00.</li><li>Silencio desde las 22:30.</li><li>No se fuma dentro de la casa.</li><li>Desayuno de 8:00 a 10:30.</li></ul></div><div class="fld"><label>Firma del huésped (con el dedo)</label><canvas class="firma" id="fm"></canvas></div><div style="display:flex;gap:8px;margin-top:6px"><button class="btn g" type="button" id="fb" style="padding:8px 12px">Borrar firma</button></div><label class="chk"><input type="checkbox" id="f7"'+(WZ.firm?' checked':'')+'> El huésped acepta el reglamento</label>';
+    if(paso===4)h='<div class="card" style="margin:8px 0"><b>Saldo por cobrar: '+clp(g.saldo)+'</b><div class="note">Visible solo en este check-in. Se cobra con el POS o se registra la transferencia.</div></div><div class="opts" id="cb"><button type="button" data-o="pos" aria-pressed="'+(WZ.cobro==='pos')+'">Cobrado con POS</button><button type="button" data-o="tr" aria-pressed="'+(WZ.cobro==='tr')+'">Transferencia recibida</button><button type="button" data-o="pend" aria-pressed="'+(WZ.cobro==='pend')+'">Queda pendiente</button></div><label class="chk"><input type="checkbox" id="f8"'+(WZ.llave?' checked':'')+'> Llave entregada</label><label class="chk"><input type="checkbox" id="f9"'+(WZ.wifi?' checked':'')+'> Enviar wifi y horario de desayuno por WhatsApp</label>';
+  }else{
+    if(paso===0)h='<p style="margin:6px 0">Revisa con el huésped antes de que se vaya.</p><label class="chk"><input type="checkbox"> Llaves devueltas</label><label class="chk"><input type="checkbox"> Revisión rápida de la habitación</label><label class="chk"><input type="checkbox"> Pertenencias olvidadas</label><label class="chk"><input type="checkbox"> Consumos extra anotados</label>';
+    if(paso===1)h=g.saldo?'<div class="card" style="margin:8px 0"><b>Saldo pendiente: '+clp(g.saldo)+'</b><div class="note">Cobra con el POS o registra la transferencia.</div></div><div class="opts" id="cb"><button type="button" data-o="pos" aria-pressed="'+(WZ.cobro==='pos')+'">Cobrado con POS</button><button type="button" data-o="tr" aria-pressed="'+(WZ.cobro==='tr')+'">Transferencia recibida</button></div>':'<div class="ok2">Todo pagado. No hay saldo pendiente.</div>';
+    if(paso===2)h='<div class="ok2" style="background:var(--surface2);color:var(--fg);font-weight:600">Al cerrar, la habitación '+g.hab+' pasa a «lista para limpiar» y aviso a aseo.</div><label class="chk"><input type="checkbox" checked> Enviar agradecimiento y encuesta por WhatsApp</label>';
+  }
+  $('wzb').innerHTML=h;$('wza').style.visibility=paso?'visible':'hidden';$('wzn').textContent=paso===P.length-1?(ci?'Completar check-in':'Completar check-out'):'Siguiente';
+  $('wzb').querySelectorAll('[data-c]').forEach(function(b){b.onclick=function(){var c=b.getAttribute('data-c');if(c==='ad-')WZ.ad=Math.max(1,WZ.ad-1);if(c==='ad+')WZ.ad++;if(c==='ni-')WZ.ni=Math.max(0,WZ.ni-1);if(c==='ni+')WZ.ni++;wz()}});
+  $('wzb').querySelectorAll('#cb button').forEach(function(b){b.onclick=function(){WZ.cobro=b.getAttribute('data-o');wz()}});
+  var f2=$('f2');if(f2)f2.onchange=function(){WZ.doc=f2.value};
+  var f6=$('f6');if(f6)f6.onchange=function(){var f=f6.files&&f6.files[0];if(!f)return;var r=new FileReader();r.onload=function(){$('pv').src=r.result;$('pv').hidden=false;WZ.foto=true};r.readAsDataURL(f)};
+  var cv=$('fm');if(cv){var ctx=cv.getContext('2d'),w=cv.clientWidth,hh2=cv.clientHeight;cv.width=w*2;cv.height=hh2*2;ctx.scale(2,2);ctx.lineWidth=2.2;ctx.lineCap='round';ctx.strokeStyle='#17402b';var d=false;
+    function pt(e){var r=cv.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]}
+    cv.onpointerdown=function(e){d=true;var q=pt(e);ctx.beginPath();ctx.moveTo(q[0],q[1])};cv.onpointermove=function(e){if(!d)return;var q=pt(e);ctx.lineTo(q[0],q[1]);ctx.stroke()};cv.onpointerup=cv.onpointerleave=function(){d=false};
+    $('fb').onclick=function(){ctx.clearRect(0,0,w,hh2)}}
+}
+function wzNext(){if(WZ.fin){$('wz').hidden=true;HU[HM].splice(HU[HM].indexOf(WZ.g),1);$('bd-hue').textContent=Math.max(0,HU.ll.length+HU.sa.length);hlist();return}
+  var ci=WZ.m==='ll',P=ci?CI:CO;
+  if(ci&&paso===3){var c=$('f7');WZ.firm=c&&c.checked;if(!WZ.firm){$('wzs').textContent='Falta que el huésped acepte el reglamento.';return}}
+  if(paso<P.length-1){paso++;wz();return}
+  WZ.fin=true;$('wzb').innerHTML='<div class="ok2">'+(ci?'Check-in completo. ¡Bienvenidos a Casa Di Mauro!':'Check-out completo. ¡Buen viaje!')+'</div><p class="note" style="text-align:center">'+(ci?'Habitación '+WZ.g.hab+' ocupada. El equipo ya lo ve en Hoy y en el calendario.':'La habitación '+WZ.g.hab+' quedó lista para limpiar y se avisó a aseo.')+'</p>';
+  $('wza').style.visibility='hidden';$('wzn').textContent='Cerrar'}
+$('wzn').onclick=wzNext;
+$('wza').onclick=function(){if(paso>0&&!WZ.fin){paso--;wz()}};
+$('wzx').onclick=function(){$('wz').hidden=true};
+hlist();
 // horas
 var SEM=[['Lun','12:00','20:00','8:10',0],['Mar','12:00','20:00','8:00',0],['Mié','12:00','20:00','0:00',0],['Jue','12:00','20:00','8:35',35],['Vie','14:00','23:00','0:00',0],['Sáb','14:00','23:00','0:00',0],['Dom','Libre','','0:00',0]];
 function hh(m){return Math.floor(m/60)+':'+('0'+(m%60)).slice(-2)}
