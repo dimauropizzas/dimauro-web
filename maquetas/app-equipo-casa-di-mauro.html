@@ -63,6 +63,19 @@ nav.bn .in{display:flex;gap:6px;width:100%;max-width:560px}
 .rapidos button{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600}
 .send{display:flex;gap:6px}.send input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:12px;padding:11px;background:var(--surface)}
 .note{color:var(--muted);font-size:12px}
+.tipo{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;background:var(--info-bg);color:var(--info);margin-left:6px;vertical-align:middle}
+.tipo.cuenta{background:var(--gold-bg);color:var(--gold)}
+.fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--gold);color:#fff;border:0;border-radius:999px;padding:14px 20px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.3);z-index:9}
+.sheet{position:fixed;inset:0;background:rgba(8,16,12,.55);z-index:30;display:flex;align-items:flex-end;justify-content:center}
+.sheet>div{background:var(--surface);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:16px 16px max(20px,env(safe-area-inset-bottom,0px));max-height:92vh;overflow:auto}
+.sheet h3{font-family:var(--serif);margin:0 0 8px;font-size:20px}
+.sheet h4{margin:12px 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--gold)}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.grid button,.opts button{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 4px;font-weight:700}
+.grid button[aria-pressed="true"],.opts button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-fg)}
+.opts{display:flex;flex-wrap:wrap;gap:6px}.opts button{padding:10px 12px}
+.qr{border:1.5px dashed var(--line);border-radius:14px;padding:10px;margin-top:6px;background:var(--surface2);font-size:13px}
+.qr .b{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.qr .b span{border:1.5px solid var(--brand);color:var(--brand);border-radius:999px;padding:5px 12px;font-weight:700;font-size:12px}
 @media (prefers-reduced-motion:no-preference){.llam.n2{animation:pul 1.4s ease-in-out infinite}@keyframes pul{50%{box-shadow:0 0 0 5px rgba(165,44,44,.18)}}}
 </style>
 <div class="app">
@@ -82,9 +95,18 @@ nav.bn .in{display:flex;gap:6px;width:100%;max-width:560px}
 <section id="v-sala" hidden>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h2 style="font-family:var(--serif);margin:0;font-size:20px">Llamados de mesa</h2><button class="btn g" type="button" id="sim" style="padding:8px 12px;font-size:13px">Simular llamado</button></div>
   <div id="llamados"></div>
-  <div class="card"><h2>Mesas</h2><div class="mesas" id="mesas"></div><p class="note" style="margin:8px 0 0">El cliente toca «Llamar al garzón» en el QR de su mesa. Aviso al garzón asignado; a los 30 s a todo el turno; a los 60 s también a supervisores.</p></div>
+  <div class="card"><h2>Mesas</h2><div class="mesas" id="mesas"></div><div class="qr"><b>Lo que ve el cliente al escanear el QR de su mesa</b><div class="b"><span>Llamar al garzón</span><span>Pedir la cuenta</span><span>Necesito algo</span></div></div><p class="note" style="margin:8px 0 0">El cliente toca «Llamar al garzón» en el QR de su mesa. Aviso al garzón asignado; a los 30 s a todo el turno; a los 60 s también a supervisores.</p></div>
 </section>
 
+<button class="fab" type="button" id="fab" hidden>+ Pedir al equipo</button>
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sh"><div>
+  <div style="display:flex;justify-content:space-between;align-items:center"><h3 id="sh">Pedir al equipo</h3><button class="btn g" type="button" id="sx" style="padding:6px 12px">×</button></div>
+  <h4>Mesa</h4><div class="grid" id="sm"></div>
+  <h4>Qué necesitas</h4><div class="opts" id="st"></div>
+  <h4>Para quién</h4><div class="opts" id="sd"></div>
+  <div class="send" style="margin-top:12px"><input id="sn" placeholder="Nota (opcional): sin hielo, 2 cuentas separadas…" aria-label="Nota"></div>
+  <button class="btn w" type="button" id="se" style="margin-top:12px">Enviar</button>
+</div></div>
 <section id="v-eq" hidden>
   <div class="chat" id="chat"></div>
   <div class="rapidos" id="rap"></div>
@@ -116,28 +138,29 @@ document.querySelectorAll('#rango button').forEach(function(b){b.onclick=functio
 var v=3;$('visto').onclick=function(){if(this.disabled)return;this.disabled=true;this.textContent='Visto';$('vistos').textContent='Visto por '+(v+1)+' de 6'};
 // navegación
 var badSala=0;
-document.querySelectorAll('.nb').forEach(function(b){b.onclick=function(){var k=b.getAttribute('data-v');document.querySelectorAll('.nb').forEach(function(o){o.setAttribute('aria-selected',String(o===b))});['hoy','sala','eq'].forEach(function(s){$('v-'+s).hidden=s!==k});if(k==='eq'){$('bd-eq').hidden=true}}});
+document.querySelectorAll('.nb').forEach(function(b){b.onclick=function(){var k=b.getAttribute('data-v');document.querySelectorAll('.nb').forEach(function(o){o.setAttribute('aria-selected',String(o===b))});['hoy','sala','eq'].forEach(function(s){$('v-'+s).hidden=s!==k});if(k==='eq'){$('bd-eq').hidden=true}$('fab').hidden=k!=='sala'}});
 // sala
-var L=[{id:1,mesa:5,seg:12,est:'p',nom:null,asig:'Noe'}];var NM=12,at={},nid=2;
+var TIPOS={llamado:['Llama al garzón','Voy'],cuenta:['Pide la cuenta','La llevo'],pedido:['Pedido listo para llevar','Lo llevo'],limpiar:['Limpiar la mesa','Limpio'],apoyo:['Necesita apoyo','Voy'],falta:['Falta algo en la mesa','Lo llevo']};
+var L=[{id:1,mesa:5,seg:12,est:'p',nom:null,asig:'Noe',tipo:'cuenta',de:'Cliente (QR)',dest:'Caja'}];var NM=12,at={},nid=2;
 function fmt(s){return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2)}
 function nivel(l){return l.seg>=60?2:l.seg>=30?1:0}
 function pintar(){
   $('llamados').innerHTML=L.length?L.map(function(l){var n=nivel(l),at=l.est==='a';
-    var sub=at?'<b>'+l.nom+'</b> va en camino':n===0?'Avisado a '+l.asig+' (garzón de la mesa)':n===1?'Sin respuesta: avisado a todo el turno':'Sin respuesta: avisados también los supervisores';
-    return '<div class="llam '+(at?'aten':'n'+n)+'"><div class="top"><span class="mesa">Mesa '+l.mesa+'</span><span class="t">'+fmt(l.seg)+'</span></div><div class="sub">'+sub+'</div>'+
-    (at?'<button class="btn w" data-a="listo" data-i="'+l.id+'" type="button">Listo, atendida</button>':'<div class="acc"><button class="btn" data-a="voy" data-i="'+l.id+'" type="button">Voy</button><button class="btn g" data-a="apoyo" data-i="'+l.id+'" type="button">Apoyo</button><button class="btn g" data-a="no" data-i="'+l.id+'" type="button">No puedo</button></div>')+'</div>'}).join(''):'<div class="card note">No hay llamados. Todo en calma.</div>';
+    var sub=at?'<b>'+l.nom+'</b> va en camino · pedido por '+l.de:n===0?'De '+l.de+' · avisado a '+(l.dest||l.asig):n===1?'Sin respuesta: avisado a todo el turno':'Sin respuesta: avisados también los supervisores';
+    return '<div class="llam '+(at?'aten':'n'+n)+'"><div class="top"><span class="mesa">Mesa '+l.mesa+'<span class="tipo '+(l.tipo==='cuenta'?'cuenta':'')+'">'+TIPOS[l.tipo][0]+'</span></span><span class="t">'+fmt(l.seg)+'</span></div><div class="sub">'+sub+'</div>'+
+    (at?'<button class="btn w" data-a="listo" data-i="'+l.id+'" type="button">'+(l.tipo==='cuenta'?'Cuenta entregada':l.tipo==='limpiar'?'Mesa limpia':'Listo, atendida')+'</button>':'<div class="acc"><button class="btn" data-a="voy" data-i="'+l.id+'" type="button">'+TIPOS[l.tipo][1]+'</button><button class="btn g" data-a="apoyo" data-i="'+l.id+'" type="button">Apoyo</button><button class="btn g" data-a="no" data-i="'+l.id+'" type="button">No puedo</button></div>')+'</div>'}).join(''):'<div class="card note">No hay llamados. Todo en calma.</div>';
   $('llamados').querySelectorAll('button').forEach(function(b){b.onclick=function(){acc(+b.getAttribute('data-i'),b.getAttribute('data-a'))}});
   var m='';for(var i=1;i<=NM;i++){var l=L.filter(function(x){return x.mesa===i})[0];m+='<div class="ms'+(l?(l.est==='a'?' at':' ll'):'')+'"><b>'+i+'</b>'+(l?(l.est==='a'?l.nom:'llama'):'libre')+'</div>'}
   $('mesas').innerHTML=m;
   var p=L.filter(function(x){return x.est==='p'}).length;$('bd-sala').hidden=!p;$('bd-sala').textContent=p;
 }
 function acc(id,a){var l=L.filter(function(x){return x.id===id})[0];if(!l)return;
-  if(a==='voy'){l.est='a';l.nom=$('yo').textContent;msg('sis','Mesa '+l.mesa+': '+l.nom+' va en camino');}
+  if(a==='voy'){l.est='a';l.nom=$('yo').textContent;msg('sis','Mesa '+l.mesa+' ('+TIPOS[l.tipo][0].toLowerCase()+'): '+l.nom+' va en camino');}
   else if(a==='apoyo'){msg('ind0','Mesa '+l.mesa+': '+$('yo').textContent+' pide apoyo');l.seg=Math.max(l.seg,30)}
   else if(a==='no'){msg('sis','Mesa '+l.mesa+': '+$('yo').textContent+' no puede; pasa al resto del turno');l.seg=Math.max(l.seg,30)}
-  else if(a==='listo'){L=L.filter(function(x){return x.id!==id});msg('sis','Mesa '+l.mesa+' atendida por '+l.nom+' en '+fmt(l.seg))}
+  else if(a==='listo'){L=L.filter(function(x){return x.id!==id});msg('sis','Mesa '+l.mesa+' · '+TIPOS[l.tipo][0].toLowerCase()+': resuelto por '+l.nom+' en '+fmt(l.seg))}
   pintar()}
-$('sim').onclick=function(){var libres=[];for(var i=1;i<=NM;i++)if(!L.some(function(x){return x.mesa===i}))libres.push(i);if(!libres.length)return;var m=libres[Math.floor(Math.random()*libres.length)];L.push({id:nid++,mesa:m,seg:0,est:'p',nom:null,asig:GENTE[Math.floor(Math.random()*3)][0]});msg('sis','Mesa '+m+' llama al garzón');pintar()};
+$('sim').onclick=function(){var libres=[];for(var i=1;i<=NM;i++)if(!L.some(function(x){return x.mesa===i}))libres.push(i);if(!libres.length)return;var m=libres[Math.floor(Math.random()*libres.length)];var t=['llamado','cuenta','llamado','falta'][Math.floor(Math.random()*4)];L.push({id:nid++,mesa:m,seg:0,est:'p',nom:null,asig:GENTE[Math.floor(Math.random()*3)][0],tipo:t,de:'Cliente (QR)',dest:t==='cuenta'?'Caja':null});msg('sis','Mesa '+m+': '+TIPOS[t][0].toLowerCase());pintar()};
 setInterval(function(){L.forEach(function(l){l.seg++});pintar()},1000);
 // equipo
 var CH=[['sis','Mesa 3 atendida por Lucía en 0:41'],['mau','Mauro','Hoy llega la delegación a las 16:00. Mesa larga lista para las 20:30.',1],['otro','Lucía','Voy a la mesa 8, ya vuelvo.'],['otro','Pía','Pollo desmenuzado listo para la noche.']];
@@ -149,5 +172,18 @@ chat();
 $('env').onclick=function(){var t=$('txt').value.trim();if(!t)return;CH.push(['yo','Tú',t]);$('txt').value='';chat()};
 $('txt').onkeydown=function(e){if(e.key==='Enter')$('env').click()};
 $('cambiar').onclick=function(){var i=GENTE.findIndex(function(g){return g[0]===$('yo').textContent});$('yo').textContent=GENTE[(i+1)%5][0]};
+var SEL={m:null,t:'cuenta',d:'Quien esté libre'};
+function hoja(){var g='';for(var i=1;i<=NM;i++)g+='<button type="button" data-m="'+i+'" aria-pressed="'+(SEL.m===i)+'">'+i+'</button>';$('sm').innerHTML=g;
+  $('st').innerHTML=[['cuenta','Traer la cuenta'],['pedido','Llevar un pedido'],['limpiar','Limpiar la mesa'],['falta','Falta algo en la mesa'],['apoyo','Necesito apoyo']].map(function(x){return '<button type="button" data-t="'+x[0]+'" aria-pressed="'+(SEL.t===x[0])+'">'+x[1]+'</button>'}).join('');
+  $('sd').innerHTML=['Quien esté libre','Caja','Cocina','Barra','Lucía','Camila'].map(function(x){return '<button type="button" data-d="'+x+'" aria-pressed="'+(SEL.d===x)+'">'+x+'</button>'}).join('');
+  $('sm').querySelectorAll('button').forEach(function(b){b.onclick=function(){SEL.m=+b.getAttribute('data-m');hoja()}});
+  $('st').querySelectorAll('button').forEach(function(b){b.onclick=function(){SEL.t=b.getAttribute('data-t');hoja()}});
+  $('sd').querySelectorAll('button').forEach(function(b){b.onclick=function(){SEL.d=b.getAttribute('data-d');hoja()}})}
+$('fab').onclick=function(){SEL.m=null;hoja();$('sheet').hidden=false};
+$('sx').onclick=function(){$('sheet').hidden=true};
+$('sheet').addEventListener('click',function(e){if(e.target===$('sheet'))$('sheet').hidden=true});
+$('se').onclick=function(){if(!SEL.m){$('se').textContent='Elige la mesa';setTimeout(function(){$('se').textContent='Enviar'},1200);return}
+  var ya=L.filter(function(x){return x.mesa===SEL.m&&x.tipo===SEL.t})[0];if(!ya){L.push({id:nid++,mesa:SEL.m,seg:0,est:'p',nom:null,asig:SEL.d,tipo:SEL.t,de:$('yo').textContent,dest:SEL.d})}
+  msg('yo',TIPOS[SEL.t][0]+' · mesa '+SEL.m+' → '+SEL.d+($('sn').value?' ('+$('sn').value+')':''));$('sn').value='';$('sheet').hidden=true;pintar()};
 pintar();
 </script>
