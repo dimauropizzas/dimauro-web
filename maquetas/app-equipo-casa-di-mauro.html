@@ -63,6 +63,12 @@ nav.bn .in{display:flex;gap:6px;width:100%;max-width:560px}
 .rapidos button{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600}
 .send{display:flex;gap:6px}.send input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:12px;padding:11px;background:var(--surface)}
 .note{color:var(--muted);font-size:12px}
+.hbig{font-family:var(--serif);font-size:44px;line-height:1.1;font-variant-numeric:tabular-nums;margin:6px 0}
+.hrow{display:grid;grid-template-columns:44px 1fr auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line);font-size:14px;font-variant-numeric:tabular-nums}
+.hrow:first-child{border-top:0}.hrow .ex{color:var(--warn);font-weight:700}
+.hbar{height:6px;border-radius:3px;background:var(--line);margin-top:3px;overflow:hidden}.hbar i{display:block;height:100%;background:var(--brand)}.hbar i.x{background:var(--warn)}
+.alerta{background:var(--warn-bg);border-left:5px solid var(--warn);border-radius:10px;padding:8px 10px;font-size:13px;margin-bottom:8px}
+.ht{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.ht th,.ht td{text-align:left;padding:7px 4px;border-top:1px solid var(--line);font-size:13px}.ht th{border-top:0;font-size:11px;color:var(--muted);text-transform:uppercase}.ht td.r,.ht th.r{text-align:right}
 .tipo{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;background:var(--info-bg);color:var(--info);margin-left:6px;vertical-align:middle}
 .tipo.cuenta{background:var(--gold-bg);color:var(--gold)}
 .fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--gold);color:#fff;border:0;border-radius:999px;padding:14px 20px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.3);z-index:9}
@@ -107,6 +113,20 @@ nav.bn .in{display:flex;gap:6px;width:100%;max-width:560px}
   <div class="send" style="margin-top:12px"><input id="sn" placeholder="Nota (opcional): sin hielo, 2 cuentas separadas…" aria-label="Nota"></div>
   <button class="btn w" type="button" id="se" style="margin-top:12px">Enviar</button>
 </div></div>
+<section id="v-hor" hidden>
+  <div class="card" id="mi"><h2>Mi turno</h2>
+    <div class="note" id="turnoPlan">Planificado hoy: 12:00 a 20:00 · colación 1 h</div>
+    <div class="hbig" id="hreloj">0:00</div>
+    <div class="note" id="hest">Sin marcar</div>
+    <button class="btn w" type="button" id="hmarca" style="margin-top:10px">Marcar entrada</button>
+    <p class="note" style="margin:8px 0 0">La hora queda registrada con tu nombre y no se puede editar: si te equivocas, pide un ajuste a un supervisor.</p></div>
+  <div class="card"><h2>Mi semana</h2><div id="semana"></div></div>
+  <div id="supHoras" hidden>
+    <div class="card"><h2>En el local ahora</h2><div id="ahora" class="turno" style="margin:0"></div></div>
+    <div class="card"><h2>Horas del equipo · semana</h2><div class="alerta" id="alertaH"></div><div id="tabH"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" type="button" id="aprobar">Aprobar semana</button><button class="btn g" type="button" id="exportar">Exportar para el contador</button></div><p class="note" id="hmsg" style="margin:8px 0 0">Los ajustes se hacen con un motivo y quedan en el historial.</p></div>
+  </div>
+</section>
 <section id="v-eq" hidden>
   <div class="chat" id="chat"></div>
   <div class="rapidos" id="rap"></div>
@@ -119,6 +139,7 @@ nav.bn .in{display:flex;gap:6px;width:100%;max-width:560px}
   <button class="nb" role="tab" data-v="hoy" aria-selected="true"><b>▦</b>Hoy</button>
   <button class="nb" role="tab" data-v="sala" aria-selected="false"><b>◔</b>Sala<span class="bd" id="bd-sala" hidden>0</span></button>
   <button class="nb" role="tab" data-v="eq" aria-selected="false"><b>✎</b>Equipo<span class="bd" id="bd-eq">2</span></button>
+  <button class="nb" role="tab" data-v="hor" aria-selected="false"><b>◷</b>Horas</button>
 </div></nav>
 
 <script>
@@ -138,7 +159,7 @@ document.querySelectorAll('#rango button').forEach(function(b){b.onclick=functio
 var v=3;$('visto').onclick=function(){if(this.disabled)return;this.disabled=true;this.textContent='Visto';$('vistos').textContent='Visto por '+(v+1)+' de 6'};
 // navegación
 var badSala=0;
-document.querySelectorAll('.nb').forEach(function(b){b.onclick=function(){var k=b.getAttribute('data-v');document.querySelectorAll('.nb').forEach(function(o){o.setAttribute('aria-selected',String(o===b))});['hoy','sala','eq'].forEach(function(s){$('v-'+s).hidden=s!==k});if(k==='eq'){$('bd-eq').hidden=true}$('fab').hidden=k!=='sala'}});
+document.querySelectorAll('.nb').forEach(function(b){b.onclick=function(){var k=b.getAttribute('data-v');document.querySelectorAll('.nb').forEach(function(o){o.setAttribute('aria-selected',String(o===b))});['hoy','sala','eq','hor'].forEach(function(s){$('v-'+s).hidden=s!==k});if(k==='eq'){$('bd-eq').hidden=true}$('fab').hidden=k!=='sala'}});
 // sala
 var TIPOS={llamado:['Llama al garzón','Voy'],cuenta:['Pide la cuenta','La llevo'],pedido:['Pedido listo para llevar','Lo llevo'],limpiar:['Limpiar la mesa','Limpio'],apoyo:['Necesita apoyo','Voy'],falta:['Falta algo en la mesa','Lo llevo']};
 var L=[{id:1,mesa:5,seg:12,est:'p',nom:null,asig:'Noe',tipo:'cuenta',de:'Cliente (QR)',dest:'Quien tenga POS libre'}];var NM=12,at={},nid=2;
@@ -185,5 +206,23 @@ $('sheet').addEventListener('click',function(e){if(e.target===$('sheet'))$('shee
 $('se').onclick=function(){if(!SEL.m){$('se').textContent='Elige la mesa';setTimeout(function(){$('se').textContent='Enviar'},1200);return}
   var ya=L.filter(function(x){return x.mesa===SEL.m&&x.tipo===SEL.t})[0];if(!ya){L.push({id:nid++,mesa:SEL.m,seg:0,est:'p',nom:null,asig:SEL.d,tipo:SEL.t,de:$('yo').textContent,dest:SEL.d})}
   msg('yo',TIPOS[SEL.t][0]+' · mesa '+SEL.m+' → '+SEL.d+($('sn').value?' ('+$('sn').value+')':''));$('sn').value='';$('sheet').hidden=true;pintar()};
+// horas
+var SEM=[['Lun','12:00','20:00','8:10',0],['Mar','12:00','20:00','8:00',0],['Mié','12:00','20:00','0:00',0],['Jue','12:00','20:00','8:35',35],['Vie','14:00','23:00','0:00',0],['Sáb','14:00','23:00','0:00',0],['Dom','Libre','','0:00',0]];
+function hh(m){return Math.floor(m/60)+':'+('0'+(m%60)).slice(-2)}
+var TOT=42*60,base=16*60+45,corriendo=false,ini=0;
+function semana(){var tot=base+(corriendo?Math.floor((Date.now()-ini)/60000):0);
+  $('semana').innerHTML=SEM.map(function(d,i){var ex=d[4];return '<div class="hrow"><b>'+d[0]+'</b><div>'+(d[1]==='Libre'?'<span class="note">Día libre</span>':d[1]+' a '+d[2]+' <span class="note">· hecho '+d[3]+'</span>')+'</div>'+(ex?'<span class="ex">+0:'+ex+' extra</span>':'<span></span>')+'</div>'}).join('')+
+  '<div style="margin-top:8px"><div class="occt" style="display:flex;justify-content:space-between;font-size:13px"><b>Semana</b><span>'+hh(tot)+' de '+hh(TOT)+' h</span></div><div class="hbar"><i style="width:'+Math.min(100,tot/TOT*100)+'%"></i></div></div>'}
+function reloj(){if(!corriendo)return;var m=Math.floor((Date.now()-ini)/60000),s=Math.floor((Date.now()-ini)/1000)%60;$('hreloj').textContent=hh(m)+':'+('0'+s).slice(-2).replace(/^(\d)$/,'0$1');semana()}
+$('hmarca').onclick=function(){if(!corriendo){corriendo=true;ini=Date.now()-3*3600000-12*60000;$('hmarca').textContent='Marcar salida';$('hest').textContent='Entrada registrada a las '+new Date(ini).toTimeString().slice(0,5)}else{corriendo=false;$('hmarca').textContent='Marcar entrada';$('hest').textContent='Salida registrada. Gracias.';var m=Math.floor((Date.now()-ini)/60000);base+=m}semana()};
+setInterval(reloj,1000);semana();
+var EQH=[['Noe','supervisora',40*60+5,0,'ok'],['Lucía','garzón',36*60+20,0,'ok'],['Camila','garzón',41*60+30,0,'warn'],['Chris','polifuncional',44*60+40,2*60+40,'ex'],['Kathy','polifuncional',38*60,0,'ok'],['Karen','cocina',42*60,0,'ok']];
+function supH(){var yo=$('yo').textContent,sup=(yo==='Noe'||yo==='Mauro');$('supHoras').hidden=!sup;if(!sup)return;
+  $('ahora').innerHTML=[['Noe','12:02'],['Lucía','13:55'],['Camila','14:01']].map(function(a){return '<span class="av"><i>'+a[0][0]+'</i>'+a[0]+' · desde '+a[1]+'</span>'}).join('');
+  $('alertaH').innerHTML='Chris lleva <b>2:40 de horas extra</b> esta semana (el tope diario es 2 h). Camila va en 41:30 de 42:00.';
+  $('tabH').innerHTML='<table class="ht"><thead><tr><th>Persona</th><th class="r">Horas</th><th class="r">Extras</th><th>Estado</th></tr></thead><tbody>'+EQH.map(function(e){return '<tr><td><b>'+e[0]+'</b><br><span class="note">'+e[1]+'</span></td><td class="r">'+hh(e[2])+'</td><td class="r">'+(e[3]?'<span class="pill p-warn" style="font-size:11px">+'+hh(e[3])+'</span>':'–')+'</td><td><span class="pill '+(e[4]==='ex'?'p-bad':e[4]==='warn'?'p-warn':'p-ok')+'" style="font-size:11px">'+(e[4]==='ex'?'Revisar':e[4]==='warn'?'Cerca del tope':'Al día')+'</span></td></tr>'}).join('')+'</tbody></table>'}
+$('aprobar').onclick=function(){$('hmsg').textContent='Semana aprobada. Se guardó quién la aprobó y cuándo.'};
+$('exportar').onclick=function(){$('hmsg').textContent='Listo: planilla con horas trabajadas, extras y ausencias por persona, para el contador. (En la maqueta no se descarga.)'};
+var _cb=$('cambiar').onclick;$('cambiar').onclick=function(){_cb();supH()};supH();
 pintar();
 </script>
