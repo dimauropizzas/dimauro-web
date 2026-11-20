@@ -71,6 +71,16 @@ th,td{text-align:left;padding:8px 6px;border-top:1px solid var(--line);font-size
 th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;border-top:0}
 td.r,th.r{text-align:right}
 .scroll{overflow-x:auto}
+table.tg{border-collapse:separate;border-spacing:3px;font-variant-numeric:tabular-nums;min-width:640px;width:100%}
+.tg th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;text-align:center;padding:4px 2px}
+.tg th.nm,.tg td.nm{text-align:left;min-width:110px;position:sticky;left:0;background:var(--surface);z-index:1}
+.tg td.nm{font-size:13px}.tg td.nm small{display:block;color:var(--muted);font-size:11px}
+.tg td.c{height:42px;border-radius:9px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface2);color:var(--muted);border:1px solid var(--line);padding:0 2px}
+.tg td.c.w{background:var(--brand);color:var(--brand-fg);border-color:var(--brand)}
+.tg td.c:hover,.tg td.c:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.tg td.t{text-align:right;font-size:13px;white-space:nowrap}.tg td.t.x{color:var(--warn);font-weight:700}
+.leg2{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}.leg2 i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-3px;margin-right:5px}
+.alerta{background:var(--warn-bg);border-left:5px solid var(--warn);border-radius:10px;padding:8px 10px;font-size:13px;margin-bottom:10px}
 .fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));background:var(--brand);color:var(--brand-fg);border:0;border-radius:999px;padding:14px 22px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.28);z-index:5}
 .drawer{position:fixed;inset:0;background:rgba(8,16,12,.6);z-index:20;display:flex;justify-content:flex-end}
 .sheet{background:var(--surface);width:min(520px,100%);height:100%;overflow:auto;padding:18px max(16px,env(safe-area-inset-right,0px)) 40px 18px}
@@ -114,6 +124,7 @@ pre.msg{white-space:pre-wrap;background:var(--surface2);border-radius:10px;paddi
   <button class="tab" role="tab" aria-selected="true" data-v="semana" id="t-semana">Semana</button>
   <button class="tab" role="tab" aria-selected="false" data-v="hacer" id="t-hacer">Por hacer <span class="n">5</span></button>
   <button class="tab" role="tab" aria-selected="false" data-v="nuevas" id="t-nuevas">Reservas nuevas</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="equipo" id="t-equipo">Equipo y turnos</button>
   <button class="tab" role="tab" aria-selected="false" data-v="mes" id="t-mes">Resumen del mes</button>
 </nav>
 
@@ -148,6 +159,23 @@ pre.msg{white-space:pre-wrap;background:var(--surface2);border-radius:10px;paddi
     <button class="chip" type="button" data-f="Manual" aria-pressed="false">Manual</button>
   </div>
   <div class="card scroll"><table><thead><tr><th>Cuándo</th><th>Quién</th><th>Qué reservó</th><th>Origen</th><th class="r">Total</th><th class="r">Abonado</th><th>Estado</th></tr></thead><tbody id="nuevas"></tbody></table></div>
+</section>
+
+<section id="v-equipo" role="tabpanel" aria-labelledby="t-equipo" hidden>
+  <div class="card" style="margin-bottom:12px"><h2>Turnos de la semana</h2>
+    <p class="note" style="margin:0 0 10px">Toca una casilla para cambiar el turno de esa persona ese día. Las horas y las extras se recalculan solas. Jornada completa: 42 horas a la semana.</p>
+    <div class="alerta" id="alt"></div>
+    <div class="scroll"><table class="tg" id="tg"></table></div>
+    <div class="leg2"><span><i style="background:var(--brand)"></i>Trabaja</span><span><i style="background:var(--surface2);border:1px solid var(--line)"></i>Libre</span><span><i style="background:var(--warn-bg);border:1px solid var(--warn)"></i>Pasa de las 42 h</span></div>
+  </div>
+  <div class="cols">
+    <div class="card"><h2>Hoy · miércoles 9</h2><div id="hoyEq"></div></div>
+    <div class="card"><h2>Marcación de asistencia</h2>
+      <div class="row"><div><b>QR o NFC en la entrada</b><small>Cada persona acerca su celular o escanea el código al llegar y al salir.</small></div><span class="pill p-ok">Punto de confianza</span></div>
+      <div class="row"><div><b>Libro de asistencia oficial</b><small>Se sigue llevando como lo pide la Dirección del Trabajo. El panel es el control interno.</small></div><span class="pill p-info">Se mantiene</span></div>
+      <div class="row"><div><b>Ajustes</b><small>Solo un supervisor corrige, con un motivo escrito. Queda el historial.</small></div><span class="pill p-warn">Con registro</span></div>
+    </div>
+  </div>
 </section>
 
 <section id="v-mes" role="tabpanel" aria-labelledby="t-mes" hidden>
@@ -288,6 +316,22 @@ $('eq').addEventListener('click',function(e){if(e.target===$('eq'))$('eq').hidde
 seg('eqrango',function(b){EQ.r=b.getAttribute('data-r');eqPintar()});
 document.querySelectorAll('#eqinc .chip').forEach(function(c){c.onclick=function(){var k=c.getAttribute('data-k');EQ.k[k]=EQ.k[k]?0:1;c.setAttribute('aria-pressed',String(!!EQ.k[k]));eqPintar()}});
 $('eqcop').onclick=function(){var t=$('eqtxt').textContent;try{navigator.clipboard.writeText(t).then(function(){$('eqmsg').textContent='Copiado. Pégalo en el grupo de WhatsApp.'},function(){$('eqmsg').textContent='Selecciona el texto y cópialo.'})}catch(e){$('eqmsg').textContent='Selecciona el texto y cópialo.'}};
+var GE=[['Noe','Jefa de garzones · supervisora'],['Mauro','Barra · supervisión'],['Lucía','Garzón'],['Camila','Garzón'],['Chris','Polifuncional'],['Kathy','Polifuncional'],['Gloria','Polifuncional'],['Basti','Polifuncional'],['Karen','Cocina'],['Carla','Cocina']];
+var TURNOS=[null,[12,20],[14,23],[8,16]],NT=['Libre','12–20','14–23','8–16'];
+var SW=[[1,1,1,1,1,1,0],[1,1,0,1,1,1,1],[1,0,1,1,1,2,1],[2,2,0,1,1,1,1],[1,1,1,0,2,2,2],[0,1,1,1,1,1,1],[1,1,1,0,1,1,1],[1,1,0,1,1,1,1],[3,3,3,3,3,3,0],[0,3,3,3,3,3,3]];
+var DS=['Lun 7','Mar 8','Mié 9','Jue 10','Vie 11','Sáb 12','Dom 13'];
+function horasT(t){return t?(TURNOS[t][1]-TURNOS[t][0]-1):0}
+function tg(){var h='<thead><tr><th class="nm">Persona</th>'+DS.map(function(d,i){return '<th'+(i===2?' style="color:var(--gold)"':'')+'>'+d+'</th>'}).join('')+'<th>Horas</th><th>Extra</th></tr></thead><tbody>',al=[];
+  GE.forEach(function(g,i){var tot=0;h+='<tr><td class="nm"><b>'+g[0]+'</b><small>'+g[1]+'</small></td>';
+    SW[i].forEach(function(t,d){tot+=horasT(t);h+='<td class="c'+(t?' w':'')+'" tabindex="0" role="button" data-i="'+i+'" data-d="'+d+'" aria-label="'+g[0]+' '+DS[d]+': '+NT[t]+'">'+NT[t]+'</td>'});
+    var ex=Math.max(0,tot-42);if(ex)al.push(g[0]+' pasa por '+ex+' h ('+tot+' h)');h+='<td class="t">'+tot+' h</td><td class="t'+(ex?' x':'')+'">'+(ex?'+'+ex+' h':'–')+'</td></tr>'});
+  $('tg').innerHTML=h+'</tbody>';
+  $('alt').innerHTML=al.length?'<b>Ojo con las horas extra:</b> '+al.join(' · ')+'.':'Nadie pasa de las 42 horas esta semana.';
+  $('tg').querySelectorAll('td.c').forEach(function(c){var f=function(){var i=+c.getAttribute('data-i'),d=+c.getAttribute('data-d');SW[i][d]=(SW[i][d]+1)%4;tg();hoy()};c.onclick=f;c.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();f()}}});
+}
+function hoy(){var tr=[],li=[];GE.forEach(function(g,i){var t=SW[i][2];(t?tr:li).push('<div class="row"><div><b>'+g[0]+'</b><small>'+g[1]+'</small></div><span class="pill '+(t?'p-ok':'p-info')+'">'+(t?NT[t]:'Libre')+'</span></div>')});
+  $('hoyEq').innerHTML='<div class="note" style="margin-bottom:4px"><b>Trabajan ('+tr.length+')</b></div>'+tr.join('')+'<div class="note" style="margin:10px 0 4px"><b>Libres ('+li.length+')</b></div>'+li.join('')}
+tg();hoy();
 $('guardar').onclick=function(){$('res').hidden=false;$('res').scrollIntoView({behavior:'smooth',block:'nearest'})};
 $('copiar').onclick=function(){var t=$('msg').textContent;try{navigator.clipboard.writeText(t).then(function(){$('cop').textContent='Copiado'},function(){$('cop').textContent='Selecciona el texto y cópialo'})}catch(e){$('cop').textContent='Selecciona el texto y cópialo'}};
 </script>
