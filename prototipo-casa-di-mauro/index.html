@@ -653,6 +653,25 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
 /* ===== Idiomas: es (por defecto), en, pt-BR. K(clave, es, en, pt). Variables {x}; plural con clave_1 cuando vars.n===1. ===== */
 var D={es:{},en:{},pt:{}};
 function K(k,e,n,p){D.es[k]=e;D.en[k]=n;D.pt[k]=p}
+K('tr.t','Paga tu abono por transferencia','Pay your deposit by bank transfer','Pague seu sinal por transferência bancária');
+K('tr.p','Tu reserva quedó retenida. Para confirmarla, transfiere el abono y envíanos el comprobante por WhatsApp.','Your booking is on hold. To confirm it, transfer the deposit and send us the receipt on WhatsApp.','Sua reserva está retida. Para confirmá-la, transfira o sinal e envie o comprovante pelo WhatsApp.');
+K('tr.amt','Monto a transferir','Amount to transfer','Valor a transferir');
+K('tr.code','Código de tu reserva','Your booking code','Código da sua reserva');
+K('tr.ref','Escribe este código en el comentario de la transferencia.','Write this code in the transfer comment.','Escreva este código no comentário da transferência.');
+K('tr.hold','Mantenemos tu reserva por 12 horas. Si no recibimos el comprobante en ese plazo, se libera.','We hold your booking for 12 hours. If we do not receive the receipt in that time, it is released.','Mantemos sua reserva por 12 horas. Se não recebermos o comprovante nesse prazo, ela é liberada.');
+K('tr.wa','Enviar comprobante por WhatsApp','Send receipt on WhatsApp','Enviar comprovante pelo WhatsApp');
+K('tr.copy','Copiar datos','Copy details','Copiar dados');
+K('tr.copied','Copiado','Copied','Copiado');
+K('tr.nodata','Pronto te mostraremos los datos de transferencia. Escríbenos por WhatsApp y te los enviamos.','We will show the transfer details soon. Message us on WhatsApp and we will send them to you.','Em breve mostraremos os dados da transferência. Escreva pelo WhatsApp e enviaremos.');
+K('tr.msg','Hola, soy {n}. Reservé en la web (código {c}) y transferí {a}. Adjunto el comprobante.','Hello, I am {n}. I booked on the website (code {c}) and transferred {a}. Receipt attached.','Olá, sou {n}. Reservei no site (código {c}) e transferi {a}. Comprovante em anexo.');
+function cdmTransfer(mb,nom,cod,monto,cerrar){var P=(window.CDM_CONFIG&&CDM_CONFIG.pago)||{},B=P.banco||{},ok=B.cuenta&&B.banco&&B.titular;
+  var filas=ok?[['Titular',B.titular],['RUT',B.rut],['Banco',B.banco],['Tipo de cuenta',B.tipo],['N.º de cuenta',B.cuenta],['Correo',B.email]].filter(function(x){return x[1]}):[];
+  var txt=filas.map(function(x){return x[0]+': '+x[1]}).join('\n')+'\n'+t('tr.amt')+': '+CLP(monto)+'\n'+t('tr.code')+': '+cod;
+  mb.innerHTML='<h3 style="font-family:var(--serif)">'+t('tr.t')+'</h3><p class="note">'+t('tr.p')+'</p>'+
+   '<div class="good"><div>'+t('tr.amt')+': <b>'+CLP(monto)+'</b></div><div>'+t('tr.code')+': <b>'+cod+'</b></div><div class="note">'+t('tr.ref')+'</div></div>'+
+   (ok?'<div class="reg" style="background:#f6f3ea;border-radius:12px;padding:10px 12px;margin:8px 0">'+filas.map(function(x){return '<div><b>'+x[0]+':</b> '+x[1]+'</div>'}).join('')+'</div><button class="btn ghost" id="trc" type="button">'+t('tr.copy')+'</button>':'<div class="warn">'+t('tr.nodata')+'</div>')+
+   '<p class="note">'+t('tr.hold')+'</p><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn" id="trw" target="_blank" rel="noopener" href="'+wa(t('tr.msg',{n:nom,c:cod,a:CLP(monto)}))+'" style="text-decoration:none">'+t('tr.wa')+'</a><button class="btn ghost" id="trx" type="button">'+t('close')+'</button></div>';
+  $('trx').onclick=cerrar;var c=$('trc');if(c)c.onclick=function(){try{navigator.clipboard.writeText(txt).then(function(){c.textContent=t('tr.copied')})}catch(e){c.textContent=t('tr.copied')}}}
 /* REVISIÓN LEGAL PENDIENTE: las traducciones de las políticas (pol.*, err.*, ret.*, lib.*, faq.a3) son informativas; las revisa Mauro. En caso de diferencia prevalece el español. */
 K('meta.title',`Casa Di Mauro · Hostal y restaurante en Licán Ray`,`Casa Di Mauro · Guesthouse and restaurant in Licán Ray`,`Casa Di Mauro · Pousada e restaurante em Licán Ray`);
 K('meta.desc',`Hostal con desayuno sureño y restaurante en Licán Ray, a pasos del lago: habitaciones con baño privado, escapadas de Navidad y Año Nuevo, grupos y delegaciones, pizzas y coctelería.`,`Guesthouse and restaurant in Licán Ray, steps from the lake: rooms with private bathrooms and a Southern Chilean breakfast, Christmas and New Year getaways, groups and delegations, pizza and cocktails.`,`Pousada e restaurante em Licán Ray, a poucos passos do lago: quartos com banheiro privativo e café da manhã sulista, escapadas de Natal e Ano Novo, grupos e delegações, pizzas e coquetéis.`);
@@ -904,6 +923,8 @@ K('ck.house',`En la casa`,`At the house`,`Na casa`);K('ck.boxo',`Box lunch`,`Pac
 K('ck.dayn',` · el box lunch se gestiona el día previo`,` · the packed lunch is arranged the day before`,` · o lanche para levar é combinado no dia anterior`);
 K('ck.nyed',`+{p} por persona · Aperitivo, entrada, fondo, postres, buffet de postres y copa de espumante a la medianoche`,`+{p} per person · Welcome drink, starter, main course, desserts, dessert buffet and a glass of sparkling wine at midnight`,`+{p} por pessoa · Aperitivo, entrada, prato principal, sobremesas, buffet de sobremesas e taça de espumante à meia-noite`);
 K('ck.pay',`Pagar abono con Khipu`,`Pay deposit with Khipu`,`Pagar sinal com Khipu`);
+K('ck.paytr',`Reservar y pagar por transferencia`,`Book and pay by bank transfer`,`Reservar e pagar por transferência`);
+function PAYL(){return (window.CDM_CONFIG&&CDM_CONFIG.pago&&CDM_CONFIG.pago.modo==='transferencia')?t('ck.paytr'):t('ck.pay')}
 K('ck.creating',`Creando tu reserva…`,`Creating your booking…`,`Criando a sua reserva…`);
 K('ck.opening',`Abriendo el pago…`,`Opening the payment…`,`Abrindo o pagamento…`);
 K('ck.need',`Escribe tu nombre y tu WhatsApp para reservar.`,`Enter your name and WhatsApp number to book.`,`Escreva seu nome e seu WhatsApp para reservar.`);
@@ -1125,7 +1146,9 @@ var WA='56956154280';
 var wa=function(txt){return 'https://wa.me/'+WA+'?text='+encodeURIComponent(txt)};
 var FEC=function(s){var p=s.split('-');return new Date(Date.UTC(+p[0],+p[1]-1,+p[2]))};
 var ISO=function(d){return d.toISOString().slice(0,10)};
-window.CDM_CONFIG=window.CDM_CONFIG||{base:'https://atiende-bot-production-4757.up.railway.app',key:'',keyExp:''};
+window.CDM_CONFIG=window.CDM_CONFIG||{base:'https://atiende-bot-production-4757.up.railway.app',key:'',keyExp:'',
+  /* Pago por transferencia (transitorio hasta activar Khipu): poner modo:'transferencia' y completar los datos bancarios (los entrega Mauro; nunca se inventan). */
+  pago:{modo:'khipu',holdTxt:'',banco:{titular:'',rut:'',banco:'',tipo:'',cuenta:'',email:''},whatsapp:''}};
 /* usdClp: tipo de cambio de referencia (CLP por US$ 1). Solo informativo: el cobro es siempre en CLP. Si hay red se actualiza desde mindicador.cl y se cachea 6 h. */
 if(CDM_CONFIG.usdClp==null)CDM_CONFIG.usdClp=950;
 LANG=langInicial();CUR=curInicial();fxInit();
@@ -1304,7 +1327,7 @@ function openCheckout(){
     '<div class="good"><div>'+t('sum.value')+': <b>'+CLP(c.total)+'</b></div><div>'+t('sum.abono')+': <b>'+CLP(c.anticipo)+'</b></div><div>'+t('sum.saldo')+(c.total>c.habs||c.pend?(K.adv?t('sum.saldo.ma'):t('sum.saldo.m')):'')+': <b>'+CLP(c.total-c.anticipo)+'</b></div></div>'+FXN()+
     '<div class="field"><label for="gn">'+t('lbl.name')+'</label><input id="gn" autocomplete="organization" autocapitalize="words"></div><div class="field"><label for="gm">'+t('lbl.mail')+'</label><input id="gm" type="email" inputmode="email" autocomplete="email"></div><div class="field"><label for="gw">'+t('lbl.wa')+'</label><input id="gw" type="tel" inputmode="tel" autocomplete="tel"></div>':'<div class="warn">'+t('ck.qn')+'</div>')+
     POLDEV(pack)+
-    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="go" type="button"'+(g?'':' disabled')+'>'+t('ck.pay')+'</button><button class="btn ghost" id="cl" type="button">'+t('close')+'</button></div>';
+    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="go" type="button"'+(g?'':' disabled')+'>'+PAYL()+'</button><button class="btn ghost" id="cl" type="button">'+t('close')+'</button></div>';
     ['gn','gm','gw'].forEach(function(i){if($(i)&&opt.f[i])$(i).value=opt.f[i]});
     $('gq').onchange=function(){keep();opt.g=+$('gq').value||0;Object.keys(opt.plan).forEach(function(d){var q=opt.plan[d];if(q.ln>opt.g)q.ln=opt.g;if(q.cn>opt.g)q.cn=opt.g});if(opt.nye>opt.g)opt.nye=0;ACT.forEach(function(a){if(opt[a.id]>opt.g)opt[a.id]=0});draw()};
     function pl(d){return opt.plan[d]||(opt.plan[d]={l:'n',c:'n'})}
@@ -1332,8 +1355,9 @@ function openCheckout(){
         if(pack)body.paquete=pack==='ny'?'ano_nuevo':'navidad';else{body.entrada=ci;body.salida=co}
         clave=cdmClave(body);
         LIVE.token().then(function(tk){return LIVE.api('POST','/reservas',body,clave,tk?{'X-Turnstile-Token':tk}:null)}).then(function(j){
-          if(!j.ok){var m=mb.querySelector('.livemsg')||document.createElement('div');m.className='warn livemsg';m.textContent=LIVE.msg(j.codigo);if(!m.parentNode)$('go').parentNode.insertBefore(m,$('go'));$('go').disabled=false;$('go').textContent=t('ck.pay');return}
+          if(!j.ok){var m=mb.querySelector('.livemsg')||document.createElement('div');m.className='warn livemsg';m.textContent=LIVE.msg(j.codigo);if(!m.parentNode)$('go').parentNode.insertBefore(m,$('go'));$('go').disabled=false;$('go').textContent=PAYL();return}
           try{sessionStorage.setItem('cdm_clave',clave)}catch(e){}
+          if(window.CDM_CONFIG&&CDM_CONFIG.pago&&CDM_CONFIG.pago.modo==='transferencia'){var cod='CDM-'+String(clave).replace(/[^A-Za-z0-9]/g,'').slice(-6).toUpperCase();mset(function(){cdmTransfer(mb,nom,cod,j.abono||c.anticipo,closeModal)});return}
           $('go').textContent=t('ck.opening');
           LIVE.api('POST','/reservas/'+clave+'/pago',{email:cor||undefined,urlRetorno:location.origin+location.pathname+'?pago=volvio'}).then(function(p){
             if(p.ok&&p.urlPago){location.href=p.urlPago;return}
@@ -1396,7 +1420,7 @@ function romCk(){
     '<div class="good"><div>'+t('sum.value')+': <b>'+CLP(c.total)+'</b></div><div>'+t('sum.abono')+': <b>'+CLP(c.abono)+'</b></div><div>'+t('sum.saldo')+': <b>'+CLP(c.total-c.abono)+'</b></div></div>'+FXN()+
     '<div class="field"><label for="rn">'+t('lbl.name')+'</label><input id="rn"></div><div class="field"><label for="rm">'+t('lbl.mail')+'</label><input id="rm" type="email"></div><div class="field"><label for="rw">'+t('lbl.wa')+'</label><input id="rw"></div>'+
     POLDEV(0)+
-    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="rgo" type="button">'+t('ck.pay')+'</button><button class="btn ghost" id="rcl" type="button">'+t('close')+'</button></div>';
+    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="rgo" type="button">'+PAYL()+'</button><button class="btn ghost" id="rcl" type="button">'+t('close')+'</button></div>';
     $('rcl').onclick=closeModal;
     $('rgo').onclick=function(){payDemo({abono:c.abono,ids:['rok','rcl2','rcl3'],draw:draw,msg:function(cod){return t('ck.code',{c:cod,t:CLP(c.total),x:'',a:CLP(c.abono),s:CLP(c.total-c.abono)})}})};
   }
@@ -1455,7 +1479,7 @@ function advCk(){
     '<div class="good"><div>'+t('sum.value')+': <b>'+CLP(c.total)+'</b>'+(c.pend?t('adv.more'):'')+'</div><div>'+t('sum.abono')+': <b>'+CLP(c.anticipo)+'</b></div><div>'+t('sum.saldo')+': <b>'+CLP(c.total-c.anticipo)+'</b></div></div>'+FXN()+
     '<div class="field"><label for="vn">'+t('lbl.name')+'</label><input id="vn"></div><div class="field"><label for="vm">'+t('lbl.mail')+'</label><input id="vm" type="email"></div><div class="field"><label for="vw">'+t('lbl.wa')+'</label><input id="vw"></div>'+
     POLDEV(0)+
-    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="vgo" type="button">'+t('ck.pay')+'</button><button class="btn ghost" id="vcl" type="button">'+t('close')+'</button></div>';
+    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="vgo" type="button">'+PAYL()+'</button><button class="btn ghost" id="vcl" type="button">'+t('close')+'</button></div>';
     $('vcl').onclick=closeModal;
     $('vgo').onclick=function(){payDemo({abono:c.anticipo,ids:['vok','vcl2','vcl3'],draw:draw,msg:function(cod){return t('ck.code',{c:cod,t:CLP(c.total),x:(c.pend?t('adv.more'):''),a:CLP(c.anticipo),s:CLP(c.total-c.anticipo)})}})};
   }
@@ -1627,7 +1651,7 @@ function gsum(){
     (f?'<div class="note">'+t('pol.free2',{r:t(G.n?'pol.free2.aloj':'pol.free2.exp')})+'</div>'+LEG():'')+
     '<div class="field"><label for="gn">'+t('lbl.inst')+'</label><input id="gn" autocomplete="organization" autocapitalize="words"></div><div class="field"><label for="gm">'+t('lbl.mail')+'</label><input id="gm" type="email" inputmode="email" autocomplete="email"></div><div class="field"><label for="gw">'+t('lbl.wa')+'</label><input id="gw" type="tel" inputmode="tel" autocomplete="tel"></div>'+
     (G.n?POLDEV(0):'')+(T.nm.length?POLEXP():'')+
-    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="ggo" type="button">'+(LX.on()?(G.modo==='exp'?t('ck.pay'):t('gs.wa')):t('ck.pay'))+'</button><button class="btn ghost" id="cl4" type="button">'+t('close')+'</button></div>';
+    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="ggo" type="button">'+(LX.on()?(G.modo==='exp'?PAYL():t('gs.wa')):t('ck.pay'))+'</button><button class="btn ghost" id="cl4" type="button">'+t('close')+'</button></div>';
     $('cl4').onclick=closeModal;
     $('ggo').onclick=function(){
       if(LX.on()){
@@ -1640,8 +1664,9 @@ function gsum(){
         $('ggo').disabled=true;$('ggo').textContent=t('ck.creating');
         var cuerpoX={contacto:{nombre:nom,telefono:tel},lineas:lineas},clave=cdmClave(cuerpoX);
         LX.api('POST','/reservas',cuerpoX,clave).then(function(j){
-          if(!j.ok){aviso(LX.msg(j.codigo));$('ggo').disabled=false;$('ggo').textContent=t('ck.pay');LX.st={};return}
+          if(!j.ok){aviso(LX.msg(j.codigo));$('ggo').disabled=false;$('ggo').textContent=PAYL();LX.st={};return}
           try{sessionStorage.setItem('cdm_expres',String(j.reserva_id));if(j.token_reserva)sessionStorage.setItem('cdm_exptok',j.token_reserva)}catch(e){}
+          if(window.CDM_CONFIG&&CDM_CONFIG.pago&&CDM_CONFIG.pago.modo==='transferencia'){mset(function(){cdmTransfer(mb,nom,'CDM-E'+j.reserva_id,j.anticipo||ab,closeModal)});return}
           $('ggo').textContent=t('ck.opening');
           LX.api('POST','/reservas/'+j.reserva_id+'/pago',{email:cor||undefined,urlRetorno:location.origin+location.pathname+'?pago=exp'},'pago-'+j.reserva_id,j.token_reserva).then(function(pg){
             if(pg.ok&&pg.urlPago){location.href=pg.urlPago;return}
