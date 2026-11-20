@@ -1,0 +1,94 @@
+<title>Auditoría Casa Di Mauro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap">
+<style>
+/* Concepto: informe de lectura rápida: veredicto arriba, luego estado de cada hallazgo y lo que falta decidir */
+:root{--bg:#f2f0ea;--surface:#fffefb;--surface2:#f6f3ea;--fg:#16231c;--muted:#5d6a62;--line:#ddd6c3;--brand:#17402b;--gold:#a8832f;
+--ok:#1d7a46;--ok-bg:#dcefe2;--warn:#9a5b00;--warn-bg:#fbe8c4;--bad:#a52c2c;--bad-bg:#f8dcdc;--info:#245a9a;--info-bg:#dce8f6;--serif:'Playfair Display',Georgia,serif;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1713;--surface:#17211b;--surface2:#1d2923;--fg:#eef1ec;--muted:#a3b0a8;--line:#2d3b33;--brand:#6fd096;--gold:#d8b45a;--ok:#6fd096;--ok-bg:#173524;--warn:#f0b455;--warn-bg:#3d2c10;--bad:#f08a8a;--bad-bg:#3d1b1b;--info:#8db9ee;--info-bg:#1a2c42;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1713;--surface:#17211b;--surface2:#1d2923;--fg:#eef1ec;--muted:#a3b0a8;--line:#2d3b33;--brand:#6fd096;--gold:#d8b45a;--ok:#6fd096;--ok-bg:#173524;--warn:#f0b455;--warn-bg:#3d2c10;--bad:#f08a8a;--bad-bg:#3d1b1b;--info:#8db9ee;--info-bg:#1a2c42;color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--sans);padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.w{max-width:920px;margin:0 auto}
+h1{font-family:var(--serif);font-size:30px;line-height:1.15;margin:0 0 4px;text-wrap:balance}
+h2{font-family:var(--serif);font-size:21px;margin:26px 0 8px}
+.sub{color:var(--muted);margin:0 0 16px}
+.ver{background:var(--bad-bg);border-left:6px solid var(--bad);border-radius:12px;padding:14px 16px;margin:12px 0}
+.ver b{display:block;font-size:17px;margin-bottom:4px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:8px 0;min-width:0}
+.row{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:10px;align-items:start;padding:10px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.id{font-weight:700;color:var(--muted)}
+.row b{display:block}.row small{color:var(--muted);display:block}
+.p{display:inline-block;border-radius:999px;font-size:12px;font-weight:700;padding:3px 10px;white-space:nowrap}
+.ok{background:var(--ok-bg);color:var(--ok)}.wn{background:var(--warn-bg);color:var(--warn)}.bd{background:var(--bad-bg);color:var(--bad)}.in{background:var(--info-bg);color:var(--info)}
+ul{margin:6px 0;padding-left:20px}li{margin:4px 0}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.n{font-family:var(--serif);font-size:28px}
+code{background:var(--surface2);border-radius:6px;padding:1px 6px;font-size:13px}
+@media (max-width:560px){.row{grid-template-columns:40px minmax(0,1fr)}.row .p{grid-column:2;justify-self:start}}
+</style>
+<div class="w">
+<h1>Auditoría de Casa Di Mauro</h1>
+<p class="sub">Seguridad y motor de reservas y pagos · 20 de noviembre de 2026 · hecha por dos auditores independientes, solo lectura</p>
+
+<div class="ver"><b>Veredicto: no se debe abrir la web al público el 2 de diciembre tal como está en producción.</b>
+Con las correcciones que ya están hechas y probadas, solo falta aplicarlas y desplegarlas, y se puede abrir. El cálculo de dinero es sólido: el servidor siempre decide precios, abonos y saldos. Los problemas estaban en los bordes: quién puede tocar reservas ajenas, qué pasa si el pago llega tarde y algunas promesas del sitio.</div>
+
+<div class="g">
+  <div class="card"><div class="n">2</div>críticos y 6 altos o medios graves, todos con corrección</div>
+  <div class="card"><div class="n">0</div>reservas reales hoy: nadie pudo aprovechar nada</div>
+  <div class="card"><div class="n">0</div>claves reales filtradas en los repositorios</div>
+</div>
+
+<h2>Estado de cada hallazgo</h2>
+<div class="card">
+  <div class="row"><span class="id">C1</span><div><b>Se veían y pagaban reservas ajenas</b><small>La clave con guiones bajos (<code>_</code>) coincidía con cualquier otra. Confirmado en staging.</small></div><span class="p ok">Corregido en producción</span></div>
+  <div class="row"><span class="id">C2</span><div><b>Se podían cancelar reservas ajenas de experiencias</b><small>La llave pública permitía cancelar por número correlativo. Confirmado en staging: se canceló una reserva pagada ajena.</small></div><span class="p wn">Listo en la rama, falta aplicar y desplegar</span></div>
+  <div class="row"><span class="id">A1</span><div><b>Bloqueo masivo de habitaciones</b><small>Con teléfonos distintos se retenían todas las habitaciones renovando cada 90 minutos.</small></div><span class="p wn">Parcial en producción; el resto espera Turnstile</span></div>
+  <div class="row"><span class="id">A2</span><div><b>Un visitante podía bloquear el sitio a todos</b><small>Dependía de cómo Railway pasa la IP del visitante.</small></div><span class="p wn">Listo en la rama</span></div>
+  <div class="row"><span class="id">M3</span><div><b>Tablas nuevas con permisos de más</b><small>Mesas y tareas estaban expuestas a cuentas públicas, solo protegidas por RLS.</small></div><span class="p ok">Corregido en producción</span></div>
+  <div class="row"><span class="id">M5</span><div><b>Instaladores <code>.exe</code> y <code>.env</code> en el repositorio público</b><small>El <code>.env</code> está vacío: no se filtró nada. Los <code>.exe</code> no deberían estar.</small></div><span class="p wn">Quitados de la rama de trabajo; falta la rama principal</span></div>
+</div>
+
+<h2>Motor de reservas y pagos</h2>
+<div class="card">
+  <div class="row"><span class="id">C3</span><div><b>Pagar con la reserva vencida y perder la habitación</b><small>El link de pago no tenía el mismo vencimiento que la retención de 90 minutos.</small></div><span class="p wn">Listo, falta aplicar</span></div>
+  <div class="row"><span class="id">C4</span><div><b>Sin reintento tras un pago rechazado</b><small>La habitación quedaba bloqueada y no se podía volver a pagar.</small></div><span class="p wn">Listo, falta aplicar</span></div>
+  <div class="row"><span class="id">C5</span><div><b>Texto falso: «retenida por 24 horas»</b><small>La retención real es de 90 minutos.</small></div><span class="p ok">Corregido en el sitio</span></div>
+  <div class="row"><span class="id">C2s</span><div><b>La cena de Año Nuevo se sumaba pero no se reservaba</b><small>El cliente la pagaba y la casa no tenía registro.</small></div><span class="p ok">Oculta en el modo en vivo</span></div>
+  <div class="row"><span class="id">C6</span><div><b>Experiencias bloqueables en masa</b><small>Retención de 24 horas y sin tope por teléfono.</small></div><span class="p wn">Listo, falta aplicar</span></div>
+  <div class="row"><span class="id">M2</span><div><b>La misma clave con otro contenido devolvía la reserva anterior</b></div><span class="p wn">Listo, falta aplicar</span></div>
+  <div class="row"><span class="id">M3</span><div><b>Doble pago de una misma reserva</b><small>Se podía abonar dos veces o depositar más que el total acordado.</small></div><span class="p wn">Listo, falta aplicar</span></div>
+  <div class="row"><span class="id">M4</span><div><b>El candado de escapadas vivía solo en la web</b><small>El Backoffice antiguo podía cruzar Navidad. Ahora lo exige el propio motor. Efecto: una reserva manual dentro de una escapada sin liberar se rechaza.</small></div><span class="p wn">Listo, falta aplicar</span></div>
+  <div class="row"><span class="id">M7</span><div><b>Las personas liberadas (1 por cada 10) no existen en el sistema</b><small>Hoy se descuentan a mano al cobrar el saldo.</small></div><span class="p in">Decidir</span></div>
+  <div class="row"><span class="id">M8</span><div><b>Capacidad física de los sectores</b><small>La configuración podría vender más personas de las que caben si dos experiencias comparten bloque.</small></div><span class="p in">Decidir</span></div>
+</div>
+
+<h2>Lo que necesita tu decisión</h2>
+<div class="card"><ul>
+  <li><b>Aplicar a producción</b> el SQL <code>cdm_seg_02_motor.sql</code> (C2, C3, C4, C6, M2, M3, M4 y M6). Está probado en staging. El sistema de permisos bloqueó que lo aplique sin tu confirmación directa.</li>
+  <li><b>Fusionar a <code>main</code> y desplegar</b> las ramas con el bot corregido, el panel, las comidas, Khipu y la app del equipo. Antes se aplica el SQL del punto anterior.</li>
+  <li><b>Variables de Railway</b> (las secretas las cargas tú): <code>RESERVA_TOKEN_SECRET</code>, <code>TURNSTILE_SECRET_KEY</code> y luego <code>TURNSTILE_OBLIGATORIO=1</code>, <code>MESAS_*</code> y las claves de avisos al celular.</li>
+  <li><b>Crear el widget de Turnstile</b> en Cloudflare (gratis).</li>
+  <li><b>Clave de Khipu</b> en el Backoffice y la prueba de pago real.</li>
+  <li><b>Personas liberadas y capacidad de sectores:</b> cómo se registran y si las experiencias comparten sector.</li>
+</ul></div>
+
+<h2>Qué está bien</h2>
+<div class="card"><ul>
+  <li>Los precios, abonos y totales los calcula siempre el servidor; el sitio no puede imponerlos.</li>
+  <li>Paquetes, liberación de habitaciones, mínimo de 15 por evento, devoluciones por tramos con holgura de 30 minutos y comidas funcionan según tus reglas.</li>
+  <li>El pago con Khipu se reconfirma directamente con Khipu y no se cree el aviso. Las claves de pago por negocio van cifradas.</li>
+  <li>Las funciones de la base y las tablas de Casa Di Mauro tienen permisos y protección correctos. Los orígenes permitidos (CORS) solo aceptan dimauro.cl.</li>
+  <li>El repositorio público no tiene ninguna clave real, ni en su historial.</li>
+</ul></div>
+
+<h2>Lo que los auditores no pudieron verificar</h2>
+<div class="card"><ul>
+  <li>Khipu real (no hay entorno de pruebas separado) y las variables de Railway.</li>
+  <li>El comportamiento bajo mucho tráfico a la vez.</li>
+  <li>Las pantallas del Backoffice con una sesión real.</li>
+  <li>Dos pruebas viejas del bot fallan y 23 no corren en este entorno; no tocan lo nuevo, pero conviene revisarlas.</li>
+</ul></div>
+</div>
