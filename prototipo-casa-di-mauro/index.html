@@ -669,6 +669,8 @@ var MAINC={ci:'ci',co:'co',pp:'pp',alert:'alert',rooms:'rooms'},ESCC={ci:'eci',c
 var ACT=[{id:'a0',n:'Ascenso al volcán',p:null},{id:'a1',n:'Stand-up paddle',p:null},{id:'a2',n:'Navegación',p:null},{id:'a3',n:'Buceo',p:null},{id:'a4',n:'Parapente',p:null},{id:'a5',n:'Trekking',p:null}];
 /* ===== Conexión en vivo con Atiende (reservas y pago por Khipu). Con CDM_CONFIG.key vacío el sitio funciona en modo demostración, como siempre. ===== */
 window.CDM_CONFIG=window.CDM_CONFIG||{base:'https://atiende-bot-production-4757.up.railway.app',key:'',keyExp:''};
+function cdmClave(cuerpo){var t=JSON.stringify(cuerpo),h=5381;for(var i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;var k='cdm_k_'+(h>>>0).toString(36),ahora=Date.now();
+  try{var g=JSON.parse(sessionStorage.getItem(k)||'null');if(g&&g.c&&ahora-g.t<60*60000)return g.c;var c='web-'+cdmAleatorio();sessionStorage.setItem(k,JSON.stringify({c:c,t:ahora}));return c}catch(e){return 'web-'+cdmAleatorio()}}
 function cdmAleatorio(){var b=new Uint8Array(16);try{crypto.getRandomValues(b)}catch(e){for(var i=0;i<16;i++)b[i]=Math.floor(Math.random()*256)}return Array.prototype.map.call(b,function(x){return ('0'+x.toString(16)).slice(-2)}).join('')}
 var LIVE={on:function(){return !!(window.CDM_CONFIG&&CDM_CONFIG.key)},cache:{},pend:{},
   api:function(m,path,body,clave,extra){var h={'Authorization':'Bearer '+CDM_CONFIG.key};if(extra)for(var k in extra)h[k]=extra[k];if(body)h['Content-Type']='application/json';if(clave)h['Idempotency-Key']=clave;
@@ -680,7 +682,7 @@ var LIVE={on:function(){return !!(window.CDM_CONFIG&&CDM_CONFIG.key)},cache:{},p
         window.turnstile.render(el,{sitekey:sk,execution:'execute',appearance:'interaction-only',callback:function(tk){clearTimeout(t);ok(tk)},'error-callback':function(){clearTimeout(t);ok(null)}});window.turnstile.execute(el)}
       if(window.turnstile)return run();var sc=document.createElement('script');sc.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';sc.async=true;sc.onload=run;sc.onerror=function(){ok(null)};document.head.appendChild(sc)})},
   tipo:{m:'matrimonial',t:'twin',r:'triple'},
-  msg:function(c){return ({sin_disponibilidad:'Ya no quedan habitaciones de ese tipo para esas fechas. Prueba con otras fechas u otra habitación.',fechas_de_paquete:'Esas fechas son de una escapada: reserva la escapada completa.',fecha_pasada:'Esa fecha ya pasó.',contacto_invalido:'Falta tu nombre o tu WhatsApp.',clave_en_uso:'Esa reserva ya existe con otras fechas.',reserva_no_vigente:'Esa reserva ya no está vigente.',verificacion_fallida:'No pudimos comprobar que eres una persona. Recarga la página e inténtalo de nuevo.',demasiados_pedidos:'Tienes muchas reservas pendientes con ese teléfono. Paga o espera unos minutos antes de reservar otra vez.',sin_conexion:'No pudimos conectarnos. Revisa tu internet e inténtalo de nuevo.',pagos_no_disponibles:'El pago en línea no está disponible por ahora.',cobro_no_creado:'No pudimos crear el link de pago. Inténtalo de nuevo en un momento.'})[c]||'No pudimos completar la reserva. Inténtalo de nuevo.'}};
+  msg:function(c){return ({sin_disponibilidad:'Ya no quedan habitaciones de ese tipo para esas fechas. Prueba con otras fechas u otra habitación.',fechas_de_paquete:'Esas fechas son de una escapada: reserva la escapada completa.',fecha_pasada:'Esa fecha ya pasó.',contacto_invalido:'Falta tu nombre o tu WhatsApp.',clave_en_uso:'Esa reserva ya existe con otras fechas.',reserva_no_vigente:'Esa reserva ya no está vigente.',verificacion_fallida:'No pudimos comprobar que eres una persona. Recarga la página e inténtalo de nuevo.',demasiados_pedidos:'Tienes muchas reservas pendientes con ese teléfono. Paga o espera unos minutos antes de reservar otra vez.',demasiadas_pendientes:'Ahora hay muchas reservas en proceso. Inténtalo en unos minutos o escríbenos por el botón de Rayén.',sin_conexion:'No pudimos conectarnos. Revisa tu internet e inténtalo de nuevo.',pagos_no_disponibles:'El pago en línea no está disponible por ahora.',cobro_no_creado:'No pudimos crear el link de pago. Inténtalo de nuevo en un momento.'})[c]||'No pudimos completar la reserva. Inténtalo de nuevo.'}};
 function renderRooms(C){
   C=(C&&C.rooms)?C:MAINC;S.ctx=C;
   var ci=$(C.ci).value,co=$(C.co).value,pp=+$(C.pp).value,al=$(C.alert),box=$(C.rooms);
@@ -783,7 +785,7 @@ function openCheckout(){
     if(g){
       meals='<div class="mealbox"><h4>Comidas, día por día</h4><div class="note">'+'¿Quieres algo distinto? <a href="'+wa('Hola, quiero consultar por almuerzos y cenas distintos para mi reserva.')+'" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>.</div>'+
         planHtml(g)+
-        (pack==='ny'?stp('nye','Cena de Año Nuevo','+$50.000 por persona · Aperitivo, entrada, fondo, postres, buffet de postres y copa de espumante a la medianoche',g):'')+'</div>'+(K.adv?'<div class="mealbox"><h4>Actividades</h4><div class="note">Elige para cuántas personas. Cada actividad se cobra por persona. Los valores se están coordinando: te confirmamos el total de las actividades antes de cobrar el saldo.</div>'+ACT.map(function(a){return stp(a.id,a.n,a.p?'$'+a.p.toLocaleString('es-CL')+' por persona':'Valor por confirmar',g)}).join('')+'</div>':'');
+        (pack==='ny'&&!LIVE.on()?stp('nye','Cena de Año Nuevo','+$50.000 por persona · Aperitivo, entrada, fondo, postres, buffet de postres y copa de espumante a la medianoche',g):'')+'</div>'+(K.adv?'<div class="mealbox"><h4>Actividades</h4><div class="note">Elige para cuántas personas. Cada actividad se cobra por persona. Los valores se están coordinando: te confirmamos el total de las actividades antes de cobrar el saldo.</div>'+ACT.map(function(a){return stp(a.id,a.n,a.p?'$'+a.p.toLocaleString('es-CL')+' por persona':'Valor por confirmar',g)}).join('')+'</div>':'');
     }
     mb.innerHTML='<h3 style="font-family:var(--serif)">'+descr(sel)+'</h3><div class="note">'+fmt(ci)+' al '+fmt(co)+'</div>'+gh+meals+
     (g?'<div class="scroll"><table class="sum">'+c.items.map(function(i){return '<tr><td>'+i[0]+'</td><td>'+(typeof i[1]==='number'?CLP(i[1]):i[1])+'</td></tr>'}).join('')+'<tr class="t"><td>Total</td><td>'+CLP(c.total)+'</td></tr></table></div>'+
@@ -812,17 +814,19 @@ function openCheckout(){
         $('go').disabled=true;$('go').textContent='Creando tu reserva…';
         var hab=[],rest=g;ROOMS.forEach(function(r){for(var q=0;q<(sel[r.id]||0);q++)hab.push({tipo:LIVE.tipo[r.id],cap:r.cap})});
         hab.forEach(function(h,ix){var left=hab.length-ix-1,p=Math.max(1,Math.min(h.cap,rest-left));h.personas=p;rest-=p;delete h.cap});
-        var clave='web-'+cdmAleatorio();
+        var clave=null;
         var body={contacto:{nombre:nom,telefono:tel},habitaciones:hab};
         if(window.CDM_CONFIG&&CDM_CONFIG.comidasApi){var cm=[];Object.keys(opt.plan||{}).sort().forEach(function(d){var q=opt.plan[d];if(!q)return;if(q.l&&q.l!=='n'&&q.ln)cm.push({fecha:d,comida:'almuerzo',modalidad:q.l==='b'?'box_lunch':'casa',personas:q.ln});if(q.c==='c'&&q.cn)cm.push({fecha:d,comida:'cena',modalidad:'casa',personas:q.cn})});if(cm.length)body.comidas=cm}
         if(pack)body.paquete=pack==='ny'?'ano_nuevo':'navidad';else{body.entrada=ci;body.salida=co}
+        clave=cdmClave(body);
         LIVE.token().then(function(tk){return LIVE.api('POST','/reservas',body,clave,tk?{'X-Turnstile-Token':tk}:null)}).then(function(j){
           if(!j.ok){var m=mb.querySelector('.livemsg')||document.createElement('div');m.className='warn livemsg';m.textContent=LIVE.msg(j.codigo);if(!m.parentNode)$('go').parentNode.insertBefore(m,$('go'));$('go').disabled=false;$('go').textContent='Pagar abono con Khipu';return}
           try{sessionStorage.setItem('cdm_clave',clave)}catch(e){}
           $('go').textContent='Abriendo el pago…';
           LIVE.api('POST','/reservas/'+clave+'/pago',{email:cor||undefined,urlRetorno:location.origin+location.pathname+'?pago=volvio'}).then(function(p){
             if(p.ok&&p.urlPago){location.href=p.urlPago;return}
-            mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva retenida</h3><div class="warn">'+LIVE.msg(p.codigo)+'</div><p class="note">Tu reserva quedó retenida por 24 horas. Cuando el pago esté disponible podrás completarlo; si necesitas ayuda, escríbenos por el botón de Rayén.</p><button class="btn" id="cl7" type="button">Cerrar</button>';$('cl7').onclick=closeModal});
+            mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva retenida</h3><div class="warn">'+LIVE.msg(p.codigo)+'</div><p class="note">Tu reserva quedó retenida por 90 minutos. Si el link no se abrió, reintenta el pago; si necesitas ayuda, escríbenos por el botón de Rayén.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="rp7" type="button">Reintentar pago</button><button class="btn ghost" id="cl7" type="button">Cerrar</button></div>';$('cl7').onclick=closeModal;
+              $('rp7').onclick=function(){$('rp7').disabled=true;$('rp7').textContent='Abriendo el pago…';LIVE.api('POST','/reservas/'+clave+'/pago',{email:cor||undefined,urlRetorno:location.origin+location.pathname+'?pago=volvio'}).then(function(q){if(q.ok&&q.urlPago){location.href=q.urlPago;return}$('rp7').disabled=false;$('rp7').textContent='Reintentar pago';var w=mb.querySelector('.warn');if(w)w.textContent=LIVE.msg(q.codigo)})}});
         });
         return}
       var cod='CDM-'+Math.random().toString(36).slice(2,7).toUpperCase();
@@ -1130,14 +1134,15 @@ function gsum(){
         var lineas=[];EXPS.forEach(function(x,k){if(G.e[k]&&G.ev[k]&&G.ev[k].sid)lineas.push({sesion_id:G.ev[k].sid,categoria:'persona',personas:G.p})});
         if(!lineas.length||lineas.length!==t.nm.length){aviso('Vuelve a elegir el día y el horario de tu experiencia.');return}
         $('ggo').disabled=true;$('ggo').textContent='Creando tu reserva…';
-        var clave='web-'+cdmAleatorio();
-        LX.api('POST','/reservas',{contacto:{nombre:nom,telefono:tel},lineas:lineas},clave).then(function(j){
+        var cuerpoX={contacto:{nombre:nom,telefono:tel},lineas:lineas},clave=cdmClave(cuerpoX);
+        LX.api('POST','/reservas',cuerpoX,clave).then(function(j){
           if(!j.ok){aviso(LX.msg(j.codigo));$('ggo').disabled=false;$('ggo').textContent='Pagar abono con Khipu';LX.st={};return}
           try{sessionStorage.setItem('cdm_expres',String(j.reserva_id));if(j.token_reserva)sessionStorage.setItem('cdm_exptok',j.token_reserva)}catch(e){}
           $('ggo').textContent='Abriendo el pago…';
           LX.api('POST','/reservas/'+j.reserva_id+'/pago',{email:cor||undefined,urlRetorno:location.origin+location.pathname+'?pago=exp'},'pago-'+j.reserva_id,j.token_reserva).then(function(pg){
             if(pg.ok&&pg.urlPago){location.href=pg.urlPago;return}
-            mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva retenida</h3><div class="warn">'+LX.msg(pg.codigo)+'</div><p class="note">Tu reserva quedó retenida por un tiempo limitado. Cuando el pago esté disponible podrás completarlo; si necesitas ayuda, escríbenos por el botón de Rayén.</p><button class="btn" id="cl9" type="button">Cerrar</button>';$('cl9').onclick=closeModal})});
+            mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva retenida</h3><div class="warn">'+LX.msg(pg.codigo)+'</div><p class="note">Tu reserva quedó retenida por un tiempo limitado. Si el link no se abrió, reintenta el pago; si necesitas ayuda, escríbenos por el botón de Rayén.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="rp9" type="button">Reintentar pago</button><button class="btn ghost" id="cl9" type="button">Cerrar</button></div>';$('cl9').onclick=closeModal;
+            $('rp9').onclick=function(){$('rp9').disabled=true;LX.api('POST','/reservas/'+j.reserva_id+'/pago',{email:cor||undefined,urlRetorno:location.origin+location.pathname+'?pago=exp'},'pago-'+j.reserva_id+'-'+Date.now().toString(36),j.token_reserva).then(function(q){if(q.ok&&q.urlPago){location.href=q.urlPago;return}$('rp9').disabled=false;var w=mb.querySelector('.warn');if(w)w.textContent=LX.msg(q.codigo)})}})});
         return}
       var cod='CDM-'+Math.random().toString(36).slice(2,7).toUpperCase();
       mb.innerHTML='<div class="flowbar">Khipu · modo de prueba</div><p><b>Pago de '+CLP(ab)+'</b></p><p class="note">Simulación del paso de pago. En el sitio final aquí se abre la pantalla de Khipu y la reserva se confirma solo cuando Khipu lo avisa.</p><button class="btn" id="gok" type="button" style="background:#1d6fe0">Simular pago aprobado</button><button class="btn ghost" id="gv" type="button">Volver</button>';
