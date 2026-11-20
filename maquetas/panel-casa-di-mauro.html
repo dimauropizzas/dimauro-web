@@ -52,7 +52,7 @@ h1{font-family:var(--serif);font-size:28px;line-height:1.15;margin:0;text-wrap:b
 .occt{font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
 .item{border-radius:9px;padding:7px 8px;font-size:13px;background:var(--surface2);border-left:4px solid var(--line);min-width:0;overflow-wrap:anywhere}
 .item b{display:block}.item small{color:var(--muted);display:block;font-size:12px}
-.item.ll{border-left-color:var(--ok)}.item.sa{border-left-color:var(--info)}.item.ex{border-left-color:var(--gold)}.item.bl{border-left-color:var(--warn);background:var(--warn-bg)}.item.td{border-left-color:var(--bad);background:var(--bad-bg)}
+.item.ll{border-left-color:var(--ok)}.item.sa{border-left-color:var(--info)}.item.ex{border-left-color:var(--gold)}.item.bl,.item.co{border-left-color:var(--warn);background:var(--warn-bg)}.item.td{border-left-color:var(--bad);background:var(--bad-bg)}
 .bar{height:5px;border-radius:3px;background:var(--line);margin-top:4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--gold)}
 .vacio{color:var(--muted);font-size:12px;text-align:center;padding:6px 0}
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
@@ -99,7 +99,7 @@ pre.msg{white-space:pre-wrap;background:var(--surface2);border-radius:10px;paddi
 <div class="demo">Vista de ejemplo con datos ficticios. Así se vería el panel de Casa Di Mauro.</div>
 <header class="top">
   <div><h1>Casa Di Mauro</h1><div class="sub">Todo lo que hay que hacer, por día y por semana</div></div>
-  <div class="weeknav"><button type="button" aria-label="Semana anterior">‹</button><b>7 al 13 de diciembre</b><button type="button" aria-label="Semana siguiente">›</button></div>
+  <div class="weeknav"><button class="btn g" type="button" id="eqbtn" style="width:auto;height:auto;border-radius:12px;padding:9px 14px;font-size:14px">Resumen para el equipo</button><button type="button" aria-label="Semana anterior">‹</button><b>7 al 13 de diciembre</b><button type="button" aria-label="Semana siguiente">›</button></div>
 </header>
 
 <section class="kpis" aria-label="Resumen de hoy">
@@ -225,16 +225,30 @@ Saldo: $950.000 al llegar.</pre>
   </div>
 </div>
 
+<div class="drawer" id="eq" hidden role="dialog" aria-modal="true" aria-labelledby="eqh">
+  <div class="sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h2 id="eqh">Resumen para el equipo</h2><button class="btn g" type="button" id="eqx" aria-label="Cerrar">×</button></div>
+    <div class="note">Para mandar por WhatsApp a las trabajadoras. No incluye precios, cobros ni pagos: solo lo que hay que hacer.</div>
+    <h4>Qué enviar</h4>
+    <div class="seg" id="eqrango"><button type="button" aria-pressed="false" data-r="hoy">Hoy</button><button type="button" aria-pressed="true" data-r="man">Mañana</button><button type="button" aria-pressed="false" data-r="sem">Toda la semana</button></div>
+    <h4>Incluir</h4>
+    <div class="chips" id="eqinc"><button class="chip" type="button" data-k="ll" aria-pressed="true">Llegan</button><button class="chip" type="button" data-k="sa" aria-pressed="true">Salen</button><button class="chip" type="button" data-k="ex" aria-pressed="true">Experiencias</button><button class="chip" type="button" data-k="co" aria-pressed="true">Cocina y box lunch</button></div>
+    <h4>Vista previa</h4>
+    <pre class="msg" id="eqtxt"></pre>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" type="button" id="eqcop">Copiar texto</button><a class="btn" id="eqwa" href="#" target="_blank" rel="noopener" style="text-decoration:none">Abrir en WhatsApp</a></div>
+    <div class="note" id="eqmsg" style="margin-top:8px">Se abre WhatsApp con el texto y tú eliges el grupo de las trabajadoras.</div>
+  </div>
+</div>
 <script>
 var $=function(i){return document.getElementById(i)},CLP=function(n){return '$'+n.toLocaleString('es-CL')};
 var DIAS=[
- {n:'Lun',d:7,occ:3,items:[['ll','Familia Rojas','Matrimonial · llega · 3 noches · saldo $288.000']]},
- {n:'Mar',d:8,occ:4,items:[['ex','Pizza Libre · 13:00','Colegio San José · 30 personas',30,100],['bl','Box lunch para mañana','14 personas · Delegación Club Andes']]},
- {n:'Mié',d:9,hoy:1,occ:8,items:[['ll','Delegación Club Andes','Llega · 20 personas · paquete 3 noches'],['ex','Casino Party · 18:00','Empresa Alfa · 25 personas',25,80],['td','Pre-reserva Grupo Scout','Vence hoy 15:40']]},
- {n:'Jue',d:10,occ:8,items:[['sa','Familia Rojas','Salida · cobrar saldo antes'],['bl','Box lunch para mañana','14 personas · salida a recorrer']]},
- {n:'Vie',d:11,occ:8,items:[['ex','Casino Party · 13:00','Colegio Los Alerces + Empresa Alfa · 50 personas',50,80],['td','Cobrar saldo Familia Rojas','$288.000']]},
- {n:'Sáb',d:12,occ:9,items:[['ex','Parrillada Party · 13:00','45 personas',45,50],['ex','Pizza Libre · 18:00','2 grupos · 80 personas',80,100]]},
- {n:'Dom',d:13,occ:6,items:[['sa','Delegación Club Andes','Salida · saldo del paquete $950.000'],['sa','Colegio San José','Salida']]}];
+ {n:'Lun',nl:'Lunes',d:7,occ:3,items:[['ll','Familia Rojas','Matrimonial · llega · 3 noches · saldo $288.000',0,0,'Familia Rojas · matrimonial · 3 noches']]},
+ {n:'Mar',nl:'Martes',d:8,occ:4,items:[['ex','Pizza Libre · 13:00','Colegio San José · 30 personas',30,100,'13:00 Pizza Libre · Colegio San José · 30 personas'],['bl','Box lunch para mañana','14 personas · Delegación Club Andes',0,0,'Preparar box lunch para mañana: 14 personas (Delegación Club Andes)']]},
+ {n:'Mié',nl:'Miércoles',d:9,hoy:1,occ:8,items:[['ll','Delegación Club Andes','Llega · 20 personas · paquete 3 noches',0,0,'Delegación Club Andes · 20 personas · 3 noches'],['ex','Casino Party · 18:00','Empresa Alfa · 25 personas',25,80,'18:00 Casino Party · Empresa Alfa · 25 personas'],['td','Pre-reserva Grupo Scout','Vence hoy 15:40',0,0,null],['co','Cena en la casa','20 personas · Delegación Club Andes',0,0,'Cena en la casa: 20 personas (Delegación Club Andes)']]},
+ {n:'Jue',nl:'Jueves',d:10,occ:8,items:[['sa','Familia Rojas','Salida · cobrar saldo antes',0,0,'Familia Rojas'],['bl','Box lunch para mañana','14 personas · salida a recorrer',0,0,'Preparar box lunch para mañana: 14 personas (Delegación Club Andes)']]},
+ {n:'Vie',nl:'Viernes',d:11,occ:8,items:[['ex','Casino Party · 13:00','Colegio Los Alerces + Empresa Alfa · 50 personas',50,80,'13:00 Casino Party · Colegio Los Alerces y Empresa Alfa · 50 personas'],['td','Cobrar saldo Familia Rojas','$288.000',0,0,null]]},
+ {n:'Sáb',nl:'Sábado',d:12,occ:9,items:[['ex','Parrillada Party · 13:00','45 personas',45,50,'13:00 Parrillada Party · 45 personas'],['ex','Pizza Libre · 18:00','2 grupos · 80 personas',80,100,'18:00 Pizza Libre · 2 grupos · 80 personas']]},
+ {n:'Dom',nl:'Domingo',d:13,occ:6,items:[['sa','Delegación Club Andes','Salida · saldo del paquete $950.000',0,0,'Delegación Club Andes'],['sa','Colegio San José','Salida',0,0,'Colegio San José']]}];
 $('week').innerHTML=DIAS.map(function(x){
   return '<article class="day'+(x.hoy?' hoy':'')+'"><h3>'+x.n+' <span>'+x.d+'</span>'+(x.hoy?'<em class="tag">Hoy</em>':'')+'</h3>'+
   '<div><div class="occt"><span>Habitaciones</span><b>'+x.occ+' / 10</b></div><div class="occ"><i style="width:'+x.occ*10+'%"></i></div></div>'+
@@ -259,7 +273,21 @@ $('fab').onclick=function(){$('drawer').hidden=false;$('res').hidden=true;$('dh'
 function cerrar(){$('drawer').hidden=true}
 $('cerrar').onclick=cerrar;$('cancelar').onclick=cerrar;
 $('drawer').addEventListener('click',function(e){if(e.target===$('drawer'))cerrar()});
-document.addEventListener('keydown',function(e){if(e.key==='Escape')cerrar()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){cerrar();$('eq').hidden=true}});
+var EQ={r:'man',k:{ll:1,sa:1,ex:1,co:1}};
+function eqTexto(){var hoyI=DIAS.findIndex(function(d){return d.hoy}),ids=EQ.r==='hoy'?[hoyI]:EQ.r==='man'?[hoyI+1]:DIAS.map(function(_,i){return i});
+  return ids.map(function(i){var d=DIAS[i],L=['*Casa Di Mauro · '+d.nl+' '+d.d+' de diciembre*','Habitaciones ocupadas: '+d.occ+' de 10'];
+    [['ll','Llegan'],['sa','Salen'],['ex','Experiencias'],['co','Cocina']].forEach(function(g){if(!EQ.k[g[0]])return;
+      var it=d.items.filter(function(x){return x[5]&&(g[0]==='co'?(x[0]==='co'||x[0]==='bl'):x[0]===g[0])});
+      if(it.length){L.push('','*'+g[1]+'*');it.forEach(function(x){L.push('• '+x[5])})}});
+    return L.join('\n')}).join('\n\n----------\n\n')}
+function eqPintar(){var t=eqTexto();$('eqtxt').textContent=t;$('eqwa').href='https://wa.me/?text='+encodeURIComponent(t)}
+$('eqbtn').onclick=function(){$('eq').hidden=false;eqPintar();$('eqx').focus()};
+$('eqx').onclick=function(){$('eq').hidden=true};
+$('eq').addEventListener('click',function(e){if(e.target===$('eq'))$('eq').hidden=true});
+seg('eqrango',function(b){EQ.r=b.getAttribute('data-r');eqPintar()});
+document.querySelectorAll('#eqinc .chip').forEach(function(c){c.onclick=function(){var k=c.getAttribute('data-k');EQ.k[k]=EQ.k[k]?0:1;c.setAttribute('aria-pressed',String(!!EQ.k[k]));eqPintar()}});
+$('eqcop').onclick=function(){var t=$('eqtxt').textContent;try{navigator.clipboard.writeText(t).then(function(){$('eqmsg').textContent='Copiado. Pégalo en el grupo de WhatsApp.'},function(){$('eqmsg').textContent='Selecciona el texto y cópialo.'})}catch(e){$('eqmsg').textContent='Selecciona el texto y cópialo.'}};
 $('guardar').onclick=function(){$('res').hidden=false;$('res').scrollIntoView({behavior:'smooth',block:'nearest'})};
 $('copiar').onclick=function(){var t=$('msg').textContent;try{navigator.clipboard.writeText(t).then(function(){$('cop').textContent='Copiado'},function(){$('cop').textContent='Selecciona el texto y cópialo'})}catch(e){$('cop').textContent='Selecciona el texto y cópialo'}};
 </script>
