@@ -669,6 +669,7 @@ var MAINC={ci:'ci',co:'co',pp:'pp',alert:'alert',rooms:'rooms'},ESCC={ci:'eci',c
 var ACT=[{id:'a0',n:'Ascenso al volcán',p:null},{id:'a1',n:'Stand-up paddle',p:null},{id:'a2',n:'Navegación',p:null},{id:'a3',n:'Buceo',p:null},{id:'a4',n:'Parapente',p:null},{id:'a5',n:'Trekking',p:null}];
 /* ===== Conexión en vivo con Atiende (reservas y pago por Khipu). Con CDM_CONFIG.key vacío el sitio funciona en modo demostración, como siempre. ===== */
 window.CDM_CONFIG=window.CDM_CONFIG||{base:'https://atiende-bot-production-4757.up.railway.app',key:'',keyExp:''};
+function cdmAleatorio(){var b=new Uint8Array(16);try{crypto.getRandomValues(b)}catch(e){for(var i=0;i<16;i++)b[i]=Math.floor(Math.random()*256)}return Array.prototype.map.call(b,function(x){return ('0'+x.toString(16)).slice(-2)}).join('')}
 var LIVE={on:function(){return !!(window.CDM_CONFIG&&CDM_CONFIG.key)},cache:{},pend:{},
   api:function(m,path,body,clave,extra){var h={'Authorization':'Bearer '+CDM_CONFIG.key};if(extra)for(var k in extra)h[k]=extra[k];if(body)h['Content-Type']='application/json';if(clave)h['Idempotency-Key']=clave;
     return fetch(CDM_CONFIG.base+'/api/alojamiento/v1'+path,{method:m,headers:h,body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return {ok:false,codigo:'respuesta_invalida'}}).then(function(j){j._http=r.status;return j})}).catch(function(){return {ok:false,codigo:'sin_conexion'}})},
@@ -811,7 +812,7 @@ function openCheckout(){
         $('go').disabled=true;$('go').textContent='Creando tu reserva…';
         var hab=[],rest=g;ROOMS.forEach(function(r){for(var q=0;q<(sel[r.id]||0);q++)hab.push({tipo:LIVE.tipo[r.id],cap:r.cap})});
         hab.forEach(function(h,ix){var left=hab.length-ix-1,p=Math.max(1,Math.min(h.cap,rest-left));h.personas=p;rest-=p;delete h.cap});
-        var clave='web-'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+        var clave='web-'+cdmAleatorio();
         var body={contacto:{nombre:nom,telefono:tel},habitaciones:hab};
         if(window.CDM_CONFIG&&CDM_CONFIG.comidasApi){var cm=[];Object.keys(opt.plan||{}).sort().forEach(function(d){var q=opt.plan[d];if(!q)return;if(q.l&&q.l!=='n'&&q.ln)cm.push({fecha:d,comida:'almuerzo',modalidad:q.l==='b'?'box_lunch':'casa',personas:q.ln});if(q.c==='c'&&q.cn)cm.push({fecha:d,comida:'cena',modalidad:'casa',personas:q.cn})});if(cm.length)body.comidas=cm}
         if(pack)body.paquete=pack==='ny'?'ano_nuevo':'navidad';else{body.entrada=ci;body.salida=co}
@@ -996,7 +997,7 @@ function packTables(){
 
 /* Experiencias en vivo (motor de cupos de Atiende). Con CDM_CONFIG.keyExp vacío, las fechas y cupos son de demostración. */
 var LX={on:function(){return !!(window.CDM_CONFIG&&CDM_CONFIG.keyExp)},st:{},
-  api:function(m,path,body,clave){var h={'Authorization':'Bearer '+CDM_CONFIG.keyExp};if(body)h['Content-Type']='application/json';if(clave)h['Idempotency-Key']=clave;
+  api:function(m,path,body,clave,tok){var h={'Authorization':'Bearer '+CDM_CONFIG.keyExp};if(tok)h['X-Reserva-Token']=tok;if(body)h['Content-Type']='application/json';if(clave)h['Idempotency-Key']=clave;
     return fetch(CDM_CONFIG.base+'/api/turismo/v1'+path,{method:m,headers:h,body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return {ok:false,codigo:'respuesta_invalida'}}).then(function(j){j._http=r.status;return j})}).catch(function(){return {ok:false,codigo:'sin_conexion'}})},
   loc:function(iso){var t=new Date(iso).toLocaleString('sv-SE',{timeZone:'America/Santiago',hour12:false});return {d:t.slice(0,10),h:+t.slice(11,13)}},
   get:function(i){return LX.st[EXPS[i].code+'|'+G.p]},
@@ -1129,12 +1130,12 @@ function gsum(){
         var lineas=[];EXPS.forEach(function(x,k){if(G.e[k]&&G.ev[k]&&G.ev[k].sid)lineas.push({sesion_id:G.ev[k].sid,categoria:'persona',personas:G.p})});
         if(!lineas.length||lineas.length!==t.nm.length){aviso('Vuelve a elegir el día y el horario de tu experiencia.');return}
         $('ggo').disabled=true;$('ggo').textContent='Creando tu reserva…';
-        var clave='web-'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+        var clave='web-'+cdmAleatorio();
         LX.api('POST','/reservas',{contacto:{nombre:nom,telefono:tel},lineas:lineas},clave).then(function(j){
           if(!j.ok){aviso(LX.msg(j.codigo));$('ggo').disabled=false;$('ggo').textContent='Pagar abono con Khipu';LX.st={};return}
-          try{sessionStorage.setItem('cdm_expres',String(j.reserva_id))}catch(e){}
+          try{sessionStorage.setItem('cdm_expres',String(j.reserva_id));if(j.token_reserva)sessionStorage.setItem('cdm_exptok',j.token_reserva)}catch(e){}
           $('ggo').textContent='Abriendo el pago…';
-          LX.api('POST','/reservas/'+j.reserva_id+'/pago',{email:cor||undefined,urlRetorno:location.origin+location.pathname+'?pago=exp'},'pago-'+j.reserva_id).then(function(pg){
+          LX.api('POST','/reservas/'+j.reserva_id+'/pago',{email:cor||undefined,urlRetorno:location.origin+location.pathname+'?pago=exp'},'pago-'+j.reserva_id,j.token_reserva).then(function(pg){
             if(pg.ok&&pg.urlPago){location.href=pg.urlPago;return}
             mb.innerHTML='<h3 style="font-family:var(--serif)">Reserva retenida</h3><div class="warn">'+LX.msg(pg.codigo)+'</div><p class="note">Tu reserva quedó retenida por un tiempo limitado. Cuando el pago esté disponible podrás completarlo; si necesitas ayuda, escríbenos por el botón de Rayén.</p><button class="btn" id="cl9" type="button">Cerrar</button>';$('cl9').onclick=closeModal})});
         return}
@@ -1227,7 +1228,8 @@ function bindWa(btn,form,build){
 
 (function(){var q=location.search.indexOf('pago=exp')>-1,c=null;try{c=sessionStorage.getItem('cdm_expres')}catch(e){}
   if(!q||!c||!LX.on())return;
-  LX.api('GET','/reservas/'+c).then(function(j){var mb=$('mbox'),ok=j.ok&&j.estado==='confirmada';
+  var tk=null;try{tk=sessionStorage.getItem('cdm_exptok')}catch(e){}
+  LX.api('GET','/reservas/'+c,null,null,tk).then(function(j){var mb=$('mbox'),ok=j.ok&&j.estado==='confirmada';
     mb.innerHTML=ok?'<h3 style="font-family:var(--serif)">¡Reserva confirmada!</h3><div class="good">Recibimos tu abono. Tu experiencia quedó confirmada. Te esperamos en Casa Di Mauro.</div><button class="btn" id="cl10" type="button">Cerrar</button>':'<h3 style="font-family:var(--serif)">Estamos confirmando tu pago</h3><div class="note">Tu banco puede demorar unos minutos. Cuando Khipu lo confirme, tu reserva quedará confirmada automáticamente. Si pasa más de una hora, escríbenos por el botón de Rayén.</div><button class="btn" id="cl10" type="button">Cerrar</button>';
     openModal();$('cl10').onclick=closeModal;try{history.replaceState(null,'',location.pathname)}catch(e){}})})();
 (function(){var q=location.search.indexOf('pago=volvio')>-1,c=null;try{c=sessionStorage.getItem('cdm_clave')}catch(e){}
