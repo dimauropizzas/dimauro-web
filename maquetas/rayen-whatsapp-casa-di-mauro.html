@@ -1,0 +1,84 @@
+<title>Rayén en WhatsApp Casa Di Mauro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap">
+<style>
+/* Concepto: maqueta de la conversación de WhatsApp con Rayén; un solo número, tres caminos */
+:root{--bg:#e7e2d6;--chat:#efeae0;--in:#ffffff;--out:#d9fdd3;--fg:#16231c;--muted:#667781;--line:#d6d0c0;--brand:#17402b;--brand-fg:#fff;--gold:#a8832f;--ok:#1d7a46;--btn:#0b6e5b;--sans:'Inter',system-ui,-apple-system,sans-serif;--serif:'Playfair Display',Georgia,serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b141a;--chat:#0b141a;--in:#202c33;--out:#005c4b;--fg:#e9edef;--muted:#8696a0;--line:#2a3942;--brand:#2f8a5b;--brand-fg:#06130c;--gold:#d8b45a;--ok:#6fd096;--btn:#53bdeb;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b141a;--chat:#0b141a;--in:#202c33;--out:#005c4b;--fg:#e9edef;--muted:#8696a0;--line:#2a3942;--brand:#2f8a5b;--brand-fg:#06130c;--gold:#d8b45a;--ok:#6fd096;--btn:#53bdeb;color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:15px/1.4 var(--sans);margin:0;padding-block:0;padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px))}
+.wrap{max-width:460px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--chat)}
+.top{background:var(--brand);color:var(--brand-fg);padding:10px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.top img{width:40px;height:40px;border-radius:50%;background:#000}
+.top b{display:block;font-size:16px}.top small{opacity:.85;font-size:12px}
+.demo{background:#f3e8c9;color:#16231c;font-size:12px;text-align:center;padding:5px 10px}
+.msgs{flex:1;padding:12px 10px 150px;display:flex;flex-direction:column;gap:6px}
+.m{max-width:86%;padding:7px 10px 5px;border-radius:10px;background:var(--in);box-shadow:0 1px 1px rgba(0,0,0,.13);white-space:pre-wrap;overflow-wrap:anywhere;font-size:14.5px}
+.m.yo{align-self:flex-end;background:var(--out)}
+.m b{font-weight:700}.m small{display:block;text-align:right;color:var(--muted);font-size:10.5px;margin-top:2px}
+.sis{align-self:center;background:rgba(0,0,0,.08);border-radius:8px;font-size:12px;color:var(--muted);padding:3px 10px}
+.card{align-self:flex-start;max-width:86%;background:var(--in);border-radius:10px;overflow:hidden;box-shadow:0 1px 1px rgba(0,0,0,.13)}
+.card .h{padding:8px 10px;font-weight:700}.card .r{display:flex;justify-content:space-between;gap:10px;padding:6px 10px;border-top:1px solid var(--line);font-size:14px;font-variant-numeric:tabular-nums}
+.opts{position:fixed;left:0;right:0;bottom:0;background:var(--chat);padding:8px 10px max(10px,env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);z-index:6}
+.opts .in{max-width:460px;margin:0 auto;display:flex;flex-direction:column;gap:6px}
+.opts button{border:0;background:var(--in);color:var(--btn);font-weight:700;font-size:14.5px;border-radius:10px;padding:11px;box-shadow:0 1px 1px rgba(0,0,0,.15);cursor:pointer}
+.opts .g{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.opts button:focus-visible{outline:2px solid var(--gold)}
+.fin{align-self:center;font-size:12px;color:var(--muted);text-align:center;padding:8px}
+.reset{position:fixed;right:12px;top:calc(38px + env(safe-area-inset-top,0px));z-index:7;border:0;background:var(--brand);color:var(--brand-fg);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600;opacity:.9}
+</style>
+<div class="wrap">
+<div class="demo">Maqueta de la conversación. Precios y piezas son los de la web.</div>
+<div class="top"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='19' fill='%23000' stroke='%23d9b65a' stroke-width='2'/%3E%3Ctext x='20' y='25' text-anchor='middle' font-size='14' fill='%23d9b65a' font-family='Georgia'%3ECDM%3C/text%3E%3C/svg%3E" alt=""><div><b>Casa Di Mauro · Rayén</b><small>+56 9 5615 4280 · cuenta de empresa</small></div></div>
+<button class="reset" type="button" id="reset">Reiniciar</button>
+<div class="msgs" id="msgs" aria-live="polite"></div>
+</div>
+<div class="opts"><div class="in" id="opts"></div></div>
+<script>
+var $=function(i){return document.getElementById(i)},CLP=function(n){return '$'+n.toLocaleString('es-CL')};
+var M=$('msgs'),O=$('opts'),S={};
+var H=function(){var d=new Date();return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)};
+function esc(t){return String(t).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+function bot(t){var d=document.createElement('div');d.className='m';d.innerHTML=esc(t).replace(/\*(.+?)\*/g,'<b>$1</b>')+'<small>'+H()+'</small>';M.appendChild(d);d.scrollIntoView({block:'end'})}
+function yo(t){var d=document.createElement('div');d.className='m yo';d.textContent=t;var s=document.createElement('small');s.textContent=H();d.appendChild(s);M.appendChild(d);d.scrollIntoView({block:'end'})}
+function sis(t){var d=document.createElement('div');d.className='sis';d.textContent=t;M.appendChild(d)}
+function card(h,rows){var d=document.createElement('div');d.className='card';d.innerHTML='<div class="h">'+esc(h)+'</div>'+rows.map(function(r){return '<div class="r"><span>'+esc(r[0])+'</span><b>'+esc(r[1])+'</b></div>'}).join('');M.appendChild(d);d.scrollIntoView({block:'end'})}
+function opts(list,grid){O.innerHTML='';O.classList.remove('g');var w=document.createElement('div');if(grid)w.className='g';list.forEach(function(o){var b=document.createElement('button');b.type='button';b.textContent=o[0];b.onclick=function(){yo(o[0]);O.innerHTML='';setTimeout(function(){o[1]()},450)};w.appendChild(b)});O.appendChild(w)}
+function fin(){O.innerHTML='';var b=document.createElement('button');b.type='button';b.textContent='Volver al menú';b.onclick=function(){yo('Menú');setTimeout(menu,400)};O.appendChild(b)}
+function menu(){S={};bot('¡Hola! Soy Rayén, la asistente de *Casa Di Mauro*, en Licán Ray. 🌿\n¿Qué te gustaría hacer?');opts([['🍕 Restaurante y pedidos',rest],['🛏️ Alojamiento',aloj0],['🎉 Experiencias de grupo',exp0]])}
+// restaurante (flujo ya existente)
+function rest(){bot('Perfecto. Te muestro la carta y puedes pedir para retirar o para el local, o reservar mesa.');opts([['Ver la carta',function(){bot('Aquí va nuestra carta con pizzas, platos y bebidas. (El pedido sigue el mismo flujo que ya usas hoy en este número.)');fin()}],['Reservar mesa',function(){bot('¿Para cuántas personas y qué día? Te confirmamos al tiro.');fin()}],['Volver',menu]])}
+// alojamiento
+var FECHAS=[['Mié 2 dic','2026-12-02'],['Jue 3 dic','2026-12-03'],['Vie 4 dic','2026-12-04'],['Sáb 5 dic','2026-12-05']];
+function aloj0(){bot('Con gusto. Abrimos el *miércoles 2 de diciembre* y tenemos 10 habitaciones con baño privado y desayuno incluido.\n\n¿Qué día llegas?');opts(FECHAS.map(function(f){return [f[0],function(){S.f=f;aloj1()}]}).concat([[ 'Otra fecha',function(){bot('Escríbeme la fecha de llegada, por ejemplo «14 de diciembre».\n(En el chat real puedes escribirla; aquí elige una de las opciones.)');aloj0b()}]]),0)}
+function aloj0b(){opts(FECHAS.map(function(f){return [f[0],function(){S.f=f;aloj1()}]}))}
+function aloj1(){bot('¿Cuántas noches?');opts([['1 noche',function(){S.n=1;aloj2()}],['2 noches',function(){S.n=2;aloj2()}],['3 noches',function(){S.n=3;aloj2()}],['4 noches o más',function(){S.n=4;aloj2()}]],1)}
+function aloj2(){bot('¿Cuántas personas son?');opts([['1 o 2 personas',function(){S.p=2;aloj3()}],['3 personas',function(){S.p=3;aloj3()}],['Somos más: 4 a 6',function(){S.p=6;aloj3()}]],0)}
+function aloj3(){var n=S.n,fe=S.f[0];
+  if(S.p>=4){bot('Para 4 a 6 personas armamos 2 o 3 habitaciones juntas. Te muestro opciones para '+n+(n>1?' noches':' noche')+' desde el '+fe+':');
+    card('Opciones para '+S.p+' personas',[['2 matrimoniales + 1 triple','$'+(48000*2+70000).toLocaleString('es-CL')+' por noche'],['3 habitaciones desde','$'+(48000+48000+70000).toLocaleString('es-CL')+' por noche']]);S.por=48000*2+70000;S.tipo='2 matrimoniales + 1 triple'}
+  else if(S.p===3){bot('Para 3 personas tenemos la *habitación triple* (cama de 2 plazas y cama de plaza y media), con baño privado y desayuno incluido.');card('Habitación triple · del '+fe,[['Por noche','$70.000'],[n+' noche'+(n>1?'s':''),CLP(70000*n)]]);S.por=70000;S.tipo='Habitación triple'}
+  else{bot('Para 1 o 2 personas tenemos estas habitaciones, con baño privado y desayuno incluido, del '+fe+' por '+n+(n>1?' noches':' noche')+':');
+    card('Matrimonial o doble twin',[['Por noche','$48.000'],[n+' noche'+(n>1?'s':''),CLP(48000*n)]]);S.por=48000;S.tipo='Matrimonial'}
+  var tot=S.por*n;S.tot=tot;S.ab=S.por;
+  bot('El valor total sería *'+CLP(tot)+'*. Para dejarla guardada pedimos el abono de la primera noche: *'+CLP(S.ab)+'*. El saldo se paga al llegar.');
+  opts([['Quiero reservar',aloj4],['Ver otra fecha',aloj0],['Volver',menu]])}
+function aloj4(){bot('¡Qué bueno! Para reservar necesito tu nombre completo.');opts([['Camila Rojas',function(){S.nom='Camila';aloj5()}]]);}
+function aloj5(){var cod='CDM-'+Math.random().toString(36).slice(2,8).toUpperCase();S.cod=cod;
+  bot('¡Casi listo, '+S.nom+'! 🎉\nMantendremos tu reserva por *24 horas*, hasta que hagas la transferencia. Mándanos el comprobante por este mismo chat y te confirmamos.');
+  card('Tu reserva '+cod,[['Llegada',S.f[0]],['Noches',String(S.n)],['Habitación',S.tipo],['Abono a transferir',CLP(S.ab)]]);
+  bot('*Datos para la transferencia*\nTitular: Grupo Di Mauro SpA\nRUT: 77.789.767-5\nBanco: BCI\nCuenta corriente: 13811525\nCorreo: kine.carola@gmail.com\n\nSi puedes, escribe el código '+cod+' en el comentario.');
+  opts([['📎 Ya transferí, envío el comprobante',function(){bot('¡Gracias! Recibimos tu comprobante. En unos minutos lo revisamos y te confirmamos tu reserva. 💚');sis('La dueña recibe el aviso y registra el depósito en el panel');setTimeout(function(){bot('✅ *¡Recibimos tu abono!* Tu reserva '+cod+' está confirmada.\nTe esperamos el '+S.f[0]+'. El check-in es desde las 15:00 y el check-out hasta las 12:00.');fin()},900)}],['Necesito más tiempo',function(){bot('Sin problema, escríbenos cuando lo tengas y lo conversamos. Tu lugar sigue guardado por 24 horas.');fin()}]])}
+// experiencias
+var EX=[['Casino Party',10000,80],['Pizza Libre',15000,100],['Pizza Party',20000,100],['Pizza Libre + Casino Party',22000,80],['Parrillada Party',25000,50]];
+function exp0(){bot('¡Genial! Hacemos eventos de 3 horas, desde 15 personas, con capacidad para hasta 100.\n¿Cuál te interesa?');opts(EX.map(function(e){return [e[0]+' · '+CLP(e[1]),function(){S.e=e;exp1()}]}))}
+function exp1(){var e=S.e;bot('*'+e[0]+'*: '+CLP(e[1])+' por persona, hasta '+e[2]+' personas. ¿Cuántas personas son?');opts([['15 personas',function(){S.g=15;exp2()}],['30 personas',function(){S.g=30;exp2()}],['50 personas',function(){S.g=50;exp2()}]],1)}
+function exp2(){bot('¿Qué día y horario?');opts([['Vie 4 dic · 13:00',function(){S.d='Vie 4 dic · 13:00';exp3()}],['Sáb 5 dic · 18:00',function(){S.d='Sáb 5 dic · 18:00';exp3()}],['Dom 6 dic · 13:00',function(){S.d='Dom 6 dic · 13:00';exp3()}]])}
+function exp3(){var e=S.e,tot=e[1]*S.g,ab=Math.round(tot/2);S.ab=ab;
+  bot('Tenemos cupo para '+S.g+' personas el '+S.d+'. ✅');card(e[0]+' · '+S.g+' personas',[['Valor total',CLP(tot)],['Abono 50 %',CLP(ab)],['Saldo el día del evento',CLP(tot-ab)]]);
+  bot('Se libera una persona por cada 10 pagadas, y ese descuento se aplica al pagar el saldo.');opts([['Quiero reservar',function(){S.f=[S.d];S.n='–';S.tipo=e[0];S.nom='Club Andes';aloj5()}],['Ver otra experiencia',exp0],['Volver',menu]])}
+$('reset').onclick=function(){M.innerHTML='';O.innerHTML='';start()};
+function start(){sis('Hoy');bot('Hola');M.lastChild.className='m yo';setTimeout(menu,500)}
+start();
+</script>
