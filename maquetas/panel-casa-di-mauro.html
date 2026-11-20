@@ -1,0 +1,265 @@
+<title>Panel Casa Di Mauro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap">
+<style>
+/* Concepto: tablero operativo de una sola pantalla, semana primero; verde y dorado de la casa, estados con color semántico aparte */
+:root{
+  --bg:#f2f0ea;--surface:#fffefb;--surface2:#f7f4ec;--fg:#16231c;--muted:#5d6a62;--line:#ddd6c3;
+  --brand:#17402b;--brand-fg:#fff;--gold:#a8832f;--gold-bg:#f3e8c9;
+  --ok:#1d7a46;--ok-bg:#dcefe2;--warn:#9a5b00;--warn-bg:#fbe8c4;--bad:#a52c2c;--bad-bg:#f8dcdc;--info:#245a9a;--info-bg:#dce8f6;
+  --serif:'Playfair Display',Georgia,serif;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1713;--surface:#17211b;--surface2:#1d2923;--fg:#eef1ec;--muted:#a3b0a8;--line:#2d3b33;
+  --brand:#2f8a5b;--brand-fg:#06130c;--gold:#d8b45a;--gold-bg:#3a3118;
+  --ok:#6fd096;--ok-bg:#173524;--warn:#f0b455;--warn-bg:#3d2c10;--bad:#f08a8a;--bad-bg:#3d1b1b;--info:#8db9ee;--info-bg:#1a2c42;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1713;--surface:#17211b;--surface2:#1d2923;--fg:#eef1ec;--muted:#a3b0a8;--line:#2d3b33;
+  --brand:#2f8a5b;--brand-fg:#06130c;--gold:#d8b45a;--gold-bg:#3a3118;
+  --ok:#6fd096;--ok-bg:#173524;--warn:#f0b455;--warn-bg:#3d2c10;--bad:#f08a8a;--bad-bg:#3d1b1b;--info:#8db9ee;--info-bg:#1a2c42;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.45;padding-block:0 96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1280px;margin:0 auto}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.demo{margin:0 -16px;padding:6px 16px;background:var(--gold-bg);color:var(--fg);font-size:13px;text-align:center}
+header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:18px 0 10px}
+h1{font-family:var(--serif);font-size:28px;line-height:1.15;margin:0;text-wrap:balance}
+.sub{color:var(--muted);font-size:14px;margin-top:2px}
+.weeknav{display:flex;align-items:center;gap:8px}
+.weeknav button{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);font-size:18px}
+.weeknav b{min-width:150px;text-align:center;font-variant-numeric:tabular-nums}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:8px 0 14px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
+.kpi small{display:block;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.kpi b,.kpi em{display:block}
+.kpi b{font-family:var(--serif);font-size:24px;font-variant-numeric:tabular-nums}
+.kpi em{font-style:normal;color:var(--muted);font-size:12px}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.tab{border:0;background:none;padding:9px 14px;border-radius:999px;color:var(--muted);font-weight:600;white-space:nowrap}
+.tab[aria-selected="true"]{background:var(--brand);color:var(--brand-fg)}
+.tab .n{margin-left:6px;font-size:12px;background:var(--bad-bg);color:var(--bad);border-radius:999px;padding:1px 7px}
+.tab[aria-selected="true"] .n{background:rgba(255,255,255,.22);color:inherit}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+.day{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.day.hoy{border:2px solid var(--gold)}
+.day h3{margin:0;display:flex;justify-content:space-between;align-items:baseline;font-size:14px}
+.day h3{justify-content:flex-start;gap:8px}.day h3 .tag{order:2}.day h3 span{margin-left:auto;order:3;font-family:var(--serif);font-size:22px;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;background:var(--gold-bg);color:var(--gold)}
+.occ{height:6px;border-radius:3px;background:var(--surface2);overflow:hidden}.occ i{display:block;height:100%;background:var(--brand)}
+.occt{font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+.item{border-radius:9px;padding:7px 8px;font-size:13px;background:var(--surface2);border-left:4px solid var(--line);min-width:0;overflow-wrap:anywhere}
+.item b{display:block}.item small{color:var(--muted);display:block;font-size:12px}
+.item.ll{border-left-color:var(--ok)}.item.sa{border-left-color:var(--info)}.item.ex{border-left-color:var(--gold)}.item.bl{border-left-color:var(--warn);background:var(--warn-bg)}.item.td{border-left-color:var(--bad);background:var(--bad-bg)}
+.bar{height:5px;border-radius:3px;background:var(--line);margin-top:4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--gold)}
+.vacio{color:var(--muted);font-size:12px;text-align:center;padding:6px 0}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0}
+.card h2{font-family:var(--serif);font-size:19px;margin:0 0 10px}
+.row{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;padding:9px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.row>div{min-width:0}.row b{display:block}.row small{color:var(--muted)}
+.pill{display:inline-block;border-radius:999px;font-size:12px;font-weight:700;padding:2px 9px;white-space:nowrap}
+.p-ok{background:var(--ok-bg);color:var(--ok)}.p-warn{background:var(--warn-bg);color:var(--warn)}.p-bad{background:var(--bad-bg);color:var(--bad)}.p-info{background:var(--info-bg);color:var(--info)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-fg)}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 6px;border-top:1px solid var(--line);font-size:14px}
+th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;border-top:0}
+td.r,th.r{text-align:right}
+.scroll{overflow-x:auto}
+.fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));background:var(--brand);color:var(--brand-fg);border:0;border-radius:999px;padding:14px 22px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.28);z-index:5}
+.drawer{position:fixed;inset:0;background:rgba(8,16,12,.6);z-index:20;display:flex;justify-content:flex-end}
+.sheet{background:var(--surface);width:min(520px,100%);height:100%;overflow:auto;padding:18px max(16px,env(safe-area-inset-right,0px)) 40px 18px}
+.sheet h2{font-family:var(--serif);margin:0 0 4px;font-size:24px}
+.sheet h4{margin:18px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--gold)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1 1 auto;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:10px;font-weight:600}
+.seg button[aria-pressed="true"]{border-color:var(--brand);background:var(--brand);color:var(--brand-fg)}
+.f{display:flex;flex-direction:column;gap:4px;margin-top:8px}.f label{font-size:13px;color:var(--muted)}
+.f input,.f select,.f textarea{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:10px;min-width:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.two>.f{min-width:0}.f input,.f select,.f textarea{width:100%}
+.opt{border:1.5px solid var(--line);border-radius:12px;padding:10px;margin-top:8px;background:var(--surface2)}
+.opt.on{border-color:var(--brand)}
+.opt label.t{display:flex;gap:8px;align-items:center;font-weight:700}
+.btn{border:0;border-radius:12px;padding:12px 18px;background:var(--brand);color:var(--brand-fg);font-weight:700}
+.btn.g{background:var(--surface2);color:var(--fg);border:1.5px solid var(--line)}
+.note{color:var(--muted);font-size:13px}
+.ok{background:var(--ok-bg);color:var(--ok);border-radius:10px;padding:10px;margin-top:10px;font-size:14px}
+pre.msg{white-space:pre-wrap;background:var(--surface2);border-radius:10px;padding:10px;font:13px/1.4 var(--sans);margin:8px 0}
+.thumb{max-width:100%;max-height:160px;border-radius:8px;margin-top:6px;border:1px solid var(--line)}
+@media (max-width:1000px){.week{grid-template-columns:1fr}.day{flex-direction:column}.day h3 span{font-size:20px}}
+@media (prefers-reduced-motion:no-preference){.tab,.chip,.fab{transition:background .15s}}
+</style>
+
+<div class="wrap">
+<div class="demo">Vista de ejemplo con datos ficticios. Así se vería el panel de Casa Di Mauro.</div>
+<header class="top">
+  <div><h1>Casa Di Mauro</h1><div class="sub">Todo lo que hay que hacer, por día y por semana</div></div>
+  <div class="weeknav"><button type="button" aria-label="Semana anterior">‹</button><b>7 al 13 de diciembre</b><button type="button" aria-label="Semana siguiente">›</button></div>
+</header>
+
+<section class="kpis" aria-label="Resumen de hoy">
+  <div class="kpi"><small>Hoy llegan</small><b>1</b><em>Delegación · 20 personas</em></div>
+  <div class="kpi"><small>Habitaciones hoy</small><b>8 / 10</b><em>2 libres</em></div>
+  <div class="kpi"><small>Experiencias hoy</small><b>2</b><em>Casino Party 18:00</em></div>
+  <div class="kpi"><small>Box lunch a preparar hoy</small><b>14</b><em>para mañana</em></div>
+  <div class="kpi"><small>Por cobrar esta semana</small><b>$1.480.000</b><em>3 saldos</em></div>
+</section>
+
+<nav class="tabs" role="tablist" aria-label="Vistas">
+  <button class="tab" role="tab" aria-selected="true" data-v="semana" id="t-semana">Semana</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="hacer" id="t-hacer">Por hacer <span class="n">5</span></button>
+  <button class="tab" role="tab" aria-selected="false" data-v="nuevas" id="t-nuevas">Reservas nuevas</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="mes" id="t-mes">Resumen del mes</button>
+</nav>
+
+<main>
+<section id="v-semana" role="tabpanel" aria-labelledby="t-semana"><div class="week" id="week"></div></section>
+
+<section id="v-hacer" role="tabpanel" aria-labelledby="t-hacer" hidden>
+  <div class="cols">
+    <div class="card"><h2>Cobros y pagos</h2>
+      <div class="row"><div><b>Familia Rojas · saldo al llegar</b><small>Matrimonial, 7 al 10 dic</small></div><span class="pill p-warn">$288.000 · vie</span></div>
+      <div class="row"><div><b>Colegio San José · saldo del evento</b><small>Pizza Libre, 8 dic, 30 personas</small></div><span class="pill p-warn">$225.000 · mar</span></div>
+      <div class="row"><div><b>Pre-reserva sin pagar</b><small>Grupo Scout · Pizza Party, sáb 12</small></div><span class="pill p-bad">vence 15:40</span></div>
+      <div class="row"><div><b>Pago para revisar</b><small>Monto distinto al abono · reserva web</small></div><span class="pill p-bad">revisar</span></div>
+    </div>
+    <div class="card"><h2>Preparar</h2>
+      <div class="row"><div><b>Box lunch · 10 dic</b><small>14 personas · Delegación Club Andes</small></div><span class="pill p-warn">hoy</span></div>
+      <div class="row"><div><b>Cenas en la casa · 9 dic</b><small>20 personas · pensión de la delegación</small></div><span class="pill p-info">hoy</span></div>
+      <div class="row"><div><b>Parrillada Party · sáb 12 13:00</b><small>45 personas, 5 cupos libres</small></div><span class="pill p-info">en 3 días</span></div>
+    </div>
+    <div class="card"><h2>Decisiones</h2>
+      <div class="row"><div><b>Propuesta de cancelación</b><small>Reserva de 2 noches · aviso con 20 días</small></div><span class="pill p-bad">decidir</span></div>
+      <div class="row"><div><b>Escapada Navidad</b><small>2 de 10 habitaciones sin vender · liberar hasta el 10 dic</small></div><span class="pill p-warn">liberar</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="v-nuevas" role="tabpanel" aria-labelledby="t-nuevas" hidden>
+  <div class="chips" role="group" aria-label="Filtrar por origen">
+    <button class="chip" type="button" data-f="todas" aria-pressed="true">Todas</button>
+    <button class="chip" type="button" data-f="Web" aria-pressed="false">Web</button>
+    <button class="chip" type="button" data-f="WhatsApp" aria-pressed="false">WhatsApp</button>
+    <button class="chip" type="button" data-f="Manual" aria-pressed="false">Manual</button>
+  </div>
+  <div class="card scroll"><table><thead><tr><th>Cuándo</th><th>Quién</th><th>Qué reservó</th><th>Origen</th><th class="r">Total</th><th class="r">Abonado</th><th>Estado</th></tr></thead><tbody id="nuevas"></tbody></table></div>
+</section>
+
+<section id="v-mes" role="tabpanel" aria-labelledby="t-mes" hidden>
+  <div class="cols">
+    <div class="card"><h2>Diciembre hasta hoy</h2>
+      <div class="row"><div><b>Vendido</b><small>Habitaciones, experiencias y comidas</small></div><b>$9.640.000</b></div>
+      <div class="row"><div><b>Abonado</b><small>Ya está en caja</small></div><b>$4.120.000</b></div>
+      <div class="row"><div><b>Saldo por cobrar</b><small>Al llegar o el día del evento</small></div><b>$5.520.000</b></div>
+    </div>
+    <div class="card"><h2>Por tipo</h2>
+      <div class="row"><div><b>Alojamiento</b><small>96 noches vendidas · ocupación 58 %</small></div><b>$5.180.000</b></div>
+      <div class="row"><div><b>Experiencias</b><small>7 eventos · 312 personas</small></div><b>$3.470.000</b></div>
+      <div class="row"><div><b>Comidas</b><small>41 almuerzos, 38 cenas, 22 box lunch</small></div><b>$990.000</b></div>
+    </div>
+    <div class="card"><h2>Por origen</h2>
+      <div class="row"><div><b>Web</b><small>14 reservas</small></div><b>$4.410.000</b></div>
+      <div class="row"><div><b>WhatsApp y manual</b><small>9 reservas</small></div><b>$5.230.000</b></div>
+    </div>
+  </div>
+</section>
+</main>
+</div>
+
+<button class="fab" type="button" id="fab">+ Agendar reserva</button>
+
+<div class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-labelledby="dh">
+  <div class="sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h2 id="dh">Agendar reserva</h2><button class="btn g" type="button" id="cerrar" aria-label="Cerrar">×</button></div>
+    <div class="note">Para lo que te piden por WhatsApp o teléfono. Usa la misma disponibilidad que la web, así no se choca con nada.</div>
+
+    <h4>1. Qué reserva</h4>
+    <div class="seg" id="tipo"><button type="button" aria-pressed="true" data-t="hab">Habitaciones</button><button type="button" aria-pressed="false" data-t="exp">Experiencia</button><button type="button" aria-pressed="false" data-t="comb">Las dos</button></div>
+    <div class="two">
+      <div class="f"><label for="a-ent">Llegada</label><input id="a-ent" type="date" value="2026-12-14"></div>
+      <div class="f"><label for="a-sal">Salida</label><input id="a-sal" type="date" value="2026-12-17"></div>
+    </div>
+    <div class="f"><label for="a-hab">Habitaciones</label><select id="a-hab"><option>Elegir según disponibilidad…</option><option>2 matrimoniales + 1 triple (disponibles esas noches)</option><option>Todas las habitaciones (10)</option></select></div>
+    <div class="two">
+      <div class="f"><label for="a-exp">Experiencia</label><select id="a-exp"><option>Pizza Libre · 15 dic · 18:00 (quedan 100)</option><option>Casino Party · 16 dic · 13:00 (quedan 80)</option></select></div>
+      <div class="f"><label for="a-per">Personas</label><input id="a-per" type="number" value="20" min="1"></div>
+    </div>
+    <div class="f"><label for="a-com">Comidas por día (opcional)</label><select id="a-com"><option>Sin comidas</option><option>Almuerzo + cena todos los días</option><option>Box lunch + cena</option></select></div>
+
+    <h4>2. Contacto</h4>
+    <div class="f"><label for="a-nom">Nombre o institución</label><input id="a-nom" value="Club Deportivo Andes"></div>
+    <div class="two"><div class="f"><label for="a-tel">WhatsApp</label><input id="a-tel" value="+56 9 1234 5678"></div><div class="f"><label for="a-cor">Correo (opcional)</label><input id="a-cor"></div></div>
+
+    <h4>3. Precio</h4>
+    <div class="opt" id="paq"><label class="t"><input type="checkbox" id="a-pq"> Paquete con precio acordado (delegaciones)</label>
+      <div id="paqf" hidden><div class="f"><label for="a-pd">Qué incluye</label><input id="a-pd" value="Delegación 20 pers.: alojamiento, comidas y Pizza Libre"></div>
+      <div class="two"><div class="f"><label for="a-pt">Total acordado</label><input id="a-pt" type="number" value="1900000"></div><div class="f"><label for="a-pa">Abono</label><input id="a-pa" type="number" value="950000"></div></div></div></div>
+    <div class="note" style="margin-top:6px" id="calc">Total según tarifas: $1.560.000 · abono $520.000</div>
+
+    <h4>4. Cobro del abono</h4>
+    <div class="seg" id="cobro"><button type="button" aria-pressed="true" data-c="dep">Ya depositó</button><button type="button" aria-pressed="false" data-c="khipu">Enviar link de pago</button><button type="button" aria-pressed="false" data-c="pend">Dejar pendiente</button></div>
+    <div id="c-dep">
+      <div class="two"><div class="f"><label for="d-mon">Monto recibido</label><input id="d-mon" type="number" value="950000"></div><div class="f"><label for="d-fec">Fecha del depósito</label><input id="d-fec" type="date" value="2026-12-09"></div></div>
+      <div class="two"><div class="f"><label for="d-ban">Banco</label><input id="d-ban" value="Banco Estado"></div><div class="f"><label for="d-ref">Referencia</label><input id="d-ref" placeholder="Nº de operación"></div></div>
+      <div class="f"><label for="d-arc">Comprobante (foto, pantallazo o PDF)</label><input id="d-arc" type="file" accept="image/*,application/pdf"><img id="prev" class="thumb" alt="Vista previa del comprobante" hidden></div>
+    </div>
+    <div id="c-khipu" hidden class="note" style="margin-top:8px">Se envía por WhatsApp un link de Khipu por el abono. La reserva queda confirmada sola cuando Khipu avisa el pago.</div>
+    <div id="c-pend" hidden><div class="f"><label for="p-ven">Retener hasta</label><input id="p-ven" type="date" value="2026-12-11"></div><div class="note">Pasada esa fecha, las habitaciones y cupos se liberan solos.</div></div>
+
+    <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap"><button class="btn" type="button" id="guardar">Agendar</button><button class="btn g" type="button" id="cancelar">Cancelar</button></div>
+    <div id="res" hidden>
+      <div class="ok"><b>Reserva CDM-4F7K2 agendada.</b> Habitaciones y cupos bloqueados en el calendario. Abono registrado, saldo $950.000 al llegar.</div>
+      <pre class="msg" id="msg">Hola Club Deportivo Andes, tu reserva en Casa Di Mauro quedó confirmada.
+Código: CDM-4F7K2
+Llegada: lunes 14 dic · Salida: jueves 17 dic
+Incluye: alojamiento, comidas y Pizza Libre el 15 dic 18:00
+Total acordado: $1.900.000 · Abono recibido: $950.000
+Saldo: $950.000 al llegar.</pre>
+      <button class="btn g" type="button" id="copiar">Copiar mensaje</button> <span class="note" id="cop"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+var $=function(i){return document.getElementById(i)},CLP=function(n){return '$'+n.toLocaleString('es-CL')};
+var DIAS=[
+ {n:'Lun',d:7,occ:3,items:[['ll','Familia Rojas','Matrimonial · llega · 3 noches · saldo $288.000']]},
+ {n:'Mar',d:8,occ:4,items:[['ex','Pizza Libre · 13:00','Colegio San José · 30 personas',30,100],['bl','Box lunch para mañana','14 personas · Delegación Club Andes']]},
+ {n:'Mié',d:9,hoy:1,occ:8,items:[['ll','Delegación Club Andes','Llega · 20 personas · paquete 3 noches'],['ex','Casino Party · 18:00','Empresa Alfa · 25 personas',25,80],['td','Pre-reserva Grupo Scout','Vence hoy 15:40']]},
+ {n:'Jue',d:10,occ:8,items:[['sa','Familia Rojas','Salida · cobrar saldo antes'],['bl','Box lunch para mañana','14 personas · salida a recorrer']]},
+ {n:'Vie',d:11,occ:8,items:[['ex','Casino Party · 13:00','Colegio Los Alerces + Empresa Alfa · 50 personas',50,80],['td','Cobrar saldo Familia Rojas','$288.000']]},
+ {n:'Sáb',d:12,occ:9,items:[['ex','Parrillada Party · 13:00','45 personas',45,50],['ex','Pizza Libre · 18:00','2 grupos · 80 personas',80,100]]},
+ {n:'Dom',d:13,occ:6,items:[['sa','Delegación Club Andes','Salida · saldo del paquete $950.000'],['sa','Colegio San José','Salida']]}];
+$('week').innerHTML=DIAS.map(function(x){
+  return '<article class="day'+(x.hoy?' hoy':'')+'"><h3>'+x.n+' <span>'+x.d+'</span>'+(x.hoy?'<em class="tag">Hoy</em>':'')+'</h3>'+
+  '<div><div class="occt"><span>Habitaciones</span><b>'+x.occ+' / 10</b></div><div class="occ"><i style="width:'+x.occ*10+'%"></i></div></div>'+
+  (x.items.length?x.items.map(function(i){return '<div class="item '+i[0]+'"><b>'+i[1]+'</b><small>'+i[2]+'</small>'+(i[3]?'<div class="bar" title="'+i[3]+' de '+i[4]+'"><i style="width:'+Math.round(i[3]/i[4]*100)+'%"></i></div><small>'+i[3]+' de '+i[4]+' personas</small>':'')+'</div>'}).join(''):'<div class="vacio">Sin movimientos</div>')+'</article>'}).join('');
+var NUEVAS=[
+ ['Hoy 11:20','Club Deportivo Andes','Paquete: 20 pers., 3 noches + Pizza Libre','WhatsApp',1900000,950000,['p-ok','Confirmada']],
+ ['Hoy 09:05','Empresa Alfa','Casino Party · vie 11 · 25 pers.','Web',250000,125000,['p-ok','Confirmada']],
+ ['Ayer 21:40','Grupo Scout','Pizza Party · sáb 12 · 30 pers.','Web',600000,0,['p-bad','Sin pagar · vence 15:40']],
+ ['Ayer 17:12','Familia Rojas','Matrimonial · 7 al 10 dic + 2 cenas','Web',356000,96000,['p-ok','Confirmada']],
+ ['Mar 8 dic','Colegio San José','Pizza Libre · mar 8 · 30 pers.','Manual',450000,225000,['p-ok','Confirmada']],
+ ['Lun 7 dic','Andrea Soto','Triple · 18 al 20 dic','Web',210000,70000,['p-warn','Pago por revisar']]];
+function pintar(f){$('nuevas').innerHTML=NUEVAS.filter(function(r){return f==='todas'||r[3]===f}).map(function(r){return '<tr><td>'+r[0]+'</td><td><b>'+r[1]+'</b></td><td>'+r[2]+'</td><td><span class="pill p-info">'+r[3]+'</span></td><td class="r">'+CLP(r[4])+'</td><td class="r">'+CLP(r[5])+'</td><td><span class="pill '+r[6][0]+'">'+r[6][1]+'</span></td></tr>'}).join('')}
+pintar('todas');
+document.querySelectorAll('.chip').forEach(function(c){c.onclick=function(){document.querySelectorAll('.chip').forEach(function(o){o.setAttribute('aria-pressed',String(o===c))});pintar(c.getAttribute('data-f'))}});
+document.querySelectorAll('.tab').forEach(function(t){t.onclick=function(){document.querySelectorAll('.tab').forEach(function(o){o.setAttribute('aria-selected',String(o===t));$('v-'+o.getAttribute('data-v')).hidden=o!==t})}});
+function seg(id,fn){var w=$(id);w.querySelectorAll('button').forEach(function(b){b.onclick=function(){w.querySelectorAll('button').forEach(function(o){o.setAttribute('aria-pressed',String(o===b))});fn(b)}})}
+seg('tipo',function(){});
+seg('cobro',function(b){var c=b.getAttribute('data-c');['dep','khipu','pend'].forEach(function(k){$('c-'+k).hidden=k!==c})});
+$('a-pq').onchange=function(){$('paqf').hidden=!this.checked;$('paq').classList.toggle('on',this.checked);$('calc').textContent=this.checked?'Se usa el total acordado; las habitaciones y cupos igual se bloquean en el calendario.':'Total según tarifas: $1.560.000 · abono $520.000'};
+$('d-arc').onchange=function(){var f=this.files&&this.files[0],p=$('prev');if(!f||f.type.indexOf('image/')!==0){p.hidden=true;return}var r=new FileReader();r.onload=function(){p.src=r.result;p.hidden=false};r.readAsDataURL(f)};
+$('fab').onclick=function(){$('drawer').hidden=false;$('res').hidden=true;$('dh').focus&&$('cerrar').focus()};
+function cerrar(){$('drawer').hidden=true}
+$('cerrar').onclick=cerrar;$('cancelar').onclick=cerrar;
+$('drawer').addEventListener('click',function(e){if(e.target===$('drawer'))cerrar()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')cerrar()});
+$('guardar').onclick=function(){$('res').hidden=false;$('res').scrollIntoView({behavior:'smooth',block:'nearest'})};
+$('copiar').onclick=function(){var t=$('msg').textContent;try{navigator.clipboard.writeText(t).then(function(){$('cop').textContent='Copiado'},function(){$('cop').textContent='Selecciona el texto y cópialo'})}catch(e){$('cop').textContent='Selecciona el texto y cópialo'}};
+</script>
