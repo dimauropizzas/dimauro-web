@@ -1360,6 +1360,7 @@ function openCheckout(){
         var body={contacto:{nombre:nom,telefono:tel},habitaciones:hab};
         if(window.CDM_CONFIG&&CDM_CONFIG.comidasApi){var cm=[];Object.keys(opt.plan||{}).sort().forEach(function(d){var q=opt.plan[d];if(!q)return;if(q.l&&q.l!=='n'&&q.ln)cm.push({fecha:d,comida:'almuerzo',modalidad:q.l==='b'?'box_lunch':'casa',personas:q.ln});if(q.c==='c'&&q.cn)cm.push({fecha:d,comida:'cena',modalidad:'casa',personas:q.cn})});if(cm.length)body.comidas=cm}
         if(pack)body.paquete=pack==='ny'?'ano_nuevo':'navidad';else{body.entrada=ci;body.salida=co}
+        if(window.CDM_CONFIG&&CDM_CONFIG.langApi&&window.CDM_LANG)body.lang=window.CDM_LANG;
         clave=cdmClave(body);
         LIVE.token().then(function(tk){return LIVE.api('POST','/reservas',body,clave,tk?{'X-Turnstile-Token':tk}:null)}).then(function(j){
           if(!j.ok){var m=mb.querySelector('.livemsg')||document.createElement('div');m.className='warn livemsg';m.textContent=LIVE.msg(j.codigo);if(!m.parentNode)$('go').parentNode.insertBefore(m,$('go'));$('go').disabled=false;$('go').textContent=PAYL();return}
@@ -1669,7 +1670,7 @@ function gsum(){
         var lineas=[];EXPS.forEach(function(x,k){if(G.e[k]&&G.ev[k]&&G.ev[k].sid)lineas.push({sesion_id:G.ev[k].sid,categoria:'persona',personas:G.p})});
         if(!lineas.length||lineas.length!==T.nm.length){aviso(t('ck.again'));return}
         $('ggo').disabled=true;$('ggo').textContent=t('ck.creating');
-        var cuerpoX={contacto:{nombre:nom,telefono:tel},lineas:lineas},clave=cdmClave(cuerpoX);
+        var cuerpoX={contacto:{nombre:nom,telefono:tel},lineas:lineas};if(window.CDM_CONFIG&&CDM_CONFIG.langApi&&window.CDM_LANG)cuerpoX.lang=window.CDM_LANG;var clave=cdmClave(cuerpoX);
         LX.api('POST','/reservas',cuerpoX,clave).then(function(j){
           if(!j.ok){aviso(LX.msg(j.codigo));$('ggo').disabled=false;$('ggo').textContent=PAYL();LX.st={};return}
           try{sessionStorage.setItem('cdm_expres',String(j.reserva_id));if(j.token_reserva)sessionStorage.setItem('cdm_exptok',j.token_reserva)}catch(e){}
