@@ -478,6 +478,7 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
 .tile.ph:hover::before{filter:brightness(1.12)}
 .tile.ph>b,.tile.ph>span{position:relative;z-index:2}
 .tile.tfxp::before{display:none}
+.tile.tfxp .tfx{animation:none}
 .tfx{transform-origin:50% 50%;animation:kb 18s ease-in-out infinite alternate}
 .tfx{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;display:block}
 @keyframes kb{from{transform:scale(1)}to{transform:scale(1.1)}}
@@ -545,6 +546,11 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
   #v-inicio .tiles{margin-bottom:0}
   #v-inicio.view{padding-bottom:6px}
 }
+/* Letras de las pastillas: grandes y centradas (celular y computador) */
+.tile.ph{justify-content:center!important;align-items:center!important;gap:12px!important;text-align:center!important}
+.tile.ph b{font-size:clamp(30px,3.6vw,60px)!important;height:auto!important;min-height:0!important;line-height:1.12!important;letter-spacing:.13em!important;margin:0!important;display:block!important;text-shadow:0 3px 22px rgba(0,0,0,.8),0 1px 3px rgba(0,0,0,.55)}
+.tile.ph span{font-size:clamp(17px,1.65vw,26px)!important;line-height:1.3!important;margin:0!important;color:#f3ead3!important;font-weight:500;text-shadow:0 2px 14px rgba(0,0,0,.85),0 1px 3px rgba(0,0,0,.6)}
+@media(max-width:899px){.tile.ph b{font-size:30px!important}.tile.ph span{font-size:17px!important}}
 </style>
 
 <div class="wrap">
@@ -584,7 +590,7 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
 
   <div class="ask"><h1 data-i18n="ask">¿Qué tienes en mente hoy?</h1></div>
   <div class="tiles">
-    <a class="tile ph tfxp" href="#alojamiento" style="--img:url(img/habitacion.jpg);--pos:center 30%"><canvas class="tfx" data-fx="cortinas" aria-hidden="true"></canvas><b data-i18n="tile.aloj">Alojamiento</b><span data-i18n="tile.aloj.s">Habitaciones y escapadas</span></a>
+    <a class="tile ph tfxp" href="#alojamiento" style="--img:url(img/habitacion.jpg);--pos:center 38%"><canvas class="tfx" data-fx="cortinas" aria-hidden="true"></canvas><b data-i18n="tile.aloj">Alojamiento</b><span data-i18n="tile.aloj.s">Habitaciones y escapadas</span></a>
     <a class="tile ph" href="#grupos" style="--img:url(img/patio.jpg);--pos:center 45%;--ov:.5"><canvas class="tfx" data-fx="patio" aria-hidden="true"></canvas><b data-i18n="tile.grp">Grupos y delegaciones</b><span data-i18n="tile.grp.s">Alternativas para grupos desde 15 personas</span></a>
     <a class="tile ph" href="#pizzeria" style="--img:url(img/pizza-tile-hd.jpg);--pos:center 55%;--ov:.34"><canvas class="tfx" data-fx="brillo" aria-hidden="true"></canvas><b data-i18n="tile.rest">Restaurante</b><span data-i18n="tile.rest.s">Pizzas, hamburguesas, waffles y coctelería</span></a>
     <a class="atx" href="https://atiende.tech" target="_blank" rel="noopener" aria-label="Atiende"><canvas id="atxc" aria-hidden="true"></canvas></a>
@@ -2140,24 +2146,41 @@ if(mq.addEventListener)mq.addEventListener('change',place);else mq.addListener(p
   var LUCES=[[.014,.094],[.115,.146],[.188,.176],[.252,.204],[.314,.222],[.404,.254],[.455,.252],[.493,.25],[.514,.257],[.556,.262],[.588,.258],[.633,.406],[.655,.407],[.69,.405],[.851,.335],[.886,.36],[.942,.318],[.912,.332],[.89,.698],[.242,.652]];
   var FUEGO=[.553,.578];
   var FX={
-    cortinas:{src:'img/habitacion.jpg',dpr:1.25,fps:30,
-      init:function(s){var d=s.d,iw=s.im.naturalWidth,ih=s.im.naturalHeight;s.g=cover(iw,ih,s.w,s.h,.40);
-        s.off=document.createElement('canvas');s.off.width=Math.round(s.w*d);s.off.height=Math.round(s.h*d);var o=s.off.getContext('2d');o.imageSmoothingQuality='high';
-        o.drawImage(s.im,s.g.dx*d,s.g.dy*d,s.g.dw*d,s.g.dh*d);o.fillStyle='rgba(15,42,31,.42)';o.fillRect(0,0,s.off.width,s.off.height);
-        s.m=[];var n=Math.min(18,Math.round(s.w*s.h/20000));for(var q=0;q<n;q++)s.m.push({x:rnd(0,s.w),y:rnd(0,s.h),vx:rnd(.05,.2),vy:-rnd(.01,.07),r:rnd(.6,1.5),ph:rnd(0,6.28)})},
-      /* x0,x1 (normalizados en la foto), amplitud relativa, fase, y donde termina el movimiento (borde de la cama) y y de referencia del colgado; el tul de la ventana se infla más */
-      R:[[.115,.17,.5,1.3,.52,.52],[.17,.234,1.4,1.3,.50,.52],[.234,.31,1.8,1.3,.48,.52],[.31,.40,1.8,1.3,.465,.52],[.40,.455,.8,1.3,.46,.52],[0,.105,1,0,.56,.56],[.445,.5,1.1,2.1,.462,.52],[.5,.56,.4,2.1,.462,.52]],TOP:.2,
-      draw:function(c,s,t){var g=s.g,ih=s.im.naturalHeight,k=g.k,d=s.d,B=4,gust=.7+.3*Math.sin(t*.00055)+.12*Math.sin(t*.0013+1),A=s.w*.0065,r,y,R=FX.cortinas.R,TOP=FX.cortinas.TOP;
-        c.globalCompositeOperation='source-over';c.drawImage(s.off,0,0,s.w,s.h);
-        for(var q=0;q<R.length;q++){r=R[q];var xs=g.dx+r[0]*g.dw,sw=(r[1]-r[0])*g.dw;
-          for(y=0;y<s.h;y+=B){var yn=(y-g.dy)/k/ih;if(yn<TOP||yn>r[4])continue;
-            var w=Math.pow((yn-TOP)/(r[5]-TOP),1.3),fade=Math.max(0,Math.min(1,(r[4]-yn)/.04)),ph=t*.0011+yn*7+r[3],
-                off=A*r[2]*gust*w*fade*(Math.sin(ph)+.45*Math.sin(ph*1.9+1.3));
-            c.drawImage(s.off,xs*d,y*d,sw*d,B*d,xs+off,y,sw,B)}}
-        c.globalCompositeOperation='lighter';
-        var lg=c.createLinearGradient(0,0,s.w,s.h);lg.addColorStop(0,'rgba(255,214,150,'+(0.1+0.04*Math.sin(t*.0009)).toFixed(3)+')');lg.addColorStop(.5,'rgba(255,214,150,0)');c.fillStyle=lg;c.fillRect(0,0,s.w,s.h);
-        for(var i2=0;i2<s.m.length;i2++){var m=s.m[i2];m.x+=m.vx;m.y+=m.vy+Math.sin(t*.0008+m.ph)*.04;if(m.x>s.w+6)m.x=-6;if(m.y<-6)m.y=s.h+6;
-          var tw=.35+.65*Math.max(0,Math.sin(t*.0014+m.ph)),rg=c.createRadialGradient(m.x,m.y,0,m.x,m.y,m.r*3.2);rg.addColorStop(0,'rgba(255,238,200,'+(0.55*tw).toFixed(3)+')');rg.addColorStop(1,'rgba(255,200,120,0)');c.fillStyle=rg;c.beginPath();c.arc(m.x,m.y,m.r*3.2,0,6.283);c.fill()}}},
+    /* Dormitorio con WebGL: la foto se deforma de forma CONTINUA (sin franjas) con un mapa de máscaras suavizadas: el tul se infla y se afloja con la brisa, sus pliegues cambian de luz al moverse,
+       las cortinas de los lados se mecen menos y las hojas de afuera se agitan detrás del tul. Si el navegador no tiene WebGL, queda la foto quieta. */
+    cortinas:{src:'img/habitacion.jpg',dpr:1.5,gl:true,fps:45,
+      VS:'attribute vec2 a;varying vec2 vC;uniform vec2 uS;void main(){vC=vec2((a.x+1.)*.5*uS.x,(1.-a.y)*.5*uS.y);gl_Position=vec4(a,0.,1.);}',
+      FS:'precision mediump float;varying vec2 vC;uniform sampler2D uT,uM;uniform vec4 uR;uniform float uTm;'+
+        'void main(){vec2 uv=(vC-uR.xy)/uR.zw;float t=uTm;vec4 m=texture2D(uM,uv);'+
+        'float gust=.72+.28*sin(t*.55)+.1*sin(t*1.3+1.);float xn=uv.x,yn=uv.y;'+
+        'float hang=pow(clamp((yn-.2)/.32,0.,1.),1.25);'+
+        'float ph=t*1.1+yn*14.+xn*4.;float wave=sin(ph)+.5*sin(ph*1.7+1.3);'+
+        'float dxs=.0085*gust*hang*wave*m.r+.0075*gust*hang*(xn-.285)*3.*sin(t*.8)*m.r;'+
+        'float ph2=t*.9+yn*10.+1.7;float dxc=.0042*gust*pow(clamp((yn-.2)/.35,0.,1.),1.3)*(sin(ph2)+.4*sin(ph2*1.8))*m.g;'+
+        'float dxf=.0014*(sin(t*2.1+yn*40.+xn*25.)+sin(t*1.6+xn*50.))*m.b;float dyf=.001*(sin(t*1.8+xn*35.)+sin(t*2.4+yn*30.))*m.b;'+
+        'vec3 col=texture2D(uT,uv-vec2(dxs+dxc+dxf,dyf)).rgb;'+
+        'col*=1.+.1*gust*hang*cos(ph)*m.r+.04*sin(t*.6)*m.r+.05*gust*cos(ph2)*m.g*clamp((yn-.2)/.35,0.,1.);'+
+        'col+=vec3(1.,.8,.5)*(.035+.02*sin(t*.7))*smoothstep(.62,.0,length(uv-vec2(.62,.3)))*(.5+m.r);'+
+        'gl_FragColor=vec4(mix(col,vec3(.059,.165,.106),.4),1.);}',
+      /* máscaras (R: tul, G: cortinas de los lados, B: follaje) en coordenadas de la foto, con borde suave y sin llegar a la cama */
+      mascara:function(){var W=512,H=Math.round(512*1671/941),c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');x.fillStyle='#000';x.fillRect(0,0,W,H);
+        var f=function(v){return v};function poly(col,pts){x.fillStyle=col;x.beginPath();pts.forEach(function(q,i){var X=q[0]*W,Y=q[1]*H;i?x.lineTo(X,Y):x.moveTo(X,Y)});x.closePath();x.fill()}
+        x.globalCompositeOperation='lighter';
+        try{x.filter='blur(5px)'}catch(e){}
+        poly('rgb(255,0,0)',[[.12,.2],[.45,.2],[.45,.458],[.40,.462],[.31,.47],[.234,.482],[.17,.5],[.12,.515]]);
+        poly('rgb(0,255,0)',[[0,.2],[.105,.2],[.105,.56],[0,.56]]);
+        poly('rgb(0,255,0)',[[.447,.2],[.56,.2],[.56,.458],[.447,.458]]);
+        poly('rgb(0,0,255)',[[.135,.22],[.435,.22],[.435,.40],[.135,.40]]);
+        return c},
+      init:function(s){var gl=s.c,d=s.d,fx=FX.cortinas;s.g=cover(s.im.naturalWidth,s.im.naturalHeight,s.w,s.h,.40);
+        if(!s.p){function sh(t,src){var o=gl.createShader(t);gl.shaderSource(o,src);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(o));return o}
+          var pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,fx.VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fx.FS));gl.linkProgram(pr);if(!gl.getProgramParameter(pr,gl.LINK_STATUS))throw new Error('link');
+          gl.useProgram(pr);var b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);var la=gl.getAttribLocation(pr,'a');gl.enableVertexAttribArray(la);gl.vertexAttribPointer(la,2,gl.FLOAT,false,0,0);
+          function tex(u,src){var t=gl.createTexture();gl.activeTexture(gl.TEXTURE0+u);gl.bindTexture(gl.TEXTURE_2D,t);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,src)}
+          tex(0,s.im);tex(1,fx.mascara());gl.uniform1i(gl.getUniformLocation(pr,'uT'),0);gl.uniform1i(gl.getUniformLocation(pr,'uM'),1);
+          s.p=pr;s.uS=gl.getUniformLocation(pr,'uS');s.uR=gl.getUniformLocation(pr,'uR');s.uTm=gl.getUniformLocation(pr,'uTm')}
+        gl.viewport(0,0,s.cv.width,s.cv.height);gl.uniform2f(s.uS,s.w,s.h);gl.uniform4f(s.uR,s.g.dx,s.g.dy,s.g.dw,s.g.dh)},
+      draw:function(gl,s,t){gl.uniform1f(s.uTm,t/1000);gl.drawArrays(gl.TRIANGLE_STRIP,0,4)}},
     patio:{dpr:1,fps:30,
       init:function(s){s.g=cover(1280,720,s.w,s.h,.45);s.l=LUCES.map(function(p){return{x:p[0],y:p[1],ph:rnd(0,6.28),sp:rnd(.0011,.0028),a:rnd(.7,1)}});s.e=[]},
       draw:function(c,s,t){var g=s.g,i,k=s.w/1120;
@@ -2178,11 +2201,11 @@ if(mq.addEventListener)mq.addEventListener('change',place);else mq.addListener(p
         var gr=c.createLinearGradient(cxp-w*.12,0,cxp+w*.12,0);gr.addColorStop(0,'rgba(255,236,200,0)');gr.addColorStop(.5,'rgba(255,238,205,'+(0.14*Math.sin(Math.min(1,ph/.8)*Math.PI)).toFixed(3)+')');gr.addColorStop(1,'rgba(255,236,200,0)');
         c.fillStyle=gr;c.fillRect(-w,-w,w*3,w*3);c.restore()}}
   };
-  var items=cvs.map(function(cv){var fx=FX[cv.getAttribute('data-fx')];if(!fx)return null;return{cv:cv,fx:fx,c:cv.getContext('2d'),w:0,h:0,vis:false,ready:false,im:null,dpr:fx.dpr||1}}).filter(Boolean);
+  var items=cvs.map(function(cv){var fx=FX[cv.getAttribute('data-fx')];if(!fx)return null;var c=null;if(fx.gl){try{c=cv.getContext('webgl',{alpha:false,antialias:false,premultipliedAlpha:false})}catch(e){}}else c=cv.getContext('2d');return{cv:cv,fx:fx,c:c,w:0,h:0,vis:false,ready:false,im:null,dpr:fx.dpr||1,sinGL:!!fx.gl&&!c}}).filter(Boolean);
   items.forEach(function(s){if(s.fx.src){var im=new Image();im.onload=function(){s.im=im;s.ready=false;if(s.vis)RM?still(s):kick()};im.src=s.fx.src}});
-  function size(s){var r=s.cv.getBoundingClientRect(),w=Math.max(1,Math.round(r.width)),h=Math.max(1,Math.round(r.height)),d=Math.min(window.devicePixelRatio||1,s.dpr);if(w===s.w&&h===s.h&&s.ready)return;s.w=w;s.h=h;s.d=d;s.cv.width=Math.round(w*d);s.cv.height=Math.round(h*d);s.c.setTransform(d,0,0,d,0,0);if(s.fx.src&&!s.im)return;s.fx.init(s);s.ready=true}
+  function size(s){var r=s.cv.getBoundingClientRect(),w=Math.max(1,Math.round(r.width)),h=Math.max(1,Math.round(r.height)),d=Math.min(window.devicePixelRatio||1,s.dpr);if(w===s.w&&h===s.h&&s.ready)return;s.w=w;s.h=h;s.d=d;s.cv.width=Math.round(w*d);s.cv.height=Math.round(h*d);if(!s.fx.gl&&s.c)s.c.setTransform(d,0,0,d,0,0);if(s.fx.src&&!s.im)return;try{if(s.sinGL){s.ready=true;return}s.fx.init(s);s.ready=true}catch(e){s.sinGL=true;s.ready=true}}
   var run=false,raf=0;
-  function paint(s,t){size(s);if(!s.ready)return;s.c.globalCompositeOperation='source-over';if(!s.fx.src)s.c.clearRect(0,0,s.w,s.h);if(!s.fx.src)s.c.globalCompositeOperation='lighter';s.fx.draw(s.c,s,t);s.c.globalCompositeOperation='source-over'}
+  function paint(s,t){size(s);if(!s.ready)return;if(s.sinGL){if(!s.estatica){s.cv.style.display='none';var tl=s.cv.parentNode;if(tl)tl.classList.remove('tfxp');s.estatica=true}return}if(s.fx.gl){s.fx.draw(s.c,s,t);return}s.c.globalCompositeOperation='source-over';if(!s.fx.src)s.c.clearRect(0,0,s.w,s.h);if(!s.fx.src)s.c.globalCompositeOperation='lighter';s.fx.draw(s.c,s,t);s.c.globalCompositeOperation='source-over'}
   function frame(t){raf=0;var any=false;items.forEach(function(s){if(!s.vis)return;any=true;if(s.fx.fps&&t-(s.last||0)<1000/s.fx.fps-2)return;s.last=t;paint(s,t)});if(any&&!document.hidden)raf=requestAnimationFrame(frame);else run=false}
   function kick(){if(run||RM)return;run=true;raf=requestAnimationFrame(frame)}
   function still(s){paint(s,2600)}
