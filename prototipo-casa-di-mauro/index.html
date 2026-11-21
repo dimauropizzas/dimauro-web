@@ -447,6 +447,9 @@ h1,h2,h3,.tile b,.et b,.mealbox h4,.mealc h3,.sug .st{font-family:var(--serif);f
 .seg button{background:none;border:0;border-bottom:2px solid transparent;color:var(--green);font-weight:600;font-size:13px;letter-spacing:.06em;padding:8px 8px;min-height:36px;min-width:34px;cursor:pointer;border-radius:6px}
 .seg button.on{border-bottom-color:var(--gold);background:#efe6cc}
 .seg button:hover{background:#efe6cc}
+.langseg button{display:inline-flex;align-items:center;justify-content:center;padding:8px 7px}
+.langseg svg{display:block;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.langseg button:not(.on) svg{opacity:.7}
 .usd{font-family:var(--sans);font-size:.6em;font-weight:500;color:var(--muted);white-space:nowrap;letter-spacing:0;text-transform:none}
 .price .usd,.sbar .tt .usd{display:block}
 .good .usd,.sum .usd,.panel .usd{color:inherit;opacity:.8}
@@ -459,10 +462,9 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
 .note .usd,.mrow2 .usd,td .usd,.good .usd{font-size:.92em}
 </style>
 
-<div class="proto" data-i18n="proto">Prototipo para revisión: precios y disponibilidad de ejemplo. Nada se cobra ni se envía.</div>
 <div class="wrap">
 <div class="tools" id="tools">
-  <div class="seg" role="group" data-i18n-attr="aria-label:tools.lang"><button type="button" data-lang="es" lang="es" title="Español">ES</button><i aria-hidden="true">·</i><button type="button" data-lang="en" lang="en" title="English">EN</button><i aria-hidden="true">·</i><button type="button" data-lang="pt" lang="pt-BR" title="Português (Brasil)">PT</button></div>
+  <div class="seg langseg" role="group" data-i18n-attr="aria-label:tools.lang"><button type="button" data-lang="es" lang="es" title="Español" aria-label="Español"><svg viewBox="0 0 30 20" width="26" height="17" aria-hidden="true"><rect width="30" height="20" fill="#fff"/><rect y="10" width="30" height="10" fill="#d52b1e"/><rect width="10" height="10" fill="#0039a6"/><polygon fill="#fff" points="5,1.6 5.9,4.3 8.7,4.3 6.4,6 7.3,8.7 5,7 2.7,8.7 3.6,6 1.3,4.3 4.1,4.3"/></svg></button><button type="button" data-lang="en" lang="en" title="English" aria-label="English"><svg viewBox="0 0 30 20" width="26" height="17" aria-hidden="true"><rect width="30" height="20" fill="#fff"/><g fill="#b22234"><rect width="30" height="2.857"/><rect y="5.714" width="30" height="2.857"/><rect y="11.43" width="30" height="2.857"/><rect y="17.14" width="30" height="2.857"/></g><rect width="12" height="11.43" fill="#3c3b6e"/></svg></button><button type="button" data-lang="pt" lang="pt-BR" title="Português (Brasil)" aria-label="Português (Brasil)"><svg viewBox="0 0 30 20" width="26" height="17" aria-hidden="true"><rect width="30" height="20" fill="#009c3b"/><polygon fill="#ffdf00" points="15,2 27,10 15,18 3,10"/><circle cx="15" cy="10" r="4.2" fill="#002776"/></svg></button></div>
   <div class="seg" role="group" data-i18n-attr="aria-label:tools.cur"><button type="button" data-cur="CLP" data-i18n-attr="title:tools.clp">CLP</button><i aria-hidden="true">·</i><button type="button" data-cur="USD" data-i18n-attr="title:tools.usd">USD</button></div>
 </div>
 <div class="fxbar" id="fxbar" hidden></div>
@@ -478,6 +480,10 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
 
 <main>
 <section class="view on" id="v-inicio">
+  <div class="hero">
+    <img src="img/exterior.jpg" data-i18n-attr="alt:hero.alt" alt="Fachada de Casa Di Mauro al atardecer, casona de madera con terraza" width="1448" height="1086">
+    <div class="cap"><div class="k" id="hk"></div><div class="s" data-i18n="hero.s">Tu escapada al sur</div><div class="count" id="count"></div></div>
+  </div>
   <div class="resv" id="resv">
     <div class="rk" data-i18n="home.k">Hostal en Licán Ray</div>
     <h2 data-i18n="home.h">Reserva tu alojamiento</h2>
@@ -489,10 +495,6 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
       <button type="button" class="btn" id="hgo" data-i18n="home.go">Ver disponibilidad</button>
     </div>
     <a class="rl" href="#escapadas" data-i18n="home.esc">Ver escapadas de Navidad y Año Nuevo ›</a>
-  </div>
-  <div class="hero">
-    <img src="img/exterior.jpg" data-i18n-attr="alt:hero.alt" alt="Fachada de Casa Di Mauro al atardecer, casona de madera con terraza" width="1448" height="1086">
-    <div class="cap"><div class="k" id="hk"></div><div class="s" data-i18n="hero.s">Tu escapada al sur</div><div class="count" id="count"></div></div>
   </div>
 
   <div class="ask"><h1 data-i18n="ask">¿Qué tienes en mente hoy?</h1></div>
@@ -1156,8 +1158,6 @@ var ISO=function(d){return d.toISOString().slice(0,10)};
 window.CDM_CONFIG=window.CDM_CONFIG||{base:'https://atiende-bot-production-4757.up.railway.app',key:'ca_32f413b6225d430ca26d42a60f95a9d368955c4e5159474eab7c2353c7eb6c69',keyExp:'ct_3c51fecc28b44398a13e5ff9b6ed73b602d1849c329e4231988010f895523955',langApi:true,comidasApi:true,turnstile:'0x4AAAAAAGK8fNpvqNozqbJ_',
   /* Pago por transferencia (transitorio hasta activar Khipu): poner modo:'transferencia' y completar los datos bancarios (los entrega Mauro; nunca se inventan). */
   pago:{modo:'transferencia',holdTxt:'',banco:{titular:'Grupo Di Mauro SpA',rut:'77.789.767-5',banco:'BCI',tipo:'Cuenta corriente',cuenta:'13811525',email:'kine.carola@gmail.com'},whatsapp:''}};
-/* Sitio en vivo (con llave): se oculta el aviso de prototipo, que ya no es verdad. */
-(function(){if(window.CDM_CONFIG&&CDM_CONFIG.key){var e=document.querySelector('.proto');if(e)e.style.display='none'}})();
 /* usdClp: tipo de cambio de referencia (CLP por US$ 1). Solo informativo: el cobro es siempre en CLP. Si hay red se actualiza desde mindicador.cl y se cachea 6 h. */
 if(CDM_CONFIG.usdClp==null)CDM_CONFIG.usdClp=950;
 LANG=langInicial();CUR=curInicial();fxInit();
