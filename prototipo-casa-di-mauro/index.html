@@ -148,7 +148,7 @@ footer a.dev b{color:#f6f0e1}
 @media(prefers-reduced-motion:reduce){.chat-b .dot{animation:none}}
 @media(max-width:560px){.chat-b small{display:none}.chat-b span.t{max-width:120px}}
 .proto{background:#fff3c4;color:#4d3d00;font-size:13px;text-align:center;padding:6px 12px;border-bottom:1px solid #e6cf75}
-.fw{margin-top:28px}.fw svg{display:block;width:100%;height:46px}
+.fw{margin-top:22px}.fw svg{display:block;width:100%;height:46px}
 footer{background:#0f2a1f;border-radius:0 0 14px 14px;padding:6px 20px 28px;color:#d9ceb2;font-size:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;text-align:left}
 footer a:nth-child(even){text-align:right}
 @media(max-width:560px){footer{font-size:12.5px;gap:10px 8px}}
@@ -465,6 +465,22 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
 .note .usd,.mrow2 .usd,td .usd,.good .usd{font-size:.92em}
 
 .privl{text-align:center;margin:14px 0 6px;font-size:13px}.privl a{color:var(--muted);text-decoration:underline}
+#v-inicio.view{padding-bottom:10px}
+/* Atiende: polo tecnológico */
+.atx{grid-column:1/-1;display:block;position:relative;overflow:hidden;margin-top:6px;border-radius:20px;border:1px solid var(--gold);background:radial-gradient(900px 320px at 88% -10%,rgba(185,143,47,.30),transparent 60%),linear-gradient(135deg,#050a08 0%,#0b1a12 55%,#12301f 100%);color:#f6f0e1;text-decoration:none;padding:26px 22px;box-shadow:0 14px 34px rgba(8,26,18,.22);transition:transform .25s ease,box-shadow .25s ease}
+.atx:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(8,26,18,.32)}
+.atx::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(217,182,90,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(217,182,90,.08) 1px,transparent 1px);background-size:34px 34px;-webkit-mask-image:linear-gradient(to left,#000,transparent 75%);mask-image:linear-gradient(to left,#000,transparent 75%);pointer-events:none}
+.atx>*{position:relative}
+.atx-head{display:flex;align-items:center;gap:14px}
+.atx-head img{width:56px;height:56px;border-radius:14px;background:#000}
+.atx-head small{display:block;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--goldl)}
+.atx-head b{font-family:var(--serif);font-size:30px;letter-spacing:.14em;font-weight:700}
+.atx-p{margin:14px 0 0;font-size:16px;line-height:1.55;color:#e4dcc4;max-width:560px}
+.atx-l{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:10px}
+.atx-l li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.4}
+.atx-l li::before{content:"";flex:none;width:9px;height:9px;margin-top:6px;border-radius:50%;background:var(--goldl);box-shadow:0 0 0 3px rgba(217,182,90,.2)}
+.atx-cta{display:inline-block;margin-top:18px;background:var(--gold);color:#fff;border-radius:999px;padding:10px 18px;font-weight:600;font-size:15px}
+@media(min-width:900px){.atx{padding:46px 52px;display:grid;grid-template-columns:1.1fr 1fr;column-gap:56px;align-items:center}.atx-head,.atx-p,.atx-cta{grid-column:1}.atx-cta{justify-self:start}.atx-l{grid-column:2;grid-row:1/5;margin:0}.atx-head b{font-size:42px}.atx-p{font-size:18px}.atx-l li{font-size:17px}}
 /* ===== ESCRITORIO (≥900px): portada a todo el ancho, encabezado grande que se va con la página, minibarra al bajar, idioma abajo a la derecha del encabezado ===== */
 @media(min-width:900px){
   body{overflow-x:clip}
@@ -510,7 +526,8 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
   .tile span{font-size:18px}
   #v-inicio .ask{margin-top:64px;margin-bottom:12px}
   #v-inicio .ask h1{font-size:44px}
-  #v-inicio .tiles{margin-bottom:56px}
+  #v-inicio .tiles{margin-bottom:0}
+  #v-inicio.view{padding-bottom:6px}
 }
 </style>
 
@@ -554,7 +571,12 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
     <a class="tile ph" href="#alojamiento" style="--img:url(img/habitacion.jpg);--pos:center 46%"><b data-i18n="tile.aloj">Alojamiento</b><span data-i18n="tile.aloj.s">Habitaciones y escapadas</span></a>
     <a class="tile ph" href="#grupos" style="--img:url(img/patio.jpg);--pos:center 45%"><b data-i18n="tile.grp">Grupos y delegaciones</b><span data-i18n="tile.grp.s">Alternativas para grupos desde 15 personas</span></a>
     <a class="tile ph" href="#pizzeria" style="--img:url(img/pizza-tile.jpg);--pos:center 55%"><b data-i18n="tile.rest">Restaurante</b><span data-i18n="tile.rest.s">Pizzas, hamburguesas, waffles y coctelería</span></a>
-    <a class="tile ph at" href="https://atiende.tech" target="_blank" rel="noopener" style="--img:url(img/atiende.png)"><b><img src="img/atiende.png" alt="">Atiende</b><span data-i18n="tile.at.s">Soluciones tecnológicas con IA para el turismo</span></a>
+    <a class="atx" href="https://atiende.tech" target="_blank" rel="noopener">
+      <div class="atx-head"><img src="img/atiende.png" alt="" width="56" height="56"><div><small data-i18n="atx.k">Polo tecnológico</small><b>ATIENDE</b></div></div>
+      <p class="atx-p" data-i18n="atx.p">La tecnología con inteligencia artificial que hace funcionar Casa Di Mauro, creada para el turismo.</p>
+      <ul class="atx-l"><li data-i18n="atx.l1">Rayén, asistente con IA que atiende por WhatsApp</li><li data-i18n="atx.l2">Reservas en línea de alojamiento, comidas y experiencias</li><li data-i18n="atx.l3">App del equipo: llamados de mesa por QR y agenda del día</li><li data-i18n="atx.l4">Panel de gestión para el dueño: reservas, pagos y cupos</li></ul>
+      <span class="atx-cta" data-i18n="atx.cta">Conocer Atiende</span>
+    </a>
   </div>
 </section>
 
@@ -777,6 +799,13 @@ K('tile.grp',`Grupos y delegaciones`,`Groups and delegations`,`Grupos e delegaç
 K('tile.grp.s',`Alternativas para grupos desde 15 personas`,`Options for groups of 15 or more`,`Opções para grupos a partir de 15 pessoas`);
 K('tile.rest',`Restaurante`,`Restaurant`,`Restaurante`);
 K('tile.rest.s',`Pizzas, hamburguesas, waffles y coctelería`,`Pizzas, burgers, waffles and cocktails`,`Pizzas, hambúrgueres, waffles e coquetéis`);
+K('atx.k',`Polo tecnológico`,`Tech hub`,`Polo tecnológico`);
+K('atx.p',`La tecnología con inteligencia artificial que hace funcionar Casa Di Mauro, creada para el turismo.`,`The artificial-intelligence technology that powers Casa Di Mauro, built for tourism.`,`A tecnologia com inteligência artificial que faz a Casa Di Mauro funcionar, criada para o turismo.`);
+K('atx.l1',`Rayén, asistente con IA que atiende por WhatsApp`,`Rayén, an AI assistant that answers on WhatsApp`,`Rayén, assistente com IA que atende pelo WhatsApp`);
+K('atx.l2',`Reservas en línea de alojamiento, comidas y experiencias`,`Online booking for rooms, meals and experiences`,`Reservas online de hospedagem, refeições e experiências`);
+K('atx.l3',`App del equipo: llamados de mesa por QR y agenda del día`,`Team app: table calls by QR and the day's agenda`,`App da equipe: chamados de mesa por QR e agenda do dia`);
+K('atx.l4',`Panel de gestión para el dueño: reservas, pagos y cupos`,`Owner dashboard: bookings, payments and availability`,`Painel de gestão para o dono: reservas, pagamentos e vagas`);
+K('atx.cta',`Conocer Atiende`,`Meet Atiende`,`Conheça a Atiende`);
 K('tile.at.s',`Soluciones tecnológicas con IA para el turismo`,`AI-powered technology solutions for tourism`,`Soluções tecnológicas com IA para o turismo`);
 K('tab.rooms',`Habitaciones`,`Rooms`,`Quartos`);
 K('tab.esc',`Escapadas`,`Getaways`,`Escapadas`);
