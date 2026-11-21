@@ -907,6 +907,9 @@ K('rom.st',`Habitaciones matrimoniales<br><small>2 personas por habitación</sma
 K('rom.err1',`Esas fechas son de las escapadas de Navidad y Año Nuevo, o aún no tienen tarifa. Abrimos el 2 de diciembre de 2026 y la tarifa llega al 31 de marzo de 2027.`,`Those dates fall within the Christmas and New Year getaways, or don't have rates yet. We open on December 2, 2026, and rates run through March 31, 2027.`,`Essas datas pertencem às escapadas de Natal e Ano Novo, ou ainda não têm tarifa. Abrimos em 2 de dezembro de 2026 e a tarifa vai até 31 de março de 2027.`);
 K('rom.err2',`No hay habitación matrimonial disponible esas noches.`,`There is no double room available on those nights.`,`Não há quarto de casal disponível nessas noites.`);
 K('rom.row',`Escapada romántica: llegada {dow} {a}, salida {b} ({kind}{alta}) · {rooms} × {p}`,`Romantic Getaway: arrival {dow} {a}, departure {b} ({kind}{alta}) · {rooms} × {p}`,`Escapada Romântica: chegada {dow} {a}, saída {b} ({kind}{alta}) · {rooms} × {p}`);
+K('rom.live',`Esta escapada incluye cenas, brunch y entradas a las termas, y la confirmamos contigo por WhatsApp: te respondemos con la disponibilidad y los datos para reservar.`,`This getaway includes dinners, brunch and hot springs admissions, and we confirm it with you on WhatsApp: we reply with availability and how to book.`,`Esta escapada inclui jantares, brunch e ingressos para as termas, e confirmamos com você pelo WhatsApp: respondemos com a disponibilidade e como reservar.`);
+K('rom.wab',`Reservar por WhatsApp`,`Book on WhatsApp`,`Reservar pelo WhatsApp`);
+K('rom.wa',`Hola, quiero reservar la Escapada romántica: llegada {dow} {a}, salida {b}, {rooms}, {g}. Valor referencial: {tot}. ¿Tienen disponibilidad?`,`Hello, I would like to book the Romantic Getaway: arrival {dow} {a}, departure {b}, {rooms}, {g}. Reference price: {tot}. Is it available?`,`Olá, quero reservar a Escapada Romântica: chegada {dow} {a}, saída {b}, {rooms}, {g}. Valor de referência: {tot}. Há disponibilidade?`);
 K('rom.fin',`fin de semana`,`weekend`,`fim de semana`);K('rom.sem',`entre semana`,`weekdays`,`dias de semana`);
 K('rom.alta',`, temporada alta`,`, high season`,`, alta temporada`);
 K('rom.inc',`Por habitación: 2 noches con desayuno, aperitivo y cena de bienvenida, brunch, 2 entradas a Termas Coñaripe con box lunch (sándwich en pan de la casa o bowl de ensalada, agua, fruta fresca y snack de frutos secos), cena en la casa y almuerzo de despedida.`,`Per room: 2 nights with breakfast, welcome aperitif and dinner, brunch, 2 admissions to Coñaripe Hot Springs with a packed lunch (box lunch) of a sandwich on house-made bread or a salad bowl, water, fresh fruit and a nut snack, plus dinner at the house and a farewell lunch.`,`Por quarto: 2 noites com café da manhã, aperitivo e jantar de boas-vindas, brunch, 2 entradas nas Termas de Coñaripe com lanche para levar (box lunch) de sanduíche no pão da casa ou bowl de salada, água, fruta fresca e snack de castanhas, além de jantar na casa e almoço de despedida.`);
@@ -1462,7 +1465,7 @@ function romCal(){
 function romSel(c){return t('rom.sel',{n:c.n})}
 function rdraw(){
   var I=romInfo(R.f),c=romCalc();
-  var h='<h3>'+t('rom.h')+'</h3><div class="field"><label>'+t('rom.pick')+'</label>'+romCal()+'<div class="note">'+t('rom.note',{a:CLP(180000),b:CLP(170000),c:CLP(18000)})+'</div></div>'+
+  var h='<h3>'+t('rom.h')+'</h3><div class="field"><label>'+t('rom.pick')+'</label>'+romCal()+'<div class="note">'+t('rom.note',{a:CLP(ROMFIN),b:CLP(ROMSEM),c:CLP(24000)})+'</div></div>'+
   '<div class="stp" id="rst" style="justify-content:space-between;padding:10px 14px"><span>'+t('rom.st')+'</span><div style="display:flex;align-items:center;gap:14px"><button type="button" class="mn" aria-label="'+t('stp.rm1')+'">−</button><b class="q">'+R.n+'</b><button type="button" class="mas" aria-label="'+t('stp.add1')+'">+</button></div></div>';
   if(I&&I.err)h+='<div class="warn" style="margin-top:10px">'+t(I.err)+'</div>';
   if(c){h+='<div class="scroll"><table class="sum"><tr><td>'+t('rom.row',{dow:wd(c.F.i),a:fmt(c.F.i),b:fmt(c.F.k),kind:t(c.F.fin?'rom.fin':'rom.sem'),alta:c.alta?t('rom.alta'):'',rooms:t('rooms.n',{n:c.n}),p:CLP(c.pr)})+'</td><td>'+CLP(c.total)+'</td></tr><tr class="t"><td>'+t('sum.total')+'</td><td>'+CLP(c.total)+'</td></tr></table></div><div class="note">'+t('rom.inc')+'</div>'}
@@ -1476,17 +1479,16 @@ function rdraw(){
   if(c){b.innerHTML='<div class="sl"><b>'+romSel(c)+'</b><br><span class="note">'+t('rom.sel2',{dow:wd(c.F.i),a:fmt(c.F.i),b:fmt(c.F.k)})+'</span></div><div class="sr"><div class="tt">'+CLP(c.total)+'</div><button class="btn" id="rrs" type="button">'+t('bar.book')+'</button></div>';$('rrs').onclick=romCk}else b.innerHTML='';
   syncBar()}
 function romCk(){
-  var c=romCalc(),mb=$('mbox');if(!c)return;openModal();
+  var c=romCalc(),mb=$('mbox'),live=LIVE.on();if(!c)return;openModal();
   function draw(){
     MR=draw;
     mb.innerHTML='<h3 style="font-family:var(--serif)">'+t('rom.ck',{rooms:t('rooms.n',{n:c.n})})+'</h3><div class="note">'+t('rom.ck2',{dow:wd(c.F.i),a:fmt(c.F.i),b:fmt(c.F.k),g:t('guests',{n:2*c.n})})+'</div>'+
     '<div class="scroll"><table class="sum"><tr><td>'+t('rom.ck3',{n:c.n,p:CLP(c.pr)})+'</td><td>'+CLP(c.total)+'</td></tr><tr class="t"><td>'+t('sum.total')+'</td><td>'+CLP(c.total)+'</td></tr></table></div>'+
     '<div class="good"><div>'+t('sum.value')+': <b>'+CLP(c.total)+'</b></div><div>'+t('sum.abono')+': <b>'+CLP(c.abono)+'</b></div><div>'+t('sum.saldo')+': <b>'+CLP(c.total-c.abono)+'</b></div></div>'+FXN()+
-    '<div class="field"><label for="rn">'+t('lbl.name')+'</label><input id="rn"></div><div class="field"><label for="rm">'+t('lbl.mail')+'</label><input id="rm" type="email"></div><div class="field"><label for="rw">'+t('lbl.wa')+'</label><input id="rw"></div>'+
-    POLDEV(0)+
-    '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="rgo" type="button">'+PAYL()+'</button><button class="btn ghost" id="rcl" type="button">'+t('close')+'</button></div>';
+    (live?'<div class="note">'+t('rom.live')+'</div>':'<div class="field"><label for="rn">'+t('lbl.name')+'</label><input id="rn"></div><div class="field"><label for="rm">'+t('lbl.mail')+'</label><input id="rm" type="email"></div><div class="field"><label for="rw">'+t('lbl.wa')+'</label><input id="rw"></div>'+POLDEV(0))+
+    '<div style="display:flex;gap:10px;flex-wrap:wrap">'+(live?'<a class="btn" id="rgo" target="_blank" rel="noopener" href="'+wa(t('rom.wa',{dow:wd(c.F.i),a:fmt(c.F.i),b:fmt(c.F.k),rooms:t('rooms.n',{n:c.n}),g:t('guests',{n:2*c.n}),tot:CLPT(c.total)}))+'">'+t('rom.wab')+'</a>':'<button class="btn" id="rgo" type="button">'+PAYL()+'</button>')+'<button class="btn ghost" id="rcl" type="button">'+t('close')+'</button></div>';
     $('rcl').onclick=closeModal;
-    $('rgo').onclick=function(){payDemo({abono:c.abono,ids:['rok','rcl2','rcl3'],draw:draw,msg:function(cod){return t('ck.code',{c:cod,t:CLP(c.total),x:'',a:CLP(c.abono),s:CLP(c.total-c.abono)})}})};
+    if(!live)$('rgo').onclick=function(){payDemo({abono:c.abono,ids:['rok','rcl2','rcl3'],draw:draw,msg:function(cod){return t('ck.code',{c:cod,t:CLP(c.total),x:'',a:CLP(c.abono),s:CLP(c.total-c.abono)})}})};
   }
   draw()}
 
