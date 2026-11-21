@@ -1153,9 +1153,11 @@ var WA='56956154280';
 var wa=function(txt){return 'https://wa.me/'+WA+'?text='+encodeURIComponent(txt)};
 var FEC=function(s){var p=s.split('-');return new Date(Date.UTC(+p[0],+p[1]-1,+p[2]))};
 var ISO=function(d){return d.toISOString().slice(0,10)};
-window.CDM_CONFIG=window.CDM_CONFIG||{base:'https://atiende-bot-production-4757.up.railway.app',key:'',keyExp:'',turnstile:'0x4AAAAAAGK8fNpvqNozqbJ_',
+window.CDM_CONFIG=window.CDM_CONFIG||{base:'https://atiende-bot-production-4757.up.railway.app',key:'ca_32f413b6225d430ca26d42a60f95a9d368955c4e5159474eab7c2353c7eb6c69',keyExp:'ct_3c51fecc28b44398a13e5ff9b6ed73b602d1849c329e4231988010f895523955',langApi:true,comidasApi:true,turnstile:'0x4AAAAAAGK8fNpvqNozqbJ_',
   /* Pago por transferencia (transitorio hasta activar Khipu): poner modo:'transferencia' y completar los datos bancarios (los entrega Mauro; nunca se inventan). */
   pago:{modo:'transferencia',holdTxt:'',banco:{titular:'Grupo Di Mauro SpA',rut:'77.789.767-5',banco:'BCI',tipo:'Cuenta corriente',cuenta:'13811525',email:'kine.carola@gmail.com'},whatsapp:''}};
+/* Sitio en vivo (con llave): se oculta el aviso de prototipo, que ya no es verdad. */
+(function(){if(window.CDM_CONFIG&&CDM_CONFIG.key){var e=document.querySelector('.proto');if(e)e.style.display='none'}})();
 /* usdClp: tipo de cambio de referencia (CLP por US$ 1). Solo informativo: el cobro es siempre en CLP. Si hay red se actualiza desde mindicador.cl y se cachea 6 h. */
 if(CDM_CONFIG.usdClp==null)CDM_CONFIG.usdClp=950;
 LANG=langInicial();CUR=curInicial();fxInit();
