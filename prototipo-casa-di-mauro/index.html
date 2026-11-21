@@ -501,9 +501,15 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
   #v-inicio .resv .rrow{grid-column:2;grid-row:1/4;align-self:center}
   #v-inicio .resv .rl{grid-column:2;grid-row:4;margin-top:6px}
   #v-inicio .ask{margin-top:44px}
-  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}
-  .tile,.tile.ph{height:230px!important;min-height:230px!important;border-radius:16px}
-  .tile b{font-size:26px}
+  /* Pastillas apiladas hacia abajo, a todo el ancho, para recorrer la página scrolleando */
+  .tiles{grid-template-columns:1fr!important;gap:26px!important;margin-top:8px}
+  .tile,.tile.ph{height:300px!important;min-height:300px!important;border-radius:20px;box-shadow:0 14px 34px rgba(8,26,18,.22);transition:transform .25s ease,box-shadow .25s ease}
+  .tile:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(8,26,18,.3)}
+  .tile b{font-size:38px;letter-spacing:.14em}
+  .tile span{font-size:18px}
+  #v-inicio .ask{margin-top:64px;margin-bottom:12px}
+  #v-inicio .ask h1{font-size:44px}
+  #v-inicio .tiles{margin-bottom:56px}
 }
 </style>
 
