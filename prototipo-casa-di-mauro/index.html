@@ -489,8 +489,8 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
     <h2 data-i18n="home.h">Reserva tu alojamiento</h2>
     <p data-i18n="home.p">Habitaciones con baño privado y desayuno sureño incluido, a pasos del lago.</p>
     <div class="rrow">
-      <div class="field"><label for="hci" data-i18n="f.in">Llegada</label><input id="hci" type="date" min="2026-12-02" max="2027-03-31" value="2026-12-10"></div>
-      <div class="field"><label for="hco" data-i18n="f.out">Salida</label><input id="hco" type="date" min="2026-12-03" max="2027-04-01" value="2026-12-11"></div>
+      <div class="field"><label for="hci" data-i18n="f.in">Llegada</label><input id="hci" type="date" min="2026-12-02" max="2027-03-31" value="2026-12-04"></div>
+      <div class="field"><label for="hco" data-i18n="f.out">Salida</label><input id="hco" type="date" min="2026-12-03" max="2027-04-01" value="2026-12-06"></div>
       <div class="field"><label for="hpp" data-i18n="f.pp">Personas</label><select id="hpp"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
       <button type="button" class="btn" id="hgo" data-i18n="home.go">Ver disponibilidad</button>
     </div>
@@ -511,8 +511,8 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
   <div class="pt on" id="pt-alojamiento-noches">
   <div class="card sec">
     <div class="row">
-      <div class="field"><label for="ci" data-i18n="f.in">Llegada</label><input id="ci" type="date" min="2026-12-02" max="2027-03-31" value="2026-12-10"></div>
-      <div class="field"><label for="co" data-i18n="f.out">Salida</label><input id="co" type="date" min="2026-12-03" max="2027-04-01" value="2026-12-11"></div>
+      <div class="field"><label for="ci" data-i18n="f.in">Llegada</label><input id="ci" type="date" min="2026-12-02" max="2027-03-31" value="2026-12-04"></div>
+      <div class="field"><label for="co" data-i18n="f.out">Salida</label><input id="co" type="date" min="2026-12-03" max="2027-04-01" value="2026-12-06"></div>
       <div class="field"><label for="pp" data-i18n="f.pp">Personas</label><select id="pp"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
     </div>
     <div id="alert" style="margin-top:10px"></div>
@@ -1044,7 +1044,7 @@ K('ev.fail',`No pudimos consultar la disponibilidad ahora. Inténtalo de nuevo e
 K('ev.stay',`Elige el día de tu estadía`,`Choose the day of your stay`,`Escolha o dia da sua estadia`);
 K('ev.nocupo',`Por ahora no hay cupo en tus fechas para esta experiencia con tu grupo. Prueba con otra experiencia o escríbenos por WhatsApp: <a href="{wa}" target="_blank" rel="noopener">{b}</a>.`,`There is no space on your dates for this experience with your group right now. Try another experience or message us on WhatsApp: <a href="{wa}" target="_blank" rel="noopener">{b}</a>.`,`No momento não há vaga nas suas datas para esta experiência com o seu grupo. Tente outra experiência ou escreva para nós pelo WhatsApp: <a href="{wa}" target="_blank" rel="noopener">{b}</a>.`);
 K('wa.nocupo',`Hola, somos un grupo de {p} personas, nos alojamos del {a} al {b} y queremos {x}. ¿Qué día tienen?`,`Hello, we are a group of {p} people, we are staying from {a} to {b} and we'd like {x}. Which days do you have?`,`Olá, somos um grupo de {p} pessoas, vamos nos hospedar de {a} a {b} e queremos {x}. Quais dias vocês têm?`);
-K('ev.next',`Próximos días disponibles`,`Next available days`,`Próximos dias disponíveis`);
+K('ev.next',`Próximos días disponibles`,`Next available days`,`Próximos dias disponíveis`);K('ev.cal',`Elige el día en el calendario: se activan los días con cupo para tu grupo.`,`Pick the day on the calendar: days with space for your group are enabled.`,`Escolha o dia no calendário: ficam ativos os dias com vaga para o seu grupo.`);
 K('ev.nodates',`Por ahora no hay fechas disponibles para esta experiencia con tu grupo. Escríbenos por WhatsApp y vemos una alternativa: <a href="{wa}" target="_blank" rel="noopener">{b}</a>.`,`There are no available dates for this experience with your group right now. Message us on WhatsApp and we'll find an alternative: <a href="{wa}" target="_blank" rel="noopener">{b}</a>.`,`No momento não há datas disponíveis para esta experiência com o seu grupo. Escreva para nós pelo WhatsApp e buscamos uma alternativa: <a href="{wa}" target="_blank" rel="noopener">{b}</a>.`);
 K('wa.nodates',`Hola, somos un grupo de {p} personas y queremos {x}. ¿Qué fechas tienen?`,`Hello, we are a group of {p} people and we'd like {x}. Which dates do you have?`,`Olá, somos um grupo de {p} pessoas e queremos {x}. Quais datas vocês têm?`);
 K('ev.closed',`Ese día no tomamos eventos. Elige otra fecha.`,`We don't host events on that day. Choose another date.`,`Nesse dia não realizamos eventos. Escolha outra data.`);
@@ -1578,11 +1578,20 @@ function evDiasLibres(min,max,i){var m={},ds=[];
 function evDiasEstadia(min,max,i){var out=[],d=min;
   while(d<=max&&out.length<40){var hs=[];if(EVCERR.indexOf(d)<0)EVB.forEach(function(bb){if(evCell(d,bb[0],i).hay)hs.push(bb[1].slice(0,5))});out.push({d:d,t:hs});d=ISO(new Date(FEC(d).getTime()+864e5))}
   return out}
-function evDiasUnir(min,max,i){var m={};
+function evDiasUnir(min,max,i,all){var m={};
   if(LX.on()){var s=LX.get(i);if(s&&s.by)Object.keys(s.by).forEach(function(d){if(d<min||d>max||EVCERR.indexOf(d)>-1)return;EVB.forEach(function(bb){var c=s.by[d][bb[0]];if(c&&c.hay)(m[d]=m[d]||[]).push(bb[1].slice(0,5))})})}
   else EVB.forEach(function(bb){Object.keys(EVTOM).forEach(function(k){var a=k.split('|');if(a[2]!==String(i)||a[1]!==bb[0])return;var d=a[0],tom=EVTOM[k];
     if(d<min||d>max||EVCERR.indexOf(d)>-1||tom<15||G.p>EXPS[i].cap-tom)return;(m[d]=m[d]||[]).push(bb[1].slice(0,5))})});
-  return Object.keys(m).sort().slice(0,10).map(function(d){return {d:d,t:m[d]}})}
+  return Object.keys(m).sort().slice(0,all?9999:10).map(function(d){return {d:d,t:m[d]}})}
+/* Calendario de mes para elegir el día de una experiencia: TODOS los días del rango; activos solo los que tienen cupo para el grupo. */
+function evMapa(min,max,i,peq){var m={};
+  if(peq){evDiasUnir(min,max,i,true).forEach(function(q){m[q.d]=q.t});return m}
+  var d=min,n=0;while(d<=max&&n++<400){if(EVCERR.indexOf(d)<0){var hs=[];EVB.forEach(function(bb){if(evCell(d,bb[0],i).hay)hs.push(bb[1].slice(0,5))});if(hs.length)m[d]=hs}d=ISO(new Date(FEC(d).getTime()+864e5))}
+  return m}
+function evCalH(min,max,i,peq){var mp=evMapa(min,max,i,peq),ks=Object.keys(mp).sort();
+  var ym=G.cm&&MESES.indexOf(G.cm)>-1?G.cm:(G.day?G.day.slice(0,7):(ks[0]||min).slice(0,7));
+  if(MESES.indexOf(ym)<0)ym=MESES[0];G.cm=ym;
+  return calH(ym,function(d){return d===G.day?'on':''},function(d){return !!mp[d]},'ev')}
 G.cur=null;
 function waLink(txt){return wa(txt)}
 function gdispDraw(){
@@ -1599,19 +1608,19 @@ function gdispDraw(){
     if(comp)return '<div class="gdetc"><span><b>'+x.n+'</b> · '+t('x.line',{p:CLP(x.p),n:x.cap})+'</span><button type="button" class="btn ghost" id="gdt">'+t('x.sd')+'</button></div>';
     return '<div class="gdet"><img src="'+(x.afiche||x.img)+'" alt="'+x.n+'"><div><h4>'+x.n+'</h4><div class="price">'+CLP(x.p)+' <small>'+t('x.per')+'</small></div><small>'+t('x.upto',{n:x.cap})+'</small>'+xNota(x)+'<div class="note">'+xDesc(x)+'</div><div class="note nes">'+t('x.poster')+'</div><b>'+t('x.inc')+'</b><ul>'+xInc(x).map(function(tx){return '<li>'+tx+'</li>'}).join('')+'</ul>'+(G.ver?'<button type="button" class="btn ghost" id="gdh">'+t('x.hd')+'</button>':'<button type="button" class="btn" id="gver">'+t('x.ver')+'</button>')+'</div></div>'})(EXPS[i]):'';
   var aloj=G.n>0;
-  dI.parentNode.style.display=(vd&&!peq&&!aloj)?'':'none';
+  dI.parentNode.style.display='none';
   dI.value=G.day||'';
   var wab=t('wa.btn');
   if(vd&&carga)h='<div class="note">'+t('ev.load')+'</div>';
   else if(vd&&falla)h='<div class="warn">'+t('ev.fail')+'</div>';
   else if(vd){var x=EXPS[i];
     if(!peq&&aloj){var estd=evDiasEstadia(min,max,i);
-      h='<div class="note" style="margin:6px 0 2px">'+t('ev.stay')+'</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px">'+estd.map(function(q){var ok=q.t.length>0;return '<button type="button" class="btn'+(G.day===q.d?'':' ghost')+' evdia" data-d="'+q.d+'"'+(ok?'':' disabled')+' style="padding:6px 12px;font-size:14px">'+fmt(q.d)+'</button>'}).join('')+'</div>';
+      h='<div class="note" style="margin:6px 0 2px">'+t('ev.stay')+'</div>'+evCalH(min,max,i,false);
       if(!estd.some(function(q){return q.t.length}))h+='<div class="warn">'+t('ev.nocupo',{wa:wa(t('wa.nocupo',{p:G.p,a:fmt(G.f),b:fmt(G.o),x:x.n})),b:wab})+'</div>'}
     else if(!peq){dias=evDiasLibres(min,max,i);var lb=dI.parentNode.querySelector('label');if(lb)lb.textContent=dias.length?t('g.other'):t('g.day');
-      h=dias.length?'<div class="note" style="margin:6px 0 2px">'+t('ev.next')+'</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px">'+dias.map(function(q){return '<button type="button" class="btn'+(G.day===q.d?'':' ghost')+' evdia" data-d="'+q.d+'" style="padding:6px 12px;font-size:14px">'+fmt(q.d)+'</button>'}).join('')+'</div>':''}
-    if(peq){dias=evDiasUnir(min,max,i);
-      h=dias.length?(aloj?'<div class="note" style="margin:6px 0 2px">'+t('ev.stay')+'</div>':'')+'<div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">'+dias.map(function(q){return '<button type="button" class="btn'+(G.day===q.d?'':' ghost')+' evdia" data-d="'+q.d+'" style="padding:4px 10px;font-size:13px">'+fmt(q.d)+' · '+evTs(q.t)+'</button>'}).join('')+'</div>'
+      h=dias.length?'<div class="note" style="margin:6px 0 2px">'+t('ev.cal')+'</div>'+evCalH(min,max,i,false):''}
+    if(peq){dias=evDiasUnir(min,max,i,true);
+      h=dias.length?(aloj?'<div class="note" style="margin:6px 0 2px">'+t('ev.stay')+'</div>':'')+evCalH(min,max,i,true)
         :'<div class="warn">'+t('ev.nodates',{wa:wa(t('wa.nodates',{p:G.p,x:x.n})),b:wab})+'</div>'}
     var ver=G.day&&(!peq||dias.some(function(q){return q.d===G.day}));
     if(ver){
@@ -1623,10 +1632,12 @@ function gdispDraw(){
         return '<button type="button" class="evb'+(sel?' on':'')+'" data-i="'+i+'" data-b="'+b[0]+'"'+(!sel&&(!cabe||us)?' disabled':'')+'><b>'+evR(b)+'</b><small>'+t('evb.'+b[0]+'.n')+' · '+st+'</small><small>'+t('evb.cap',{c:x.cap,n:Math.max(0,libre)})+'</small></button>'}).join('')+'</div></div>';
         if(!peq&&!hay&&!(G.ev[i]&&G.ev[i].d===G.day))h='<div class="warn">'+t('ev.nodia',{p:G.p,wa:wa(t('wa.nodia',{p:G.p,x:x.n,d:dl(G.day)})),b:wab})+'</div>'+h}}}
   $('gdisp').innerHTML=h;
-  $('gpick').querySelectorAll('.evpick').forEach(function(b){b.onclick=function(){G.cur=+b.getAttribute('data-i');G.ver=false;G.det=false;G.day='';gdraw()}});
+  $('gpick').querySelectorAll('.evpick').forEach(function(b){b.onclick=function(){G.cur=+b.getAttribute('data-i');G.ver=false;G.det=false;G.day='';G.cm='';gdraw()}});
   var gv=$('gver');if(gv)gv.onclick=function(){G.ver=true;G.det=false;gdraw();setTimeout(function(){var e=$('gdet');if(e)window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-150,behavior:'smooth'})},60)};
   var gdt=$('gdt');if(gdt)gdt.onclick=function(){G.det=true;gdraw()};var gdh=$('gdh');if(gdh)gdh.onclick=function(){G.det=false;gdraw()};
   $('gdisp').querySelectorAll('.evdia').forEach(function(b){b.onclick=function(){G.day=b.getAttribute('data-d');gdraw()}});
+  $('gdisp').querySelectorAll('.cg button[data-d]').forEach(function(b){b.onclick=function(){G.day=b.getAttribute('data-d');gdraw()}});
+  var evp=$('evprev'),evn=$('evnext');if(evp)evp.onclick=function(){G.cm=MESES[Math.max(0,MESES.indexOf(G.cm)-1)];gdraw()};if(evn)evn.onclick=function(){G.cm=MESES[Math.min(MESES.length-1,MESES.indexOf(G.cm)+1)];gdraw()};
   $('gdisp').querySelectorAll('.evb').forEach(function(b){b.onclick=function(){var k=+b.getAttribute('data-i'),bl=b.getAttribute('data-b');
     if(G.ev[k]&&G.ev[k].d===G.day&&G.ev[k].b===bl){G.e[k]=false;delete G.ev[k]}else{G.e[k]=true;G.ev[k]={d:G.day,b:bl,sid:evCell(G.day,bl,k).sid}}gdraw()}});
   $('gdispn').innerHTML=!aviso?'':t('ev.askw',{wa:wa(t('wa.ask')),b:wab})}
