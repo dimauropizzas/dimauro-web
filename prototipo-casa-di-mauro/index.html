@@ -62,8 +62,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .tab{background:none;border:1px solid var(--green);color:var(--green);border-radius:999px;padding:9px 18px;font-weight:600;cursor:pointer}
 .tab.on{background:var(--green);color:#f6f0e1}
 .pt{display:none}.pt.on{display:block}
-.tile.ph{background-image:linear-gradient(rgba(15,42,31,.74),rgba(15,42,31,.74)),var(--img);background-size:cover;background-position:var(--pos,center)}
-.tile.ph:hover{background-image:linear-gradient(rgba(29,67,49,.6),rgba(29,67,49,.6)),var(--img)}
+.tile.ph{background-image:linear-gradient(rgba(15,42,31,.58),rgba(15,42,31,.58)),var(--img);background-size:cover;background-position:var(--pos,center)}
+.tile.ph:hover{background-image:linear-gradient(rgba(29,67,49,.42),rgba(29,67,49,.42)),var(--img)}
+.tile.ph b,.tile.ph span{text-shadow:0 2px 14px rgba(0,0,0,.65)}
 .tile{min-height:170px!important}
 .tile b{font-size:21px!important}
 .tile.ph,.tile{justify-content:flex-start!important;height:190px;min-height:190px!important}
@@ -471,6 +472,19 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
 .atx:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(8,26,18,.32)}
 .atx canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 @media(min-width:900px){.atx{height:300px}}
+/* ===== CELULAR (<900px): la casa sin nada encima y pastillas grandes, todas del mismo tamaño ===== */
+@media(max-width:899px){
+  #v-inicio .hero img{height:auto;aspect-ratio:4/3;object-fit:cover;object-position:50% 40%}
+  #v-inicio .hero .cap{position:static;display:grid;grid-template-columns:1fr;gap:4px;background:var(--green);padding:16px 18px 18px}
+  #v-inicio .hero .k{font-size:12px}
+  #v-inicio .hero .s{font-size:34px;margin-top:0}
+  #v-inicio .count{margin-top:10px}
+  .tiles{grid-template-columns:1fr!important;gap:18px!important}
+  .tile,.tile.ph{height:210px!important;min-height:210px!important;border-radius:18px;box-shadow:0 10px 26px rgba(8,26,18,.2)}
+  .tile b{font-size:25px!important;letter-spacing:.12em}
+  .tile span{font-size:15px!important}
+  .atx{height:210px}
+}
 /* ===== ESCRITORIO (≥900px): portada a todo el ancho, encabezado grande que se va con la página, minibarra al bajar, idioma abajo a la derecha del encabezado ===== */
 @media(min-width:900px){
   body{overflow-x:clip}
