@@ -3,11 +3,12 @@
 <title>Casa Di Mauro · Hostal y restaurante en Licán Ray</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Hostal con desayuno sureño y restaurante en Licán Ray, a pasos del lago: habitaciones con baño privado, escapadas de Navidad y Año Nuevo, grupos y delegaciones, pizzas y coctelería.">
-<!-- hreflang: URLs relativas porque el dominio definitivo (dimauro.cl o dimauropizzas.cl) aún no está definido; al publicar, reemplazar por URLs absolutas. x-default = español. -->
-<link rel="alternate" hreflang="es" href="./?lang=es">
-<link rel="alternate" hreflang="en" href="./?lang=en">
-<link rel="alternate" hreflang="pt-BR" href="./?lang=pt">
-<link rel="alternate" hreflang="x-default" href="./?lang=es">
+<!-- Dominio definitivo: dimauro.cl (dimauropizzas.cl queda solo como carta/delivery y no se indexa). x-default = español. -->
+<link rel="canonical" href="https://dimauro.cl/">
+<link rel="alternate" hreflang="es" href="https://dimauro.cl/?lang=es">
+<link rel="alternate" hreflang="en" href="https://dimauro.cl/?lang=en">
+<link rel="alternate" hreflang="pt-BR" href="https://dimauro.cl/?lang=pt">
+<link rel="alternate" hreflang="x-default" href="https://dimauro.cl/?lang=es">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600&display=swap">
 <style>
 /* Concepto: portada "¿Qué tienes en mente hoy?" con 8 cuadrados iguales; vistas cortas por hash; verde bosque, crema y dorado de la marca. Escritorio y celular. */
@@ -453,6 +454,8 @@ h1,h2,h3,.tile b,.et b,.mealbox h4,.mealc h3,.sug .st{font-family:var(--serif);f
 .usd{font-family:var(--sans);font-size:.6em;font-weight:500;color:var(--muted);white-space:nowrap;letter-spacing:0;text-transform:none}
 .price .usd,.sbar .tt .usd{display:block}
 .good .usd,.sum .usd,.panel .usd{color:inherit;opacity:.8}
+body[data-cur="USD"] .usd{font-weight:700;color:inherit!important;opacity:1!important}
+body[data-cur="USD"] .fxbar{font-size:13.5px;font-weight:600;color:var(--green)}
 .fxbar{font-size:12.5px;color:var(--muted);background:#f1ead3;border:1px solid var(--line);border-radius:10px;padding:6px 10px;margin:6px 0 0}
 .fxn{margin:6px 0}
 html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
@@ -461,7 +464,6 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
 .tags .tgm .usd{display:inline!important;min-height:0!important;padding:0!important;border:0!important;background:none!important;font-size:12px!important;border-radius:0!important;color:inherit;opacity:.85;margin-left:6px}
 .note .usd,.mrow2 .usd,td .usd,.good .usd{font-size:.92em}
 
-.minibar{display:none}
 /* ===== ESCRITORIO (≥900px): portada a todo el ancho, encabezado grande que se va con la página, minibarra al bajar, idioma abajo a la derecha del encabezado ===== */
 @media(min-width:900px){
   body{overflow-x:clip}
@@ -472,8 +474,9 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
   .brand img{width:128px!important;height:128px!important;box-shadow:0 6px 22px rgba(15,42,31,.28)}
   .brand .bw{font-size:40px!important;letter-spacing:.2em!important}
   .brand .arc{font-size:14px!important;letter-spacing:.34em!important;margin-top:10px}
-  /* Idioma y moneda: abajo a la derecha del encabezado, entre el logo y la foto; al bajar se acoplan a la minibarra */
-  .tools{position:fixed;top:140px;right:max(24px,calc(50vw - 560px));z-index:40;padding:5px 8px;gap:10px;background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:999px;box-shadow:0 4px 14px rgba(15,42,31,.14)}
+  /* Idioma y moneda: dentro del encabezado, abajo a la derecha (se mueve con la página: sin saltos ni parpadeo) */
+  .top{position:relative!important}
+  .top .tools{position:absolute;right:0;bottom:12px;top:auto;padding:5px 8px;gap:10px;background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:999px;box-shadow:0 4px 14px rgba(15,42,31,.14)}
   .tools .seg{gap:4px}
   .tools .seg button{min-height:34px;min-width:36px;padding:6px 8px;border-bottom:0;border-radius:999px;font-size:13px;font-weight:700;color:var(--green)}
   .tools .seg button.on{background:#efe6cc;box-shadow:inset 0 0 0 2px var(--gold)}
@@ -481,13 +484,6 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
   .langseg svg{width:30px;height:20px;border-radius:3px}
   .langseg button:not(.on) svg{opacity:.8}
   .tools .seg i{display:none}
-  /* Minibarra fija: aparece al bajar, sin mover la página */
-  .minibar{position:fixed;top:0;left:0;right:0;height:64px;display:flex;align-items:center;gap:16px;padding:0 max(24px,calc(50vw - 560px));background:#f8f4ea;box-shadow:0 2px 14px rgba(15,42,31,.16);z-index:30;transform:translateY(-110%);visibility:hidden;transition:transform .25s ease,visibility 0s linear .25s}
-  body.scrolled .minibar{transform:none;visibility:visible;transition:transform .25s ease}
-  .mbbrand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--green)}
-  .mbbrand img{width:42px;height:42px;border-radius:50%}
-  .mbbrand b{font-family:var(--serif);font-size:20px;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
-  .mback{background:none;border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer;font-weight:500;color:var(--green)}
   /* Portada: foto a todo el ancho y entera; el buscador va DEBAJO, sin tapar la casa */
   #v-inicio .hero{width:100vw;margin:0 0 0 calc(50% - 50vw);border-radius:0}
   #v-inicio .hero img{width:100%;height:min(76vh,56vw,780px);min-height:460px;object-fit:cover;object-position:50% 30%}
@@ -511,7 +507,6 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
 }
 </style>
 
-<div class="minibar" id="minibar"><a class="mbbrand" href="#inicio"><img src="img/logo.webp" alt="" width="42" height="42"><b>Casa Di Mauro</b></a><button type="button" class="mback" id="mback" hidden></button></div>
 <div class="wrap">
 <div class="tools" id="tools">
   <div class="seg langseg" role="group" data-i18n-attr="aria-label:tools.lang"><button type="button" data-lang="es" lang="es" title="Español" aria-label="Español"><svg viewBox="0 0 30 20" width="26" height="17" aria-hidden="true"><rect width="30" height="20" fill="#fff"/><rect y="10" width="30" height="10" fill="#d52b1e"/><rect width="10" height="10" fill="#0039a6"/><polygon fill="#fff" points="5,1.6 5.9,4.3 8.7,4.3 6.4,6 7.3,8.7 5,7 2.7,8.7 3.6,6 1.3,4.3 4.1,4.3"/></svg></button><button type="button" data-lang="en" lang="en" title="English" aria-label="English"><svg viewBox="0 0 30 20" width="26" height="17" aria-hidden="true"><rect width="30" height="20" fill="#fff"/><g fill="#b22234"><rect width="30" height="2.857"/><rect y="5.714" width="30" height="2.857"/><rect y="11.43" width="30" height="2.857"/><rect y="17.14" width="30" height="2.857"/></g><rect width="12" height="11.43" fill="#3c3b6e"/></svg></button><button type="button" data-lang="pt" lang="pt-BR" title="Português (Brasil)" aria-label="Português (Brasil)"><svg viewBox="0 0 30 20" width="26" height="17" aria-hidden="true"><rect width="30" height="20" fill="#009c3b"/><polygon fill="#ffdf00" points="15,2 27,10 15,18 3,10"/><circle cx="15" cy="10" r="4.2" fill="#002776"/></svg></button></div>
@@ -1199,7 +1194,7 @@ function langInicial(){var q=null;try{q=new URLSearchParams(location.search).get
 function curInicial(){var q=null;try{q=new URLSearchParams(location.search).get('cur')}catch(e){}
   if(q&&/^(clp|usd)$/i.test(q))return q.toUpperCase();
   try{var s=localStorage.getItem('cdm_cur');if(s==='USD'||s==='CLP')return s}catch(e){}
-  return 'CLP'}
+  return LANG==='es'?'CLP':'USD'}
 function $(i){return document.getElementById(i)}
 var WA='56956154280';
 var wa=function(txt){return 'https://wa.me/'+WA+'?text='+encodeURIComponent(txt)};
@@ -1947,7 +1942,7 @@ function toolsSync(){
 function headLang(){
   document.documentElement.lang=LANG;document.title=t('meta.title');
   var md=document.querySelector('meta[name="description"]');if(md)md.setAttribute('content',t('meta.desc'));
-  window.CDM_LANG=LANG;window.CDM_CUR=CUR;
+  window.CDM_LANG=LANG;window.CDM_CUR=CUR;document.body.setAttribute('data-cur',CUR);
   try{document.dispatchEvent(new CustomEvent('cdm:lang',{detail:{lang:LANG,cur:CUR}}))}catch(e){}}
 function rerenderRooms(){
   var act=S.ctx;if(!act)return;
@@ -1968,7 +1963,9 @@ function renderAll(){
   if(!$('apanel').hidden)advRefresh();
   if(mo&&MR){MR();Object.keys(vals).forEach(function(id){var e=$(id);if(e&&e.tagName==='INPUT'&&e.type!=='hidden')e.value=vals[id]})}
   syncBar()}
-function setLang(l){if(LANGS.indexOf(l)<0)return;LANG=l;try{localStorage.setItem('cdm_lang',l)}catch(e){}urlParam('lang',l);renderAll()}
+function setLang(l){if(LANGS.indexOf(l)<0)return;LANG=l;try{localStorage.setItem('cdm_lang',l)}catch(e){}urlParam('lang',l);
+  /* Español → pesos (CLP). Inglés y portugués → dólares: quien viene de afuera quiere ver el precio en dólares. Se puede volver a cambiar con CLP/USD. */
+  var c=l==='es'?'CLP':'USD';CUR=c;try{localStorage.setItem('cdm_cur',c)}catch(e){}urlParam('cur',c.toLowerCase());if(c==='USD')fxLoad();renderAll()}
 function setCur(c){if(c!=='CLP'&&c!=='USD')return;CUR=c;try{localStorage.setItem('cdm_cur',c)}catch(e){}urlParam('cur',c.toLowerCase());if(c==='USD')fxLoad();renderAll()}
 document.querySelectorAll('#tools [data-lang]').forEach(function(b){b.onclick=function(){setLang(b.getAttribute('data-lang'))}});
 document.querySelectorAll('#tools [data-cur]').forEach(function(b){b.onclick=function(){setCur(b.getAttribute('data-cur'))}});
@@ -1976,11 +1973,7 @@ chatDraw();toolsSync();headLang();
 if(CUR==='USD')fxLoad();
 
 
-(function(){var hd=document.querySelector('.top'),tl=document.getElementById('tools'),mb=document.getElementById('mback'),bk=document.getElementById('back'),dk=window.matchMedia('(min-width:900px)'),pend=false;
-function f(){pend=false;document.body.classList.toggle('scrolled',(window.scrollY||0)>230);
-  if(tl&&hd){if(dk.matches){tl.style.top=Math.max(14,Math.round(hd.getBoundingClientRect().bottom-60))+'px'}else tl.style.top=''}
-  if(mb&&bk){mb.hidden=bk.hidden;if(!bk.hidden)mb.textContent=bk.textContent}}
-function q(){if(!pend){pend=true;requestAnimationFrame(f)}}
-window.addEventListener('scroll',q,{passive:true});window.addEventListener('resize',q);window.addEventListener('hashchange',function(){setTimeout(f,60)});
-if(mb)mb.onclick=function(){if(bk)bk.click()};f()})();
+(function(){var tl=document.getElementById('tools'),hd=document.querySelector('header.top'),wrap=tl&&tl.parentNode,mq=window.matchMedia('(min-width:900px)');
+function place(){if(!tl||!hd)return;if(mq.matches){if(tl.parentNode!==hd)hd.appendChild(tl)}else if(tl.parentNode!==wrap){wrap.insertBefore(tl,wrap.firstChild)}}
+if(mq.addEventListener)mq.addEventListener('change',place);else mq.addListener(place);place()})();
 </script>
