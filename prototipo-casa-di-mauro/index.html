@@ -466,21 +466,11 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
 
 .privl{text-align:center;margin:14px 0 6px;font-size:13px}.privl a{color:var(--muted);text-decoration:underline}
 #v-inicio.view{padding-bottom:10px}
-/* Atiende: polo tecnológico */
-.atx{grid-column:1/-1;display:block;position:relative;overflow:hidden;margin-top:6px;border-radius:20px;border:1px solid var(--gold);background:radial-gradient(900px 320px at 88% -10%,rgba(185,143,47,.30),transparent 60%),linear-gradient(135deg,#050a08 0%,#0b1a12 55%,#12301f 100%);color:#f6f0e1;text-decoration:none;padding:26px 22px;box-shadow:0 14px 34px rgba(8,26,18,.22);transition:transform .25s ease,box-shadow .25s ease}
+/* Atiende: pieza animada (red de puntos y destellos sobre la A del logo), sin texto */
+.atx{grid-column:1/-1;display:block;position:relative;overflow:hidden;margin-top:6px;border-radius:20px;border:1px solid var(--gold);height:210px;background:#030705;box-shadow:0 14px 34px rgba(8,26,18,.22);transition:transform .25s ease,box-shadow .25s ease;cursor:pointer}
 .atx:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(8,26,18,.32)}
-.atx::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(217,182,90,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(217,182,90,.08) 1px,transparent 1px);background-size:34px 34px;-webkit-mask-image:linear-gradient(to left,#000,transparent 75%);mask-image:linear-gradient(to left,#000,transparent 75%);pointer-events:none}
-.atx>*{position:relative}
-.atx-head{display:flex;align-items:center;gap:14px}
-.atx-head img{width:56px;height:56px;border-radius:14px;background:#000}
-.atx-head small{display:block;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--goldl)}
-.atx-head b{font-family:var(--serif);font-size:30px;letter-spacing:.14em;font-weight:700}
-.atx-p{margin:14px 0 0;font-size:16px;line-height:1.55;color:#e4dcc4;max-width:560px}
-.atx-l{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:10px}
-.atx-l li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.4}
-.atx-l li::before{content:"";flex:none;width:9px;height:9px;margin-top:6px;border-radius:50%;background:var(--goldl);box-shadow:0 0 0 3px rgba(217,182,90,.2)}
-.atx-cta{display:inline-block;margin-top:18px;background:var(--gold);color:#fff;border-radius:999px;padding:10px 18px;font-weight:600;font-size:15px}
-@media(min-width:900px){.atx{padding:46px 52px;display:grid;grid-template-columns:1.1fr 1fr;column-gap:56px;align-items:center}.atx-head,.atx-p,.atx-cta{grid-column:1}.atx-cta{justify-self:start}.atx-l{grid-column:2;grid-row:1/5;margin:0}.atx-head b{font-size:42px}.atx-p{font-size:18px}.atx-l li{font-size:17px}}
+.atx canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+@media(min-width:900px){.atx{height:300px}}
 /* ===== ESCRITORIO (≥900px): portada a todo el ancho, encabezado grande que se va con la página, minibarra al bajar, idioma abajo a la derecha del encabezado ===== */
 @media(min-width:900px){
   body{overflow-x:clip}
@@ -571,12 +561,7 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
     <a class="tile ph" href="#alojamiento" style="--img:url(img/habitacion.jpg);--pos:center 46%"><b data-i18n="tile.aloj">Alojamiento</b><span data-i18n="tile.aloj.s">Habitaciones y escapadas</span></a>
     <a class="tile ph" href="#grupos" style="--img:url(img/patio.jpg);--pos:center 45%"><b data-i18n="tile.grp">Grupos y delegaciones</b><span data-i18n="tile.grp.s">Alternativas para grupos desde 15 personas</span></a>
     <a class="tile ph" href="#pizzeria" style="--img:url(img/pizza-tile.jpg);--pos:center 55%"><b data-i18n="tile.rest">Restaurante</b><span data-i18n="tile.rest.s">Pizzas, hamburguesas, waffles y coctelería</span></a>
-    <a class="atx" href="https://atiende.tech" target="_blank" rel="noopener">
-      <div class="atx-head"><img src="img/atiende.png" alt="" width="56" height="56"><div><small data-i18n="atx.k">Polo tecnológico</small><b>ATIENDE</b></div></div>
-      <p class="atx-p" data-i18n="atx.p">La tecnología con inteligencia artificial que hace funcionar Casa Di Mauro, creada para el turismo.</p>
-      <ul class="atx-l"><li data-i18n="atx.l1">Rayén, asistente con IA que atiende por WhatsApp</li><li data-i18n="atx.l2">Reservas en línea de alojamiento, comidas y experiencias</li><li data-i18n="atx.l3">App del equipo: llamados de mesa por QR y agenda del día</li><li data-i18n="atx.l4">Panel de gestión para el dueño: reservas, pagos y cupos</li></ul>
-      <span class="atx-cta" data-i18n="atx.cta">Conocer Atiende</span>
-    </a>
+    <a class="atx" href="https://atiende.tech" target="_blank" rel="noopener" aria-label="Atiende"><canvas id="atxc" aria-hidden="true"></canvas></a>
   </div>
 </section>
 
@@ -2030,4 +2015,62 @@ if(CUR==='USD')fxLoad();
 (function(){var tl=document.getElementById('tools'),hd=document.querySelector('header.top'),wrap=tl&&tl.parentNode,mq=window.matchMedia('(min-width:900px)');
 function place(){if(!tl||!hd)return;if(mq.matches){if(tl.parentNode!==hd)hd.appendChild(tl)}else if(tl.parentNode!==wrap){wrap.insertBefore(tl,wrap.firstChild)}}
 if(mq.addEventListener)mq.addEventListener('change',place);else mq.addListener(place);place()})();
+
+/* Atiende: red de puntos conectados que recorren la A del logo con destellos de luz. Se pausa fuera de pantalla y respeta «reducir movimiento». */
+(function(){
+  var cv=document.getElementById('atxc');if(!cv||!cv.getContext)return;
+  var ctx=cv.getContext('2d'),img=new Image(),W=0,H=0,dpr=1,S=0,ox=0,oy=0,hover=false,run=false,raf=0,vis=true;
+  var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var N=[[352,233],[427,356],[223,472],[147,596],[304,556],[466,396],[502,466],[433,548],[546,591],[606,253],[662,283]].map(function(q){return[q[0]/800,q[1]/800]});
+  var E=[[0,1],[0,2],[2,3],[2,4],[4,5],[5,9],[1,5],[5,6],[6,7],[6,10],[7,8],[4,7],[9,10],[6,8]];
+  var ADJ=N.map(function(_,i){return E.filter(function(e){return e[0]===i||e[1]===i}).map(function(e){return e[0]===i?e[1]:e[0]})});
+  var bg=[],pul=[],B=document.createElement('canvas'),bx=B.getContext('2d');
+  function pos(i){return[ox+N[i][0]*S,oy+N[i][1]*S]}
+  function size(){var r=cv.getBoundingClientRect();dpr=Math.min(window.devicePixelRatio||1,2);W=Math.max(1,Math.round(r.width));H=Math.max(1,Math.round(r.height));
+    cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);S=Math.round(Math.min(H*0.98,W*0.85));ox=(W-S)/2;oy=(H-S)/2;B.width=Math.max(1,Math.round(S*dpr));B.height=B.width;
+    var n=Math.min(150,Math.round(W*H/3800));bg=[];for(var i=0;i<n;i++)bg.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*1.3+.4,ph:Math.random()*6.28})}
+  function draw(t){
+    ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;
+    var g=ctx.createRadialGradient(W/2,H/2,10,W/2,H/2,Math.max(W,H)*.75);g.addColorStop(0,'#12301f');g.addColorStop(.55,'#07120c');g.addColorStop(1,'#020403');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    var i,j,a,b,d,p;
+    for(i=0;i<bg.length;i++){a=bg[i];a.x+=a.vx;a.y+=a.vy;if(a.x<0)a.x=W;else if(a.x>W)a.x=0;if(a.y<0)a.y=H;else if(a.y>H)a.y=0}
+    ctx.lineWidth=1;
+    for(i=0;i<bg.length;i++)for(j=i+1;j<bg.length;j++){a=bg[i];b=bg[j];d=Math.hypot(a.x-b.x,a.y-b.y);if(d<125){ctx.strokeStyle='rgba(232,168,80,'+(0.32*(1-d/125)).toFixed(3)+')';ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}}
+    for(i=0;i<bg.length;i++){a=bg[i];ctx.fillStyle='rgba(245,196,110,'+(0.5+0.35*Math.sin(t*0.002+a.ph)).toFixed(3)+')';ctx.beginPath();ctx.arc(a.x,a.y,a.r*1.15,0,6.283);ctx.fill()}
+    /* el logo (el negro se funde con el fondo) */
+    ctx.globalCompositeOperation='lighter';
+    if(img.complete&&img.naturalWidth){ctx.globalAlpha=.9;ctx.drawImage(img,ox,oy,S,S);ctx.globalAlpha=1;
+      /* barrido de luz que cruza la A */
+      var ph=((t/1000)%6)/6,c=(ph*1.7-.35)*B.width;
+      bx.setTransform(1,0,0,1,0,0);bx.globalCompositeOperation='source-over';bx.fillStyle='#000';bx.fillRect(0,0,B.width,B.height);
+      bx.save();bx.translate(B.width/2,B.width/2);bx.rotate(.55);bx.translate(-B.width/2,-B.width/2);
+      var gr=bx.createLinearGradient(c-B.width*.22,0,c+B.width*.22,0);gr.addColorStop(0,'rgba(255,255,255,0)');gr.addColorStop(.5,'rgba(255,244,214,1)');gr.addColorStop(1,'rgba(255,255,255,0)');
+      bx.fillStyle=gr;bx.fillRect(-B.width,-B.width,B.width*3,B.width*3);bx.restore();
+      bx.globalCompositeOperation='multiply';bx.drawImage(img,0,0,B.width,B.width);
+      ctx.globalAlpha=1;ctx.drawImage(B,ox,oy,S,S)}
+    /* líneas y nodos de la A */
+    ctx.lineWidth=1.1;
+    for(i=0;i<E.length;i++){a=pos(E[i][0]);b=pos(E[i][1]);ctx.strokeStyle='rgba(255,205,120,.28)';ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()}
+    for(i=0;i<N.length;i++){p=pos(i);var k=0.55+0.45*Math.sin(t*0.0032+i*1.9),rr=9+8*k;
+      var rg=ctx.createRadialGradient(p[0],p[1],0,p[0],p[1],rr);rg.addColorStop(0,'rgba(255,240,200,'+(0.85*k).toFixed(3)+')');rg.addColorStop(1,'rgba(255,170,60,0)');ctx.fillStyle=rg;ctx.beginPath();ctx.arc(p[0],p[1],rr,0,6.283);ctx.fill()}
+    /* conexiones tenues entre los nodos de la A y los puntos cercanos */
+    for(i=0;i<N.length;i++){p=pos(i);for(j=0;j<bg.length;j++){b=bg[j];d=Math.hypot(p[0]-b.x,p[1]-b.y);if(d<140){ctx.strokeStyle='rgba(255,205,115,'+(0.34*(1-d/140)).toFixed(3)+')';ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(b.x,b.y);ctx.stroke()}}}
+    /* destellos que viajan por las líneas */
+    if(pul.length<(hover?10:5)&&Math.random()<(hover?.09:.045)){var s0=Math.floor(Math.random()*N.length);pul.push({a:s0,b:ADJ[s0][Math.floor(Math.random()*ADJ[s0].length)],p:0,v:.011+Math.random()*.012,h:0})}
+    for(i=pul.length-1;i>=0;i--){var q=pul[i];q.p+=q.v*(hover?1.5:1);
+      if(q.p>=1){var nx=ADJ[q.b].filter(function(z){return z!==q.a});q.a=q.b;q.b=(nx.length?nx:ADJ[q.b])[Math.floor(Math.random()*(nx.length||ADJ[q.b].length))];q.p=0;q.h++;if(q.h>5){pul.splice(i,1);continue}}
+      var A=pos(q.a),Bp=pos(q.b),x=A[0]+(Bp[0]-A[0])*q.p,y=A[1]+(Bp[1]-A[1])*q.p,t2=Math.max(0,q.p-.22),x2=A[0]+(Bp[0]-A[0])*t2,y2=A[1]+(Bp[1]-A[1])*t2;
+      var lg=ctx.createLinearGradient(x2,y2,x,y);lg.addColorStop(0,'rgba(255,190,90,0)');lg.addColorStop(1,'rgba(255,248,225,.95)');ctx.strokeStyle=lg;ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x,y);ctx.stroke();
+      var hg=ctx.createRadialGradient(x,y,0,x,y,13);hg.addColorStop(0,'rgba(255,252,235,1)');hg.addColorStop(.4,'rgba(255,200,100,.55)');hg.addColorStop(1,'rgba(255,160,40,0)');ctx.fillStyle=hg;ctx.beginPath();ctx.arc(x,y,13,0,6.283);ctx.fill()}
+    ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1}
+  function loop(t){if(!run)return;draw(t);raf=requestAnimationFrame(loop)}
+  function start(){if(run||RM||!vis||document.hidden)return;run=true;raf=requestAnimationFrame(loop)}
+  function stop(){run=false;cancelAnimationFrame(raf)}
+  function init(){size();if(RM){draw(2400);return}start()}
+  img.onload=init;img.onerror=init;img.src='img/atiende.png';
+  window.addEventListener('resize',function(){size();if(RM)draw(2400)});
+  document.addEventListener('visibilitychange',function(){document.hidden?stop():start()});
+  if('IntersectionObserver' in window)new IntersectionObserver(function(en){vis=en[0].isIntersecting;vis?start():stop()},{threshold:.05}).observe(cv);
+  var box=cv.parentNode;box.addEventListener('mouseenter',function(){hover=true});box.addEventListener('mouseleave',function(){hover=false});
+})();
 </script>
