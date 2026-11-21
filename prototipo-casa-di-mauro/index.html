@@ -474,12 +474,14 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
 @media(min-width:900px){.atx{height:300px}}
 /* Pastillas con vida: zoom lento de la foto + efectos cálidos (luz, luces de fiesta, vapor) */
 .tile.ph,.tile.ph:hover{background-image:none!important;background-color:#07120c;position:relative;overflow:hidden}
-.tile.ph::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(15,42,31,.56),rgba(15,42,31,.56)),var(--img);background-size:cover;background-position:var(--pos,center);transform-origin:var(--org,50% 50%);animation:kb 18s ease-in-out infinite alternate;z-index:0;transition:filter .3s}
+.tile.ph::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(15,42,31,var(--ov,.52)),rgba(15,42,31,var(--ov,.52))),var(--img);background-size:cover;background-position:var(--pos,center);transform-origin:var(--org,50% 50%);animation:kb 18s ease-in-out infinite alternate;z-index:0;transition:filter .3s}
 .tile.ph:hover::before{filter:brightness(1.12)}
 .tile.ph>b,.tile.ph>span{position:relative;z-index:2}
+.tile.tfxp::before{display:none}
+.tfx{transform-origin:50% 50%;animation:kb 18s ease-in-out infinite alternate}
 .tfx{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;display:block}
 @keyframes kb{from{transform:scale(1)}to{transform:scale(1.1)}}
-@media(prefers-reduced-motion:reduce){.tile.ph::before{animation:none}}
+@media(prefers-reduced-motion:reduce){.tile.ph::before,.tfx{animation:none}}
 /* ===== CELULAR (<900px): la casa sin nada encima y pastillas grandes, todas del mismo tamaño ===== */
 @media(max-width:899px){
   #v-inicio .hero img{height:auto;aspect-ratio:4/3;object-fit:cover;object-position:50% 40%}
@@ -580,9 +582,9 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
 
   <div class="ask"><h1 data-i18n="ask">¿Qué tienes en mente hoy?</h1></div>
   <div class="tiles">
-    <a class="tile ph" href="#alojamiento" style="--img:url(img/habitacion.jpg);--pos:center 46%"><canvas class="tfx" data-fx="luz" aria-hidden="true"></canvas><b data-i18n="tile.aloj">Alojamiento</b><span data-i18n="tile.aloj.s">Habitaciones y escapadas</span></a>
-    <a class="tile ph" href="#grupos" style="--img:url(img/patio.jpg);--pos:center 45%"><canvas class="tfx" data-fx="fiesta" aria-hidden="true"></canvas><b data-i18n="tile.grp">Grupos y delegaciones</b><span data-i18n="tile.grp.s">Alternativas para grupos desde 15 personas</span></a>
-    <a class="tile ph" href="#pizzeria" style="--img:url(img/pizza-tile.jpg);--pos:center 55%"><canvas class="tfx" data-fx="vapor" aria-hidden="true"></canvas><b data-i18n="tile.rest">Restaurante</b><span data-i18n="tile.rest.s">Pizzas, hamburguesas, waffles y coctelería</span></a>
+    <a class="tile ph tfxp" href="#alojamiento" style="--img:url(img/habitacion.jpg);--pos:center 30%"><canvas class="tfx" data-fx="cortinas" aria-hidden="true"></canvas><b data-i18n="tile.aloj">Alojamiento</b><span data-i18n="tile.aloj.s">Habitaciones y escapadas</span></a>
+    <a class="tile ph" href="#grupos" style="--img:url(img/patio.jpg);--pos:center 45%;--ov:.5"><canvas class="tfx" data-fx="patio" aria-hidden="true"></canvas><b data-i18n="tile.grp">Grupos y delegaciones</b><span data-i18n="tile.grp.s">Alternativas para grupos desde 15 personas</span></a>
+    <a class="tile ph" href="#pizzeria" style="--img:url(img/pizza-tile-hd.jpg);--pos:center 55%;--ov:.34"><canvas class="tfx" data-fx="brillo" aria-hidden="true"></canvas><b data-i18n="tile.rest">Restaurante</b><span data-i18n="tile.rest.s">Pizzas, hamburguesas, waffles y coctelería</span></a>
     <a class="atx" href="https://atiende.tech" target="_blank" rel="noopener" aria-label="Atiende"><canvas id="atxc" aria-hidden="true"></canvas></a>
   </div>
 </section>
@@ -2119,46 +2121,63 @@ if(mq.addEventListener)mq.addEventListener('change',place);else mq.addListener(p
   var box=cv.parentNode;box.addEventListener('mouseenter',function(){hover=true});box.addEventListener('mouseleave',function(){hover=false});
 })();
 
-/* Efectos cálidos de las pastillas (no tecnológicos): luz con motas de polvo (alojamiento), luces de fiesta y brasas (grupos) y vapor de horno (restaurante).
-   Se pausan fuera de pantalla y respetan «reducir movimiento» (un solo cuadro). */
+/* Pastillas con vida, naturales (nada tecnológico):
+   · Alojamiento: las cortinas de la foto se mecen con una brisa fresca de verano (la foto se dibuja y solo se deforma la cortina).
+   · Grupos: las luces de la foto (guirnaldas, café, velas) parpadean en SU lugar y la fogata respira con chispas; sin luces inventadas.
+   · Restaurante: la pizza queda nítida; solo pasa un brillo muy suave por el queso.
+   Se pausan fuera de pantalla y con «reducir movimiento» quedan quietas. */
 (function(){
   var cvs=[].slice.call(document.querySelectorAll('canvas.tfx'));if(!cvs.length)return;
-  var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches,DPR=1;
+  var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
   function rnd(a,b){return a+Math.random()*(b-a)}
+  function cover(iw,ih,w,h,py){var k=Math.max(w/iw,h/ih),dw=iw*k,dh=ih*k;return{k:k,dx:(w-dw)/2,dy:(h-dh)*py,dw:dw,dh:dh}}
+  var LUCES=[[.014,.094],[.115,.146],[.188,.176],[.252,.204],[.314,.222],[.404,.254],[.455,.252],[.493,.25],[.514,.257],[.556,.262],[.588,.258],[.633,.406],[.655,.407],[.69,.405],[.851,.335],[.886,.36],[.942,.318],[.912,.332],[.89,.698],[.242,.652]];
+  var FUEGO=[.553,.578];
   var FX={
-    luz:{
-      init:function(s){s.m=[];var n=Math.min(46,Math.round(s.w*s.h/8000));for(var i=0;i<n;i++)s.m.push({x:rnd(0,s.w),y:rnd(0,s.h),vx:rnd(.03,.16),vy:-rnd(.02,.14),r:rnd(.7,2.1),ph:rnd(0,6.28)})},
-      draw:function(c,s,t){var w=s.w,h=s.h,k,i,g;
-        g=c.createRadialGradient(w*.78,h*.18,0,w*.78,h*.18,Math.max(w,h)*.55);g.addColorStop(0,'rgba(255,196,110,'+(0.2+0.08*Math.sin(t*.0017)).toFixed(3)+')');g.addColorStop(1,'rgba(255,170,70,0)');c.fillStyle=g;c.fillRect(0,0,w,h);
-        for(k=0;k<3;k++){c.save();var x0=w*(0.02+0.3*k)+Math.sin(t*.00022+k*2.1)*w*.09;c.translate(x0,-h*.2);c.rotate(.42);var bw=w*(.1+.03*k),a=0.09+0.09*Math.max(0,Math.sin(t*.00035+k*1.7));
-          var lg=c.createLinearGradient(0,0,bw,0);lg.addColorStop(0,'rgba(255,214,150,0)');lg.addColorStop(.5,'rgba(255,226,170,'+a.toFixed(3)+')');lg.addColorStop(1,'rgba(255,214,150,0)');c.fillStyle=lg;c.fillRect(0,0,bw,h*2);c.restore()}
-        for(i=0;i<s.m.length;i++){var m=s.m[i];m.x+=m.vx;m.y+=m.vy+Math.sin(t*.0008+m.ph)*.05;if(m.x>w+6)m.x=-6;if(m.y<-6)m.y=h+6;
-          var tw=.45+.55*Math.max(0,Math.sin(t*.0014+m.ph)),rg=c.createRadialGradient(m.x,m.y,0,m.x,m.y,m.r*4);rg.addColorStop(0,'rgba(255,238,200,'+(0.75*tw).toFixed(3)+')');rg.addColorStop(1,'rgba(255,200,120,0)');c.fillStyle=rg;c.beginPath();c.arc(m.x,m.y,m.r*4,0,6.283);c.fill()}}},
-    fiesta:{
-      init:function(s){s.b=[];var rows=[[.08,.10,Math.max(8,Math.round(s.w/38))],[.2,.07,Math.max(6,Math.round(s.w/58))]];rows.forEach(function(r,ri){for(var i=0;i<r[2];i++){var u=r[2]===1?.5:i/(r[2]-1);s.b.push({x:u*s.w,y:s.h*r[0]+Math.sin(u*Math.PI)*s.h*r[1],r:rnd(5,9),ph:rnd(0,6.28),sp:rnd(.0012,.003),col:[[255,214,140],[255,170,90],[255,236,200],[255,190,120]][Math.floor(rnd(0,4))]})}});
-        s.e=[];s.en=Math.min(30,Math.round(s.w*s.h/12000))},
-      draw:function(c,s,t){var w=s.w,h=s.h,i,b,g;
-        g=c.createRadialGradient(w*.5,h*1.02,0,w*.5,h*1.02,h*.9);g.addColorStop(0,'rgba(255,150,50,'+(0.2+0.1*Math.sin(t*.011)*Math.sin(t*.0037)).toFixed(3)+')');g.addColorStop(1,'rgba(255,110,30,0)');c.fillStyle=g;c.fillRect(0,0,w,h);
-        c.strokeStyle='rgba(20,12,6,.35)';c.lineWidth=1;[0,1].forEach(function(ri){c.beginPath();var f=false;for(var u=0;u<=1.001;u+=.04){var x=u*w,y=ri?h*.2+Math.sin(u*Math.PI)*h*.07:h*.08+Math.sin(u*Math.PI)*h*.1;f?c.lineTo(x,y):c.moveTo(x,y);f=true}c.stroke()});
-        for(i=0;i<s.b.length;i++){b=s.b[i];var tw=.55+.45*Math.sin(t*b.sp+b.ph),rr=b.r*(1+.35*tw),rg=c.createRadialGradient(b.x,b.y,0,b.x,b.y,rr*2.6);rg.addColorStop(0,'rgba('+b.col[0]+','+b.col[1]+','+b.col[2]+','+(0.95*tw).toFixed(3)+')');rg.addColorStop(.35,'rgba('+b.col[0]+','+b.col[1]+','+b.col[2]+','+(0.32*tw).toFixed(3)+')');rg.addColorStop(1,'rgba('+b.col[0]+','+b.col[1]+','+b.col[2]+',0)');c.fillStyle=rg;c.beginPath();c.arc(b.x,b.y,rr*2.6,0,6.283);c.fill()}
-        while(s.e.length<s.en)s.e.push({x:w*rnd(.3,.7),y:h+rnd(0,h*.3),vy:-rnd(.35,1),ph:rnd(0,6.28),l:rnd(.5,1),r:rnd(.8,2)});
-        for(i=s.e.length-1;i>=0;i--){var e=s.e[i];e.y+=e.vy;e.x+=Math.sin(t*.002+e.ph)*.5;e.l-=.0035;if(e.l<=0||e.y<-6){s.e.splice(i,1);continue}
-          var eg=c.createRadialGradient(e.x,e.y,0,e.x,e.y,e.r*3.2);eg.addColorStop(0,'rgba(255,214,140,'+e.l.toFixed(3)+')');eg.addColorStop(1,'rgba(255,110,30,0)');c.fillStyle=eg;c.beginPath();c.arc(e.x,e.y,e.r*3.2,0,6.283);c.fill()}}},
-    vapor:{
-      init:function(s){s.p=[];var n=Math.min(14,Math.round(s.w/90)+6);for(var i=0;i<n;i++)s.p.push(FX.vapor.nuevo(s,true))},
-      nuevo:function(s,pre){var mx=Math.min(s.w,s.h*2.4);var p={x:s.w*.5+rnd(-mx*.34,mx*.34),y:s.h*rnd(.7,1.0),r:rnd(.12,.22)*Math.min(s.w,s.h*2),vy:-rnd(.16,.42),vx:rnd(-.12,.12),l:0,m:rnd(170,300)};if(pre)p.l=rnd(0,p.m);return p},
-      draw:function(c,s,t){var w=s.w,h=s.h,i,g;
-        g=c.createRadialGradient(w*.5,h*1.05,0,w*.5,h*1.05,h*.95);g.addColorStop(0,'rgba(255,140,50,'+(0.2+0.07*Math.sin(t*.002)+0.03*Math.sin(t*.0113)).toFixed(3)+')');g.addColorStop(1,'rgba(255,110,30,0)');c.fillStyle=g;c.fillRect(0,0,w,h);
-                for(i=0;i<s.p.length;i++){var p=s.p[i];p.l++;p.y+=p.vy;p.x+=p.vx+Math.sin(t*.0009+i)*.12;p.r*=1.002;if(p.l>=p.m){s.p[i]=FX.vapor.nuevo(s,false);continue}
-          var a=Math.sin(p.l/p.m*Math.PI)*0.1,vg=c.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);vg.addColorStop(0,'rgba(255,222,180,'+a.toFixed(3)+')');vg.addColorStop(.6,'rgba(255,214,170,'+(a*.5).toFixed(3)+')');vg.addColorStop(1,'rgba(255,245,230,0)');c.fillStyle=vg;c.beginPath();c.arc(p.x,p.y,p.r,0,6.283);c.fill()}
-        c.globalCompositeOperation='lighter'}}
+    cortinas:{src:'img/habitacion.jpg',dpr:2,
+      init:function(s){s.g=cover(s.im.naturalWidth,s.im.naturalHeight,s.w,s.h,.30);s.m=[];var n=Math.min(22,Math.round(s.w*s.h/14000));for(var i=0;i<n;i++)s.m.push({x:rnd(0,s.w),y:rnd(0,s.h),vx:rnd(.05,.2),vy:-rnd(.01,.07),r:rnd(.6,1.5),ph:rnd(0,6.28)})},
+      /* x0,x1 (normalizados en la foto), amplitud relativa, fase, y inferior de la cortina; el tul de la ventana se infla más que las cortinas */
+      R:[[.115,.455,1.8,1.3,.47],[0,.105,1,0,.56],[.445,.56,1.1,2.1,.47]],TOP:.2,
+      draw:function(c,s,t){var g=s.g,im=s.im,iw=im.naturalWidth,ih=im.naturalHeight,k=g.k,B=3,gust=.7+.3*Math.sin(t*.00055)+.12*Math.sin(t*.0013+1),A=s.w*.0065,r,y;
+        c.globalCompositeOperation='source-over';c.drawImage(im,g.dx,g.dy,g.dw,g.dh);
+        for(var q=0;q<FX.cortinas.R.length;q++){r=FX.cortinas.R[q];var sx=r[0]*iw,sw=(r[1]-r[0])*iw,dx0=g.dx+sx*k;
+          for(y=0;y<s.h;y+=B){var yp=(y-g.dy)/k,yn=yp/ih;if(yn<FX.cortinas.TOP||yn>r[4])continue;
+            var hang=(yn-FX.cortinas.TOP)/(r[4]-FX.cortinas.TOP),w=Math.pow(hang,1.3),ph=t*.0011+yn*7+r[3];
+            var off=A*r[2]*gust*w*(Math.sin(ph)+.45*Math.sin(ph*1.9+1.3));
+            c.drawImage(im,sx,yp,sw,B/k,dx0+off,y,sw*k,B)}}
+        c.fillStyle='rgba(15,42,31,.42)';c.fillRect(0,0,s.w,s.h);
+        c.globalCompositeOperation='lighter';
+        var lg=c.createLinearGradient(0,0,s.w,s.h);lg.addColorStop(0,'rgba(255,214,150,'+(0.1+0.04*Math.sin(t*.0009)).toFixed(3)+')');lg.addColorStop(.5,'rgba(255,214,150,0)');c.fillStyle=lg;c.fillRect(0,0,s.w,s.h);
+        for(var i=0;i<s.m.length;i++){var m=s.m[i];m.x+=m.vx;m.y+=m.vy+Math.sin(t*.0008+m.ph)*.04;if(m.x>s.w+6)m.x=-6;if(m.y<-6)m.y=s.h+6;
+          var tw=.35+.65*Math.max(0,Math.sin(t*.0014+m.ph)),rg=c.createRadialGradient(m.x,m.y,0,m.x,m.y,m.r*3.2);rg.addColorStop(0,'rgba(255,238,200,'+(0.55*tw).toFixed(3)+')');rg.addColorStop(1,'rgba(255,200,120,0)');c.fillStyle=rg;c.beginPath();c.arc(m.x,m.y,m.r*3.2,0,6.283);c.fill()}}},
+    patio:{dpr:1,
+      init:function(s){s.g=cover(1280,720,s.w,s.h,.45);s.l=LUCES.map(function(p){return{x:p[0],y:p[1],ph:rnd(0,6.28),sp:rnd(.0011,.0028),a:rnd(.7,1)}});s.e=[]},
+      draw:function(c,s,t){var g=s.g,i,k=s.w/1120;
+        for(i=0;i<s.l.length;i++){var L=s.l[i],x=g.dx+L.x*g.dw,y=g.dy+L.y*g.dh;if(x<-10||x>s.w+10||y<-10||y>s.h+10)continue;
+          var f=.5+.28*Math.sin(t*L.sp+L.ph)+.14*Math.sin(t*L.sp*2.7+L.ph*1.7)+.08*Math.sin(t*.011+L.ph*3),r=(5+4*f)*Math.max(.75,k)*(g.k/.875);
+          var rg=c.createRadialGradient(x,y,0,x,y,r);rg.addColorStop(0,'rgba(255,214,150,'+(0.5*f*L.a).toFixed(3)+')');rg.addColorStop(1,'rgba(255,170,80,0)');c.fillStyle=rg;c.beginPath();c.arc(x,y,r,0,6.283);c.fill()}
+        var fx=g.dx+FUEGO[0]*g.dw,fy=g.dy+FUEGO[1]*g.dh;
+        if(fx>0&&fx<s.w&&fy>0&&fy<s.h){var fl=.55+.22*Math.sin(t*.0113)+.13*Math.sin(t*.0297+1)+.1*Math.sin(t*.071+2),R=g.dw*.075,
+            fg=c.createRadialGradient(fx,fy,0,fx,fy,R);fg.addColorStop(0,'rgba(255,170,70,'+(0.34*fl).toFixed(3)+')');fg.addColorStop(.5,'rgba(255,130,40,'+(0.1*fl).toFixed(3)+')');fg.addColorStop(1,'rgba(255,110,30,0)');c.fillStyle=fg;c.beginPath();c.arc(fx,fy,R,0,6.283);c.fill();
+          if(s.e.length<9&&Math.random()<.07)s.e.push({x:fx+rnd(-6,6)*k,y:fy-4*k,vx:rnd(-.12,.12),vy:-rnd(.25,.6),l:1,r:rnd(.7,1.3)});
+          for(i=s.e.length-1;i>=0;i--){var e=s.e[i];e.x+=e.vx+Math.sin(t*.003+i)*.15;e.y+=e.vy;e.l-=.009;if(e.l<=0){s.e.splice(i,1);continue}
+            var eg=c.createRadialGradient(e.x,e.y,0,e.x,e.y,e.r*2.6);eg.addColorStop(0,'rgba(255,205,130,'+(0.85*e.l).toFixed(3)+')');eg.addColorStop(1,'rgba(255,120,40,0)');c.fillStyle=eg;c.beginPath();c.arc(e.x,e.y,e.r*2.6,0,6.283);c.fill()}}}},
+    brillo:{dpr:1,
+      init:function(s){},
+      /* un destello suave y diagonal que cruza el queso cada varios segundos; sin vapor ni focos para no perder nitidez */
+      draw:function(c,s,t){var ph=((t/1000)%9)/9,w=s.w,h=s.h,cxp=(ph*1.5-.25)*w;
+        if(ph>.8)return;c.save();c.translate(w/2,h/2);c.rotate(.5);c.translate(-w/2,-h/2);
+        var gr=c.createLinearGradient(cxp-w*.12,0,cxp+w*.12,0);gr.addColorStop(0,'rgba(255,236,200,0)');gr.addColorStop(.5,'rgba(255,238,205,'+(0.14*Math.sin(Math.min(1,ph/.8)*Math.PI)).toFixed(3)+')');gr.addColorStop(1,'rgba(255,236,200,0)');
+        c.fillStyle=gr;c.fillRect(-w,-w,w*3,w*3);c.restore()}}
   };
-  var items=cvs.map(function(cv){var fx=FX[cv.getAttribute('data-fx')];if(!fx)return null;return{cv:cv,fx:fx,c:cv.getContext('2d'),w:0,h:0,vis:false,ready:false}}).filter(Boolean);
-  function size(s){var r=s.cv.getBoundingClientRect(),w=Math.max(1,Math.round(r.width)),h=Math.max(1,Math.round(r.height));if(w===s.w&&h===s.h&&s.ready)return;s.w=w;s.h=h;s.cv.width=Math.round(w*DPR);s.cv.height=Math.round(h*DPR);s.c.setTransform(DPR,0,0,DPR,0,0);s.fx.init(s);s.ready=true}
+  var items=cvs.map(function(cv){var fx=FX[cv.getAttribute('data-fx')];if(!fx)return null;return{cv:cv,fx:fx,c:cv.getContext('2d'),w:0,h:0,vis:false,ready:false,im:null,dpr:fx.dpr||1}}).filter(Boolean);
+  items.forEach(function(s){if(s.fx.src){var im=new Image();im.onload=function(){s.im=im;s.ready=false;if(s.vis)RM?still(s):kick()};im.src=s.fx.src}});
+  function size(s){var r=s.cv.getBoundingClientRect(),w=Math.max(1,Math.round(r.width)),h=Math.max(1,Math.round(r.height)),d=Math.min(window.devicePixelRatio||1,s.dpr);if(w===s.w&&h===s.h&&s.ready)return;s.w=w;s.h=h;s.cv.width=Math.round(w*d);s.cv.height=Math.round(h*d);s.c.setTransform(d,0,0,d,0,0);if(s.fx.src&&!s.im)return;s.fx.init(s);s.ready=true}
   var run=false,raf=0;
-  function frame(t){raf=0;var any=false;items.forEach(function(s){if(!s.vis)return;any=true;size(s);s.c.globalCompositeOperation='source-over';s.c.clearRect(0,0,s.w,s.h);s.c.globalCompositeOperation='lighter';s.fx.draw(s.c,s,t);s.c.globalCompositeOperation='source-over'});if(any&&!document.hidden)raf=requestAnimationFrame(frame);else run=false}
+  function paint(s,t){size(s);if(!s.ready)return;s.c.globalCompositeOperation='source-over';if(!s.fx.src)s.c.clearRect(0,0,s.w,s.h);if(!s.fx.src)s.c.globalCompositeOperation='lighter';s.fx.draw(s.c,s,t);s.c.globalCompositeOperation='source-over'}
+  function frame(t){raf=0;var any=false;items.forEach(function(s){if(!s.vis)return;any=true;paint(s,t)});if(any&&!document.hidden)raf=requestAnimationFrame(frame);else run=false}
   function kick(){if(run||RM)return;run=true;raf=requestAnimationFrame(frame)}
-  function still(s){size(s);s.c.globalCompositeOperation='source-over';s.c.clearRect(0,0,s.w,s.h);s.c.globalCompositeOperation='lighter';s.fx.draw(s.c,s,3200);s.c.globalCompositeOperation='source-over'}
+  function still(s){paint(s,2600)}
   if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){en.forEach(function(e){var s=items.filter(function(x){return x.cv===e.target})[0];if(!s)return;s.vis=e.isIntersecting;if(s.vis){RM?still(s):kick()}})},{threshold:.08});items.forEach(function(s){io.observe(s.cv)})}
   else items.forEach(function(s){s.vis=true;RM?still(s):kick()});
   document.addEventListener('visibilitychange',function(){if(!document.hidden)kick()});
