@@ -472,6 +472,14 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
 .atx:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(8,26,18,.32)}
 .atx canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 @media(min-width:900px){.atx{height:300px}}
+/* Pastillas con vida: zoom lento de la foto + efectos cálidos (luz, luces de fiesta, vapor) */
+.tile.ph,.tile.ph:hover{background-image:none!important;background-color:#07120c;position:relative;overflow:hidden}
+.tile.ph::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(15,42,31,.56),rgba(15,42,31,.56)),var(--img);background-size:cover;background-position:var(--pos,center);transform-origin:var(--org,50% 50%);animation:kb 18s ease-in-out infinite alternate;z-index:0;transition:filter .3s}
+.tile.ph:hover::before{filter:brightness(1.12)}
+.tile.ph>b,.tile.ph>span{position:relative;z-index:2}
+.tfx{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;display:block}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.1)}}
+@media(prefers-reduced-motion:reduce){.tile.ph::before{animation:none}}
 /* ===== CELULAR (<900px): la casa sin nada encima y pastillas grandes, todas del mismo tamaño ===== */
 @media(max-width:899px){
   #v-inicio .hero img{height:auto;aspect-ratio:4/3;object-fit:cover;object-position:50% 40%}
@@ -572,9 +580,9 @@ html[lang="es"] .legal,html[lang="es"] .nes{display:none!important}
 
   <div class="ask"><h1 data-i18n="ask">¿Qué tienes en mente hoy?</h1></div>
   <div class="tiles">
-    <a class="tile ph" href="#alojamiento" style="--img:url(img/habitacion.jpg);--pos:center 46%"><b data-i18n="tile.aloj">Alojamiento</b><span data-i18n="tile.aloj.s">Habitaciones y escapadas</span></a>
-    <a class="tile ph" href="#grupos" style="--img:url(img/patio.jpg);--pos:center 45%"><b data-i18n="tile.grp">Grupos y delegaciones</b><span data-i18n="tile.grp.s">Alternativas para grupos desde 15 personas</span></a>
-    <a class="tile ph" href="#pizzeria" style="--img:url(img/pizza-tile.jpg);--pos:center 55%"><b data-i18n="tile.rest">Restaurante</b><span data-i18n="tile.rest.s">Pizzas, hamburguesas, waffles y coctelería</span></a>
+    <a class="tile ph" href="#alojamiento" style="--img:url(img/habitacion.jpg);--pos:center 46%"><canvas class="tfx" data-fx="luz" aria-hidden="true"></canvas><b data-i18n="tile.aloj">Alojamiento</b><span data-i18n="tile.aloj.s">Habitaciones y escapadas</span></a>
+    <a class="tile ph" href="#grupos" style="--img:url(img/patio.jpg);--pos:center 45%"><canvas class="tfx" data-fx="fiesta" aria-hidden="true"></canvas><b data-i18n="tile.grp">Grupos y delegaciones</b><span data-i18n="tile.grp.s">Alternativas para grupos desde 15 personas</span></a>
+    <a class="tile ph" href="#pizzeria" style="--img:url(img/pizza-tile.jpg);--pos:center 55%"><canvas class="tfx" data-fx="vapor" aria-hidden="true"></canvas><b data-i18n="tile.rest">Restaurante</b><span data-i18n="tile.rest.s">Pizzas, hamburguesas, waffles y coctelería</span></a>
     <a class="atx" href="https://atiende.tech" target="_blank" rel="noopener" aria-label="Atiende"><canvas id="atxc" aria-hidden="true"></canvas></a>
   </div>
 </section>
@@ -2109,5 +2117,51 @@ if(mq.addEventListener)mq.addEventListener('change',place);else mq.addListener(p
   document.addEventListener('visibilitychange',function(){document.hidden?stop():start()});
   if('IntersectionObserver' in window)new IntersectionObserver(function(en){var v=en[0].isIntersecting;if(v===vis)return;vis=v;v?start():stop()},{threshold:.35}).observe(cv);
   var box=cv.parentNode;box.addEventListener('mouseenter',function(){hover=true});box.addEventListener('mouseleave',function(){hover=false});
+})();
+
+/* Efectos cálidos de las pastillas (no tecnológicos): luz con motas de polvo (alojamiento), luces de fiesta y brasas (grupos) y vapor de horno (restaurante).
+   Se pausan fuera de pantalla y respetan «reducir movimiento» (un solo cuadro). */
+(function(){
+  var cvs=[].slice.call(document.querySelectorAll('canvas.tfx'));if(!cvs.length)return;
+  var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches,DPR=1;
+  function rnd(a,b){return a+Math.random()*(b-a)}
+  var FX={
+    luz:{
+      init:function(s){s.m=[];var n=Math.min(46,Math.round(s.w*s.h/8000));for(var i=0;i<n;i++)s.m.push({x:rnd(0,s.w),y:rnd(0,s.h),vx:rnd(.03,.16),vy:-rnd(.02,.14),r:rnd(.7,2.1),ph:rnd(0,6.28)})},
+      draw:function(c,s,t){var w=s.w,h=s.h,k,i,g;
+        g=c.createRadialGradient(w*.78,h*.18,0,w*.78,h*.18,Math.max(w,h)*.55);g.addColorStop(0,'rgba(255,196,110,'+(0.2+0.08*Math.sin(t*.0017)).toFixed(3)+')');g.addColorStop(1,'rgba(255,170,70,0)');c.fillStyle=g;c.fillRect(0,0,w,h);
+        for(k=0;k<3;k++){c.save();var x0=w*(0.02+0.3*k)+Math.sin(t*.00022+k*2.1)*w*.09;c.translate(x0,-h*.2);c.rotate(.42);var bw=w*(.1+.03*k),a=0.09+0.09*Math.max(0,Math.sin(t*.00035+k*1.7));
+          var lg=c.createLinearGradient(0,0,bw,0);lg.addColorStop(0,'rgba(255,214,150,0)');lg.addColorStop(.5,'rgba(255,226,170,'+a.toFixed(3)+')');lg.addColorStop(1,'rgba(255,214,150,0)');c.fillStyle=lg;c.fillRect(0,0,bw,h*2);c.restore()}
+        for(i=0;i<s.m.length;i++){var m=s.m[i];m.x+=m.vx;m.y+=m.vy+Math.sin(t*.0008+m.ph)*.05;if(m.x>w+6)m.x=-6;if(m.y<-6)m.y=h+6;
+          var tw=.45+.55*Math.max(0,Math.sin(t*.0014+m.ph)),rg=c.createRadialGradient(m.x,m.y,0,m.x,m.y,m.r*4);rg.addColorStop(0,'rgba(255,238,200,'+(0.75*tw).toFixed(3)+')');rg.addColorStop(1,'rgba(255,200,120,0)');c.fillStyle=rg;c.beginPath();c.arc(m.x,m.y,m.r*4,0,6.283);c.fill()}}},
+    fiesta:{
+      init:function(s){s.b=[];var rows=[[.08,.10,Math.max(8,Math.round(s.w/38))],[.2,.07,Math.max(6,Math.round(s.w/58))]];rows.forEach(function(r,ri){for(var i=0;i<r[2];i++){var u=r[2]===1?.5:i/(r[2]-1);s.b.push({x:u*s.w,y:s.h*r[0]+Math.sin(u*Math.PI)*s.h*r[1],r:rnd(5,9),ph:rnd(0,6.28),sp:rnd(.0012,.003),col:[[255,214,140],[255,170,90],[255,236,200],[255,190,120]][Math.floor(rnd(0,4))]})}});
+        s.e=[];s.en=Math.min(30,Math.round(s.w*s.h/12000))},
+      draw:function(c,s,t){var w=s.w,h=s.h,i,b,g;
+        g=c.createRadialGradient(w*.5,h*1.02,0,w*.5,h*1.02,h*.9);g.addColorStop(0,'rgba(255,150,50,'+(0.2+0.1*Math.sin(t*.011)*Math.sin(t*.0037)).toFixed(3)+')');g.addColorStop(1,'rgba(255,110,30,0)');c.fillStyle=g;c.fillRect(0,0,w,h);
+        c.strokeStyle='rgba(20,12,6,.35)';c.lineWidth=1;[0,1].forEach(function(ri){c.beginPath();var f=false;for(var u=0;u<=1.001;u+=.04){var x=u*w,y=ri?h*.2+Math.sin(u*Math.PI)*h*.07:h*.08+Math.sin(u*Math.PI)*h*.1;f?c.lineTo(x,y):c.moveTo(x,y);f=true}c.stroke()});
+        for(i=0;i<s.b.length;i++){b=s.b[i];var tw=.55+.45*Math.sin(t*b.sp+b.ph),rr=b.r*(1+.35*tw),rg=c.createRadialGradient(b.x,b.y,0,b.x,b.y,rr*2.6);rg.addColorStop(0,'rgba('+b.col[0]+','+b.col[1]+','+b.col[2]+','+(0.95*tw).toFixed(3)+')');rg.addColorStop(.35,'rgba('+b.col[0]+','+b.col[1]+','+b.col[2]+','+(0.32*tw).toFixed(3)+')');rg.addColorStop(1,'rgba('+b.col[0]+','+b.col[1]+','+b.col[2]+',0)');c.fillStyle=rg;c.beginPath();c.arc(b.x,b.y,rr*2.6,0,6.283);c.fill()}
+        while(s.e.length<s.en)s.e.push({x:w*rnd(.3,.7),y:h+rnd(0,h*.3),vy:-rnd(.35,1),ph:rnd(0,6.28),l:rnd(.5,1),r:rnd(.8,2)});
+        for(i=s.e.length-1;i>=0;i--){var e=s.e[i];e.y+=e.vy;e.x+=Math.sin(t*.002+e.ph)*.5;e.l-=.0035;if(e.l<=0||e.y<-6){s.e.splice(i,1);continue}
+          var eg=c.createRadialGradient(e.x,e.y,0,e.x,e.y,e.r*3.2);eg.addColorStop(0,'rgba(255,214,140,'+e.l.toFixed(3)+')');eg.addColorStop(1,'rgba(255,110,30,0)');c.fillStyle=eg;c.beginPath();c.arc(e.x,e.y,e.r*3.2,0,6.283);c.fill()}}},
+    vapor:{
+      init:function(s){s.p=[];var n=Math.min(14,Math.round(s.w/90)+6);for(var i=0;i<n;i++)s.p.push(FX.vapor.nuevo(s,true))},
+      nuevo:function(s,pre){var mx=Math.min(s.w,s.h*2.4);var p={x:s.w*.5+rnd(-mx*.34,mx*.34),y:s.h*rnd(.7,1.0),r:rnd(.12,.22)*Math.min(s.w,s.h*2),vy:-rnd(.16,.42),vx:rnd(-.12,.12),l:0,m:rnd(170,300)};if(pre)p.l=rnd(0,p.m);return p},
+      draw:function(c,s,t){var w=s.w,h=s.h,i,g;
+        g=c.createRadialGradient(w*.5,h*1.05,0,w*.5,h*1.05,h*.95);g.addColorStop(0,'rgba(255,140,50,'+(0.2+0.07*Math.sin(t*.002)+0.03*Math.sin(t*.0113)).toFixed(3)+')');g.addColorStop(1,'rgba(255,110,30,0)');c.fillStyle=g;c.fillRect(0,0,w,h);
+                for(i=0;i<s.p.length;i++){var p=s.p[i];p.l++;p.y+=p.vy;p.x+=p.vx+Math.sin(t*.0009+i)*.12;p.r*=1.002;if(p.l>=p.m){s.p[i]=FX.vapor.nuevo(s,false);continue}
+          var a=Math.sin(p.l/p.m*Math.PI)*0.1,vg=c.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);vg.addColorStop(0,'rgba(255,222,180,'+a.toFixed(3)+')');vg.addColorStop(.6,'rgba(255,214,170,'+(a*.5).toFixed(3)+')');vg.addColorStop(1,'rgba(255,245,230,0)');c.fillStyle=vg;c.beginPath();c.arc(p.x,p.y,p.r,0,6.283);c.fill()}
+        c.globalCompositeOperation='lighter'}}
+  };
+  var items=cvs.map(function(cv){var fx=FX[cv.getAttribute('data-fx')];if(!fx)return null;return{cv:cv,fx:fx,c:cv.getContext('2d'),w:0,h:0,vis:false,ready:false}}).filter(Boolean);
+  function size(s){var r=s.cv.getBoundingClientRect(),w=Math.max(1,Math.round(r.width)),h=Math.max(1,Math.round(r.height));if(w===s.w&&h===s.h&&s.ready)return;s.w=w;s.h=h;s.cv.width=Math.round(w*DPR);s.cv.height=Math.round(h*DPR);s.c.setTransform(DPR,0,0,DPR,0,0);s.fx.init(s);s.ready=true}
+  var run=false,raf=0;
+  function frame(t){raf=0;var any=false;items.forEach(function(s){if(!s.vis)return;any=true;size(s);s.c.globalCompositeOperation='source-over';s.c.clearRect(0,0,s.w,s.h);s.c.globalCompositeOperation='lighter';s.fx.draw(s.c,s,t);s.c.globalCompositeOperation='source-over'});if(any&&!document.hidden)raf=requestAnimationFrame(frame);else run=false}
+  function kick(){if(run||RM)return;run=true;raf=requestAnimationFrame(frame)}
+  function still(s){size(s);s.c.globalCompositeOperation='source-over';s.c.clearRect(0,0,s.w,s.h);s.c.globalCompositeOperation='lighter';s.fx.draw(s.c,s,3200);s.c.globalCompositeOperation='source-over'}
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){en.forEach(function(e){var s=items.filter(function(x){return x.cv===e.target})[0];if(!s)return;s.vis=e.isIntersecting;if(s.vis){RM?still(s):kick()}})},{threshold:.08});items.forEach(function(s){io.observe(s.cv)})}
+  else items.forEach(function(s){s.vis=true;RM?still(s):kick()});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)kick()});
+  window.addEventListener('resize',function(){items.forEach(function(s){s.ready=false;if(RM&&s.vis)still(s)})});
 })();
 </script>
